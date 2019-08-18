@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.RoleInfoMapper">
+    <resultMap
+        id="BaseResultMap"
+        type="com.szhengzhu.bean.user.RoleInfo">
+        <id
+            column="mark_id"
+            property="markId"
+            jdbcType="VARCHAR" />
+        <result
+            column="role_name"
+            property="roleName"
+            jdbcType="VARCHAR" />
+        <result
+            column="description"
+            property="description"
+            jdbcType="VARCHAR" />
+        <result
+            column="server_status"
+            property="serverStatus"
+            jdbcType="BIT" />
+        <result
+            column="role_code"
+            property="roleCode"
+            jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, role_name, description, server_status,role_code
+    </sql>
+    <select
+        id="selectByPrimaryKey"
+        resultMap="BaseResultMap"
+        parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_role_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete
+        id="deleteByPrimaryKey"
+        parameterType="java.lang.String">
+        delete from t_role_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert
+        id="insert"
+        parameterType="com.szhengzhu.bean.user.RoleInfo">
+        insert into t_role_info (mark_id, role_name,
+        description, server_status,role_code)
+        values
+        (#{markId,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR}, #{serverStatus,jdbcType=BIT},
+        #{roleCode,jdbcType=VARCHAR})
+    </insert>
+    <insert
+        id="insertSelective"
+        parameterType="com.szhengzhu.bean.user.RoleInfo">
+        insert into t_role_info
+        <trim
+            prefix="("
+            suffix=")"
+            suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="roleCode != null">
+                role_code,
+            </if>
+        </trim>
+        <trim
+            prefix="values ("
+            suffix=")"
+            suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="roleCode != null">
+                #{roleCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update
+        id="updateByPrimaryKeySelective"
+        parameterType="com.szhengzhu.bean.user.RoleInfo">
+        update t_role_info
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="roleCode != null">
+                role_code = #{roleCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update
+        id="updateByPrimaryKey"
+        parameterType="com.szhengzhu.bean.user.RoleInfo">
+        update t_role_info
+        set role_name =
+        #{roleName,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        server_status = #{serverStatus,jdbcType=BIT},
+        role_code = #{roleCode,jdbcType=VARCHAR}
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </update>
+    <select
+        id="selectByExampleSelective"
+        resultMap="BaseResultMap"
+        parameterType="com.szhengzhu.bean.user.RoleInfo">
+        select
+        <include refid="Base_Column_List" />
+        from t_role_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName != null">
+                AND role_name LIKE CONCAT(CONCAT('%',
+                #{roleName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="description != null">
+                AND description =
+                #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="roleCode != null">
+                AND role_code = #{roleCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

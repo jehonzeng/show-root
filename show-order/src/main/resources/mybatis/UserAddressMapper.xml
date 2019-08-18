@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.UserAddressMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.UserAddress">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+        <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+        <result column="area" property="area" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="user_address" property="userAddress" jdbcType="VARCHAR" />
+        <result column="address_type" property="addressType" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="default_or" property="defaultOr" jdbcType="BIT" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="send_today" property="sendToday" jdbcType="BIT" />
+        <result column="displayValue" property="displayValue" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_name, phone, longitude, latitude, area, city, province, user_address,
+        address_type, user_id, create_time, default_or, server_status, send_today
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT GROUP_CONCAT(a.name SEPARATOR '') FROM db_base.t_area_info a WHERE a.num in (province,city,area) ORDER BY a.num) AS displayValue
+        from t_user_address
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_user_address
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.UserAddress">
+        insert into t_user_address (mark_id, user_name, phone,
+        longitude, latitude, area, city, province, user_address,
+        address_type, user_id, create_time, default_or, server_status, send_today)
+        values (#{markId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+            #{longitude,jdbcType=DOUBLE}, #{latitude,jdbcType=DOUBLE}, #{area,jdbcType=VARCHAR},
+            #{city,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{userAddress,jdbcType=VARCHAR},
+            #{addressType,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP}, #{defaultOr,jdbcType=BIT}, #{serverStatus,jdbcType=BIT}, #{sendToday,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.UserAddress">
+        insert into t_user_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="longitude != null">
+                longitude,
+            </if>
+            <if test="latitude != null">
+                latitude,
+            </if>
+            <if test="area != null">
+                area,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="userAddress != null">
+                user_address,
+            </if>
+            <if test="addressType != null">
+                address_type,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="defaultOr != null">
+                default_or,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="sendToday != null">
+                send_today,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                #{longitude,jdbcType=DOUBLE},
+            </if>
+            <if test="latitude != null">
+                #{latitude,jdbcType=DOUBLE},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="userAddress != null">
+                #{userAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="addressType != null">
+                #{addressType,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="defaultOr != null">
+                #{defaultOr,jdbcType=BIT},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sendToday != null">
+                #{sendToday,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.UserAddress">
+        update t_user_address
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=DOUBLE},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=DOUBLE},
+            </if>
+            <if test="area != null">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="userAddress != null">
+                user_address = #{userAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="addressType != null">
+                address_type = #{addressType,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="defaultOr != null">
+                default_or = #{defaultOr,jdbcType=BIT},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sendToday != null">
+                send_today = #{sendToday,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.UserAddress">
+        update t_user_address
+        set user_name = #{userName,jdbcType=VARCHAR},
+            phone = #{phone,jdbcType=VARCHAR},
+            longitude = #{longitude,jdbcType=DOUBLE},
+            latitude = #{latitude,jdbcType=DOUBLE},
+            area = #{area,jdbcType=VARCHAR},
+            city = #{city,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            user_address = #{userAddress,jdbcType=VARCHAR},
+            address_type = #{addressType,jdbcType=INTEGER},
+            user_id = #{userId,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            default_or = #{defaultOr,jdbcType=BIT},
+            server_status = #{serverStatus,jdbcType=BIT},
+            send_today = #{sendToday,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.order.UserAddress">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT GROUP_CONCAT(a.name SEPARATOR '') FROM db_base.t_area_info a WHERE a.num in (province,city,area) ORDER BY a.num) AS displayValue
+        from t_user_address
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null">
+                AND user_name LIKE CONCAT(CONCAT('%', #{userName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="longitude != null">
+                AND longitude = #{longitude,jdbcType=DOUBLE}
+            </if>
+            <if test="latitude != null">
+                AND latitude = #{latitude,jdbcType=DOUBLE}
+            </if>
+            <if test="area != null">
+                AND area = #{area,jdbcType=VARCHAR}
+            </if>
+            <if test="city != null">
+                AND city = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="province != null">
+                AND province = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="userAddress != null">
+                AND user_address LIKE CONCAT(CONCAT('%', #{userAddress,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="addressType != null">
+                AND address_type = #{addressType,jdbcType=INTEGER}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="defaultOr != null">
+                AND default_or = #{defaultOr,jdbcType=BIT}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="sendToday != null">
+                AND send_today = #{sendToday,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+</mapper>

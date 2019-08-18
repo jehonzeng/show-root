@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.BackHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.BackHistory">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+        <result column="cid" jdbcType="VARCHAR" property="cid" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, order_no, add_time, pay_status, cid
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_back_history
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_back_history
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.BackHistory">
+        insert into t_back_history (mark_id, order_no, add_time, pay_status, cid)
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{payStatus,jdbcType=INTEGER}, #{cid,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.BackHistory">
+        insert into t_back_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="payStatus != null">
+                pay_status,
+            </if>
+            <if test="cid != null">
+                cid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payStatus != null">
+                #{payStatus,jdbcType=INTEGER},
+            </if>
+            <if test="cid != null">
+                #{cid,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.BackHistory">
+        update t_back_history
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus,jdbcType=INTEGER},
+            </if>
+            <if test="cid != null">
+                cid = #{cid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.BackHistory">
+        update t_back_history
+        set order_no = #{orderNo,jdbcType=VARCHAR},
+            add_time = #{addTime,jdbcType=TIMESTAMP},
+            pay_status = #{payStatus,jdbcType=INTEGER},
+            cid = #{cid,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

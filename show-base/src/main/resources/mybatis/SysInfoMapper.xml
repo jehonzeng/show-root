@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SysInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.SysInfo">
+        <id column="name" jdbcType="VARCHAR" property="name" />
+        <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        name, data_json
+    </sql>
+    <select id="selectByName" parameterType="java.lang.String" resultType="java.lang.String">
+        select data_json
+        from t_sys_info
+        where name = #{name,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_sys_info
+        where name = #{name,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.SysInfo">
+        insert into t_sys_info (name, data_json)
+        values (#{name,jdbcType=VARCHAR}, #{dataJson,jdbcType=LONGVARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.SysInfo">
+        update t_sys_info
+        set data_json = #{dataJson,jdbcType=VARCHAR}
+        where name = #{name,jdbcType=VARCHAR}
+    </update>
+</mapper>

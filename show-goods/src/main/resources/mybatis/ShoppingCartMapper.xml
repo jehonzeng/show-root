@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ShoppingCartMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.ShoppingCart">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="product_id" jdbcType="VARCHAR" property="productId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
+        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+        <result column="base_price" jdbcType="DECIMAL" property="basePrice" />
+        <result column="add_price" jdbcType="DECIMAL" property="addPrice" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="checked" jdbcType="BIT" property="checked" />
+        <result column="product_no" jdbcType="VARCHAR" property="productNo" />
+        <result column="salePrice" jdbcType="DECIMAL" property="salePrice" />
+        <result column="currentStock" jdbcType="INTEGER" property="currentStock" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        c.mark_id, c.product_id, c.user_id, c.product_type, c.product_name, c.specification_ids, c.quantity,
+        c.base_price, c.add_price, c.add_time, c.update_time, c.checked,c.product_no
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_shopping_cart c
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_shopping_cart
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.ShoppingCart">
+        insert into t_shopping_cart (mark_id, product_id, user_id,
+        product_type, product_name, specification_ids,quantity, base_price, add_price,
+        add_time, update_time, checked, product_no)
+        values (#{markId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+        #{productType,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR},
+        #{quantity,jdbcType=INTEGER}, #{basePrice,jdbcType=DECIMAL}, #{addPrice,jdbcType=DECIMAL},
+        #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+        #{checked,jdbcType=BIT},#{productNo,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.ShoppingCart">
+        insert into t_shopping_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="basePrice != null">
+                base_price,
+            </if>
+            <if test="addPrice != null">
+                add_price,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="checked != null">
+                checked,
+            </if>
+            <if test="productNo != null">
+                product_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="addPrice != null">
+                #{addPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checked != null">
+                #{checked,jdbcType=BIT},
+            </if>
+            <if test="productNo != null">
+                #{productNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.ShoppingCart">
+        update t_shopping_cart
+        <set>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                base_price = #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="addPrice != null">
+                add_price = #{addPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checked != null">
+                checked = #{checked,jdbcType=BIT},
+            </if>
+            <if test="productNo != null">
+                product_no = #{productNo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.ShoppingCart">
+        update t_shopping_cart
+        set product_id = #{productId,jdbcType=VARCHAR},
+            user_id = #{userId,jdbcType=VARCHAR},
+            product_type = #{productType,jdbcType=INTEGER},
+            product_name = #{productName,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            quantity = #{quantity,jdbcType=INTEGER},
+            base_price = #{basePrice,jdbcType=DECIMAL},
+            add_price = #{addPrice,jdbcType=DECIMAL},
+            add_time = #{addTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            checked = #{checked,jdbcType=BIT},
+            product_no = #{productNo,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectSingleCart" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        ,IF(s.promotion_mode IS NULL,c.base_price,
+            (CASE WHEN s.promotion_mode=0 THEN
+                       c.base_price-s.price
+                  WHEN s.promotion_mode=1 THEN
+                       c.base_price * s.discount
+            END)) AS salePrice,
+        IF(c.product_type=0,
+           (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
+            FROM db_goods.t_specification_info 
+            WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs,
+        IFNULL((CASE WHEN c.product_type=0 THEN 
+                   (SELECT gs.current_stock 
+                    FROM t_goods_stock gs 
+                    WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock desc limit 1)
+               WHEN c.product_type=1 THEN 
+                    (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
+               WHEN c.product_type=2 THEN 
+                        (SELECT m.stock_size FROM t_meal_info m WHERE m.server_status=1 AND m.mark_id=c.product_id)
+          END), 0) as currentStock,
+          IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) AS status
+        FROM t_shopping_cart c LEFT JOIN 
+             t_goods_info g ON c.product_id=g.mark_id LEFT JOIN
+             (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
+              FROM t_special_info s LEFT JOIN
+                   t_special_item i ON s.mark_id=i.special_id
+              WHERE s.server_status=1 AND s.promotion_type=1 AND
+                   (CASE WHEN s.start_time IS NOT NULL THEN
+                             s.start_time <![CDATA[ < ]]> NOW()
+                         ELSE
+                             1=1
+                    END) AND
+                   (CASE WHEN s.end_time IS NOT NULL THEN
+                             s.end_time <![CDATA[ > ]]> NOW()
+                         ELSE
+                             1=1
+                    END)) s ON c.product_id=s.goods_id
+        WHERE c.user_id=#{userId,jdbcType=VARCHAR} AND c.product_id=#{productId,jdbcType=VARCHAR}
+        <if test="specIds != null">
+            AND c.specification_ids=#{specIds,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />,
+        IF(s.promotion_mode IS NULL,c.base_price,
+            (CASE WHEN s.promotion_mode=0 THEN
+                       c.base_price-s.price
+                  WHEN s.promotion_mode=1 THEN
+                       c.base_price * s.discount
+            END)) AS salePrice,
+         IF(c.product_type=0,
+           (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
+            FROM db_goods.t_specification_info 
+            WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs,
+         IFNULL((CASE WHEN c.product_type=0 THEN 
+                   (SELECT gs.current_stock 
+                    FROM t_goods_stock gs 
+                    WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock desc limit 1)
+               WHEN c.product_type=1 THEN 
+                    (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
+               WHEN c.product_type=2 THEN 
+                        (SELECT m.stock_size FROM t_meal_info m WHERE m.server_status=1 AND m.mark_id=c.product_id)
+          END), 0) AS currentStock,
+          IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) AS status
+        FROM t_shopping_cart c LEFT JOIN 
+             t_goods_info g ON c.product_id=g.mark_id LEFT JOIN
+             (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
+              FROM t_special_info s LEFT JOIN
+                   t_special_item i ON s.mark_id=i.special_id
+              WHERE s.server_status=1 AND s.promotion_type=1 AND
+                   (CASE WHEN s.start_time IS NOT NULL THEN
+                             s.start_time <![CDATA[ < ]]> NOW()
+                         ELSE
+                             1=1
+                    END) AND
+                   (CASE WHEN s.end_time IS NOT NULL THEN
+                             s.end_time <![CDATA[ > ]]> NOW()
+                         ELSE
+                             1=1
+                    END)) s ON c.product_id=s.goods_id
+        WHERE c.user_id=#{userId,jdbcType=VARCHAR}
+        ORDER BY c.product_id, c.add_time DESC
+    </select>
+</mapper>

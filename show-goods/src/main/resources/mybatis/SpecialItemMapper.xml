@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.SpecialItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.SpecialItem">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="special_id" property="specialId" jdbcType="VARCHAR" />
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap
+        type="com.szhengzhu.bean.vo.SpecialGoodsVo"
+        id="BaseResultMapVo"
+        extends="BaseResultMap">
+        <association
+            property="goods"
+            javaType="com.szhengzhu.bean.goods.GoodsInfo"
+            column="goods_id">
+            <id
+                column="mark_id"
+                property="markId"
+                jdbcType="VARCHAR" />
+            <result
+                column="goods_name"
+                property="goodsName"
+                jdbcType="VARCHAR" />
+            <result
+                column="description"
+                property="description"
+                jdbcType="VARCHAR" />
+            <result
+                column="serverStatus"
+                property="serverStatus"
+                jdbcType="VARCHAR" />
+            <result
+                column="cookStyle"
+                property="cookStyle"
+                jdbcType="VARCHAR" />
+            <result
+                column="server_type"
+                property="serverType"
+                jdbcType="INTEGER" />
+            <result
+                column="base_price"
+                property="basePrice"
+                jdbcType="DECIMAL" />
+            <result
+                column="sale_price"
+                property="salePrice"
+                jdbcType="DECIMAL" />
+            <result
+                column="unit"
+                property="unit"
+                jdbcType="VARCHAR" />
+            <result
+                column="upper_time"
+                property="upperTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="down_time"
+                property="downTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="pre_upper_time"
+                property="preUpperTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="pre_down_time"
+                property="preDownTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="create_time"
+                property="createTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="creator"
+                property="creator"
+                jdbcType="VARCHAR" />
+            <result
+                column="modify_time"
+                property="modifyTime"
+                jdbcType="TIMESTAMP" />
+            <result
+                column="modifier"
+                property="modifier"
+                jdbcType="VARCHAR" />
+            <result
+                column="categoryName"
+                property="categoryId"
+                jdbcType="VARCHAR" />
+            <result
+                column="typeName"
+                property="typeId"
+                jdbcType="VARCHAR" />
+            <result
+                column="brandName"
+                property="brandId"
+                jdbcType="VARCHAR" />
+            <result
+                column="cooker"
+                property="cooker"
+                jdbcType="VARCHAR" />
+            <result
+                column="sort"
+                property="sort"
+                jdbcType="INTEGER" />
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        s.mark_id, s.special_id, s.goods_id
+    </sql>
+    <sql id="Base_Goods_List">
+        g.mark_id, g.goods_name,
+        (SELECT `name` FROM
+        db_base.t_attribute_info WHERE code = g.server_status) as
+        serverStatus,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE
+        code = g.cook_style) as cookStyle,
+        g.server_type,
+        g.base_price,
+        g.sale_price,
+        g.upper_time,
+        g.down_time,
+        g.pre_upper_time,
+        g.pre_down_time,
+        (SELECT real_name FROM db_user.t_user_info WHERE
+        mark_id = g.cooker) as cooker,
+        (SELECT `name` FROM
+        t_category_info WHERE mark_id = g.category_id) as categoryName,
+        (SELECT type_name FROM t_goods_type WHERE mark_id = g.type_id)
+        as typeName,
+        (SELECT cn_name FROM t_brand_info WHERE mark_id =
+        g.brand_id) as brandName
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_special_item s
+        where s.mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_special_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.SpecialItem">
+        insert into t_special_item (mark_id, special_id, goods_id)
+        values (#{markId,jdbcType=VARCHAR}, #{specialId,jdbcType=VARCHAR}, #{goodsId,jdbcType=VARCHAR} )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.SpecialItem">
+        insert into t_special_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="specialId != null">
+                special_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="specialId != null">
+                #{specialId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.SpecialItem">
+        update t_special_item
+        <set>
+            <if test="specialId != null">
+                special_id = #{specialId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.SpecialItem">
+        update t_special_item
+        set special_id =
+        #{specialId,jdbcType=VARCHAR},
+        goods_id =
+        #{goodsId,jdbcType=VARCHAR}
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_special_item
+        (mark_id, special_id, goods_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR},
+            #{item.specialId,jdbcType=VARCHAR},
+            #{item.goodsId,jdbcType=VARCHAR})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        special_id = values(special_id)
+    </insert>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.SpecialItem" resultMap="BaseResultMapVo">
+        SELECT
+        <include refid="Base_Column_List"/>,
+        <include refid="Base_Goods_List"/>
+        FROM t_special_item s
+        JOIN t_goods_info g
+        ON g.mark_id = s.goods_id
+        <where>
+            <if test="markId != null">
+                s.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="specialId != null">
+                AND s.special_id = #{specialId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsId != null">
+                AND s.goods_id = #{goodsId,jdbcType=VARCHAR}
+            </if>
+        </where>
+       <!--  UNION ALL
+        SELECT
+        <include refid="Base_Column_List"></include>
+        ,
+        g.theme AS goodsName,
+        g.base_price,g.sale_price,
+        g.description
+        FROM t_special_item s
+        JOIN t_meal_info g
+        ON g.mark_id = s.goods_id
+        <where>
+            <if test="markId != null">
+                s.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="specialId != null">
+                AND s.special_id = #{specialId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsId != null">
+                AND s.goods_id = #{goodsId,jdbcType=VARCHAR}
+            </if>
+        </where> -->
+    </select>
+    <select id="selectGoodsSalePrice" resultType="java.math.BigDecimal">
+        SELECT IFNULL(s.sale_price,(SELECT g.sale_price FROM t_goods_info g WHERE g.mark_id=i.goods_id)) AS salePrice
+        FROM t_special_item i LEFT JOIN 
+             t_goods_specification s ON (s.goods_id=i.goods_id AND 
+             s.specification_ids=(SELECT GROUP_CONCAT(mark_id SEPARATOR ',') AS specIds 
+                                  FROM db_goods.t_specification_info  
+                                  WHERE mark_id in 
+                                        (SELECT s.specification_id 
+                                         FROM t_type_specification s LEFT JOIN 
+                                              t_goods_info g ON g.type_id=s.type_id 
+                                         WHERE g.mark_id=i.goods_id AND s.default_or=1) 
+             ORDER BY mark_id)) 
+             WHERE i.special_id=#{spcialId} AND i.goods_id=#{goodsId}
+    </select>
+</mapper>

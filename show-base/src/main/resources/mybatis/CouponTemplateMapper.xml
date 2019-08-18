@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CouponTemplateMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.CouponTemplate">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
+        <result column="coupon_total" jdbcType="INTEGER" property="couponTotal" />
+        <result column="line_type" jdbcType="INTEGER" property="lineType" />
+        <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
+        <result column="coupon_price" jdbcType="DECIMAL" property="couponPrice" />
+        <result column="coupon_discount" jdbcType="DECIMAL" property="couponDiscount" />
+        <result column="limit_price" jdbcType="DECIMAL" property="limitPrice" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="limit_count" jdbcType="INTEGER" property="limitCount" />
+        <result column="validity_type" jdbcType="INTEGER" property="validityType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+        <result column="validity_day" jdbcType="INTEGER" property="validityDay" />
+        <result column="range_type" jdbcType="INTEGER" property="rangeType" />
+        <result column="range_id" jdbcType="VARCHAR" property="rangeId" />
+        <result column="limit_region" jdbcType="VARCHAR" property="limitRegion" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, coupon_name, coupon_total, line_type, coupon_type, coupon_price,
+        coupon_discount,
+        limit_price, server_status, limit_count, validity_type, start_time, stop_time,
+        validity_day,
+        range_type, range_id,limit_region, description
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_coupon_template
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_coupon_template
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.CouponTemplate">
+        insert into t_coupon_template (mark_id, coupon_name, coupon_total,
+        line_type, coupon_type, coupon_price,
+        coupon_discount, limit_price, server_status,
+        limit_count, validity_type, start_time,
+        stop_time, validity_day, range_type,
+        range_id,limit_region, description)
+        values (#{markId,jdbcType=VARCHAR}, #{couponName,jdbcType=VARCHAR},
+        #{couponTotal,jdbcType=INTEGER},
+        #{lineType,jdbcType=INTEGER}, #{couponType,jdbcType=INTEGER}, #{couponPrice,jdbcType=DECIMAL},
+        #{couponDiscount,jdbcType=DECIMAL},
+        #{limitPrice,jdbcType=DECIMAL}, #{serverStatus,jdbcType=BIT},
+        #{limitCount,jdbcType=INTEGER},
+        #{validityType,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP},
+        #{stopTime,jdbcType=TIMESTAMP}, #{validityDay,jdbcType=INTEGER}, #{rangeType,jdbcType=INTEGER},
+        #{rangeId,jdbcType=VARCHAR}, #{limitRegion,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.CouponTemplate">
+        insert into t_coupon_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="couponName != null">
+                coupon_name,
+            </if>
+            <if test="couponTotal != null">
+                coupon_total,
+            </if>
+            <if test="lineType != null">
+                line_type,
+            </if>
+            <if test="couponType != null">
+                coupon_type,
+            </if>
+            <if test="couponPrice != null">
+                coupon_price,
+            </if>
+            <if test="couponDiscount != null">
+                coupon_discount,
+            </if>
+            <if test="limitPrice != null">
+                limit_price,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="limitCount != null">
+                limit_count,
+            </if>
+            <if test="validityType != null">
+                validity_type,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="validityDay != null">
+                validity_day,
+            </if>
+            <if test="rangeType != null">
+                range_type,
+            </if>
+            <if test="rangeId != null">
+                range_id,
+            </if>
+            <if test="limitRegion != null">
+                limit_region,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="couponName != null">
+                #{couponName,jdbcType=VARCHAR},
+            </if>
+            <if test="couponTotal != null">
+                #{couponTotal,jdbcType=INTEGER},
+            </if>
+            <if test="lineType != null">
+                #{lineType,jdbcType=INTEGER},
+            </if>
+            <if test="couponType != null">
+                #{couponType,jdbcType=INTEGER},
+            </if>
+            <if test="couponPrice != null">
+                #{couponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="couponDiscount != null">
+                #{couponDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="limitPrice != null">
+                #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="limitCount != null">
+                #{limitCount,jdbcType=INTEGER},
+            </if>
+            <if test="validityType != null">
+                #{validityType,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="validityDay != null">
+                #{validityDay,jdbcType=INTEGER},
+            </if>
+            <if test="rangeType != null">
+                #{rangeType,jdbcType=INTEGER},
+            </if>
+            <if test="rangeId != null">
+                #{rangeId,jdbcType=VARCHAR},
+            </if>
+            <if test="limitRegion != null">
+                #{limitRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.CouponTemplate">
+        update t_coupon_template
+        <set>
+            <if test="couponName != null">
+                coupon_name = #{couponName,jdbcType=VARCHAR},
+            </if>
+            <if test="couponTotal != null">
+                coupon_total = #{couponTotal,jdbcType=INTEGER},
+            </if>
+            <if test="lineType != null">
+                line_type = #{lineType,jdbcType=INTEGER},
+            </if>
+            <if test="couponType != null">
+                coupon_type = #{couponType,jdbcType=INTEGER},
+            </if>
+            <if test="couponPrice != null">
+                coupon_price = #{couponPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="couponDiscount != null">
+                coupon_discount = #{couponDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="limitPrice != null">
+                limit_price = #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="limitCount != null">
+                limit_count = #{limitCount,jdbcType=INTEGER},
+            </if>
+            <if test="validityType != null">
+                validity_type = #{validityType,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="validityDay != null">
+                validity_day = #{validityDay,jdbcType=INTEGER},
+            </if>
+            <if test="rangeType != null">
+                range_type = #{rangeType,jdbcType=INTEGER},
+            </if>
+            <if test="rangeId != null">
+                range_id = #{rangeId,jdbcType=VARCHAR},
+            </if>
+            <if test="limitRegion != null">
+                limit_region = #{limitRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.CouponTemplate">
+        update t_coupon_template
+        set coupon_name = #{couponName,jdbcType=VARCHAR},
+        coupon_total = #{couponTotal,jdbcType=INTEGER},
+        line_type = #{lineType,jdbcType=INTEGER},
+        coupon_type = #{couponType,jdbcType=INTEGER},
+        coupon_price = #{couponPrice,jdbcType=DECIMAL},
+        coupon_discount = #{couponDiscount,jdbcType=DECIMAL},
+        limit_price = #{limitPrice,jdbcType=DECIMAL},
+        server_status = #{serverStatus,jdbcType=BIT},
+        limit_count = #{limitCount,jdbcType=INTEGER},
+        validity_type = #{validityType,jdbcType=INTEGER},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        validity_day =
+        #{validityDay,jdbcType=INTEGER},
+        range_type = #{rangeType,jdbcType=INTEGER},
+        range_id = #{rangeId,jdbcType=VARCHAR},
+        limit_region = #{limitRegion,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.CouponTemplate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_coupon_template
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="couponName != null">
+                AND coupon_name LIKE CONCAT(CONCAT('%', #{couponName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="couponTotal != null">
+                AND coupon_total = #{couponTotal,jdbcType=INTEGER}
+            </if>
+            <if test="lineType != null">
+                AND line_type = #{lineType,jdbcType=INTEGER}
+            </if>
+            <if test="couponType != null">
+                AND coupon_type = #{couponType,jdbcType=INTEGER}
+            </if>
+            <if test="couponPrice != null">
+                AND coupon_price = #{couponPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="couponDiscount != null">
+                AND coupon_discount = #{couponDiscount,jdbcType=DECIMAL}
+            </if>
+            <if test="limitPrice != null">
+                AND limit_price = #{limitPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="limitCount != null">
+                AND limit_count = #{limitCount,jdbcType=INTEGER}
+            </if>
+            <if test="validityType != null">
+                AND validity_type = #{validityType,jdbcType=INTEGER}
+            </if>
+            <if test="startTime != null">
+                AND start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="stopTime != null">
+                AND stop_time = #{stopTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="validityDay != null">
+                AND validity_day = #{validityDay,jdbcType=INTEGER}
+            </if>
+            <if test="rangeType != null">
+                AND range_type = #{rangeType,jdbcType=INTEGER}
+            </if>
+            <if test="rangeId != null">
+                AND range_id = #{rangeId,jdbcType=VARCHAR}
+            </if>
+            <if test="limitRegion != null">
+                AND limit_region = #{limitRegion,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                AND description LIKE CONCAT(CONCAT('%', #{description,jdbcType=VARCHAR}), '%')
+            </if>
+        </where>
+    </select>
+</mapper>

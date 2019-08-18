@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.GoodsVoucherMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.GoodsVoucher">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="product_id" property="productId" jdbcType="VARCHAR" />
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
+        <result column="product_type" property="productType" jdbcType="INTEGER" />
+        <result column="voucher_name" property="voucherName" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="stock" property="stock" jdbcType="INTEGER" />
+        <result column="current_stock" property="currentStock" jdbcType="INTEGER" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="voucher_no" property="voucherNo" jdbcType="VARCHAR" />
+        <result column="basePrice" property="basePrice" jdbcType="DECIMAL" />
+    </resultMap>
+    <resultMap id="BaseResultMapVo" type="com.szhengzhu.bean.vo.GoodsVoucherVo" extends="BaseResultMap">
+        <result column="productName" property="productName" jdbcType="VARCHAR" />
+        <result column="specList" property="specList" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, product_id,specification_ids,
+        product_type,voucher_name, price, stock,
+        current_stock,
+        server_status,sort,voucher_no
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_goods_voucher
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_goods_voucher
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.GoodsVoucher">
+        insert into t_goods_voucher (mark_id, product_id,specification_ids,product_type,
+            voucher_name, price, stock, current_stock, server_status, sort,voucher_no )
+        values
+        (#{markId,jdbcType=VARCHAR},
+        #{productId,jdbcType=VARCHAR},
+        #{specificationIds,jdbcType=VARCHAR},
+        #{productType,jdbcType=INTEGER},
+        #{voucherName,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL},
+        #{stock,jdbcType=INTEGER},
+        #{currentStock,jdbcType=INTEGER},
+        #{serverStatus,jdbcType=BIT},
+        #{sort,jdbcType=INTEGER},
+        #{voucherNo,jdbcType=VARCHAR} )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.GoodsVoucher">
+        insert into t_goods_voucher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="voucherName != null">
+                voucher_name,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="stock != null">
+                stock,
+            </if>
+            <if test="currentStock != null">
+                current_stock,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="voucherNo != null">
+                voucher_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="voucherName != null">
+                #{voucherName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="stock != null">
+                #{stock,jdbcType=INTEGER},
+            </if>
+            <if test="currentStock != null">
+                #{currentStock,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="voucherNo != null">
+                #{voucherNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.GoodsVoucher">
+        update t_goods_voucher
+        <set>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids =
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="voucherName != null">
+                voucher_name = #{voucherName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="stock != null">
+                stock = #{stock,jdbcType=INTEGER},
+            </if>
+            <if test="currentStock != null">
+                current_stock =
+                #{currentStock,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="voucherNo != null">
+                voucher_no = #{voucherNo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.GoodsVoucher">
+        update t_goods_voucher
+        set product_id = #{productId,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            product_type = #{productType,jdbcType=INTEGER},
+            voucher_name = #{voucherName,jdbcType=VARCHAR},
+            price = #{price,jdbcType=DECIMAL},
+            stock = #{stock,jdbcType=INTEGER},
+            current_stock = #{currentStock,jdbcType=INTEGER},
+            server_status = #{serverStatus,jdbcType=INTEGER},
+            sort = #{sort,jdbcType=INTEGER},
+            voucher_no = #{voucherNo,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsVoucher">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        (SELECT GROUP_CONCAT(DISTINCT CONCAT_WS(':', attr_name, attr_value) SEPARATOR ';') FROM t_specification_info WHERE FIND_IN_SET(mark_id,specification_ids)) AS specList,
+        (CASE product_type WHEN 0 THEN (SELECT goods_name FROM t_goods_info WHERE mark_id = product_id)
+            WHEN 1 THEN (SELECT theme FROM t_meal_info WHERE mark_id = product_id)
+        END) AS productName
+        from t_goods_voucher
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="productId != null">
+                AND product_id = #{productId,jdbcType=VARCHAR}
+            </if>
+            <if test="specificationIds != null">
+                AND specification_ids = #{specificationIds,jdbcType=VARCHAR}
+            </if>
+            <if test="productType != null">
+                AND product_type = #{productType,jdbcType=INTEGER}
+            </if>
+            <if test="voucherName != null">
+                AND voucher_name LIKE CONCAT('%',#{voucherName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="price != null">
+                AND price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="stock != null">
+                AND stock = #{stock,jdbcType=INTEGER}
+            </if>
+            <if test="currentStock != null">
+                AND current_stock = #{currentStock,jdbcType=INTEGER}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=INTEGER}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="voucherNo != null">
+                AND voucher_no = #{voucherNo,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectVoucherJudge" resultType="com.szhengzhu.bean.wechat.vo.Judge">
+        SELECT j.mark_id AS judgeId,IF(ISNULL(j.description) || LENGTH(TRIM(j.description)) <![CDATA[ < ]]> 1, '此用户未填写评价内容', j.description) AS description,
+               j.add_time AS addTime,j.star, u.nick_name AS nickName, u.header_img AS headerImg
+        FROM t_goods_voucher v LEFT JOIN t_goods_judge j ON v.product_id=j.goods_id LEFT JOIN db_user.t_user_info u ON j.user_id=u.mark_id
+        WHERE v.mark_id=#{voucherId,jdbcType=VARCHAR} AND j.mark_id IS NOT NULL
+        <choose>
+            <when test="userId != null">
+                AND (j.user_id=#{userId} OR j.server_status=1)
+            </when>
+            <otherwise>
+                AND j.server_status=1
+            </otherwise>
+        </choose>
+        ORDER BY j.star DESC
+    </select>
+    <select id="selectInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT v.mark_id, v.product_id,v.specification_ids, v.product_type,v.voucher_name, g.sale_price AS basePrice,v.price, v.stock, v.current_stock,
+            v.server_status,v.sort,v.voucher_no
+        FROM t_goods_voucher v LEFT JOIN t_goods_specification g ON (v.product_id=g.goods_id AND g.specification_ids=v.specification_ids) WHERE v.mark_id=#{voucherId}
+    </select>
+</mapper>

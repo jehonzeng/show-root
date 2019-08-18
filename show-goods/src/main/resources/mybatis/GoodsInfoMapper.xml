@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.GoodsInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.GoodsInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="server_status" property="serverStatus" jdbcType="VARCHAR" />
+        <result column="cook_style" property="cookStyle" jdbcType="VARCHAR" />
+        <result column="server_type" property="serverType" jdbcType="INTEGER" />
+        <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+        <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+        <result column="upper_time" property="upperTime" jdbcType="TIMESTAMP" />
+        <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
+        <result column="pre_upper_time" property="preUpperTime" jdbcType="TIMESTAMP" />
+        <result column="pre_down_time" property="preDownTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+        <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+        <result column="category_id" property="categoryId" jdbcType="VARCHAR" />
+        <result column="type_id" property="typeId" jdbcType="VARCHAR" />
+        <result column="brand_id" property="brandId" jdbcType="VARCHAR" />
+        <result column="cooker" property="cooker" jdbcType="VARCHAR" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.vo.GoodsVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <result column="goodsStatus" property="goodsStatus" jdbcType="VARCHAR" />
+        <result column="goodsStyle" property="goodsStyle" jdbcType="VARCHAR" />
+        <result column="goodsUnit" property="goodsUnit" jdbcType="VARCHAR" />
+        <result column="creatorName" property="creatorName" jdbcType="VARCHAR" />
+        <result column="modifierName" property="modifierName" jdbcType="VARCHAR" />
+        <result column="typeName" property="typeName" jdbcType="VARCHAR" />
+        <result column="categoryName" property="categoryName" jdbcType="VARCHAR" />
+        <result column="brandName" property="brandName" jdbcType="VARCHAR" />
+        <result column="cookerName" property="cookerName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, goods_name, description,
+        server_status,cook_style, server_type, base_price, sale_price,
+        unit, upper_time, down_time, pre_upper_time,pre_down_time,
+        create_time, creator, modify_time, modifier,category_id, type_id,
+        brand_id, cooker, sort
+    </sql>
+    <sql id="Base_GoodsVo_List">
+        g.mark_id, g.goods_name, g.description,
+        g.server_status,g.cook_style,
+        g.server_type,g.base_price, g.sale_price,
+        g.unit, g.upper_time, g.down_time,
+        g.pre_upper_time,g. pre_down_time,
+        g.create_time,g.creator,
+        g.modify_time, g.modifier,
+        g.category_id, g.type_id,
+        g.brand_id, g.cooker, g.sort,
+        (SELECT type_name FROM t_goods_type WHERE mark_id = g.type_id ) AS typeName,
+        (SELECT name FROM t_category_info WHERE mark_id = g.category_id) AS categoryName,
+        (SELECT cn_name FROM t_brand_info WHERE mark_id = g.brand_id) AS brandName,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= g.server_status) AS goodsStatus,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= g.cook_style) AS goodsStyle,
+        (SELECT name FROM db_base.t_attribute_info WHERE code = g.unit) AS goodsUnit,
+        (SELECT nick_name FROM db_user.t_user_info WHERE mark_id =
+        g.modifier) AS modifierName,
+        (SELECT nick_name FROM db_user.t_user_info WHERE mark_id = g.creator) AS creatorName,
+        (SELECT nick_name FROM db_user.t_user_info WHERE mark_id = g.cooker) AS cookerName
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_goods_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_goods_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        insert into t_goods_info (mark_id, goods_name,
+        description,
+        server_status,cook_style, server_type, base_price,
+        sale_price, unit, upper_time,
+        down_time, pre_upper_time,
+        pre_down_time,
+        create_time, creator, modify_time,
+        modifier,category_id,
+        type_id, brand_id,
+        cooker, sort)
+        values
+        (#{markId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR},
+        #{serverStatus,jdbcType=VARCHAR},#{cookStyle,jdbcType=VARCHAR},
+        #{serverType,jdbcType=INTEGER}, #{basePrice,jdbcType=DECIMAL},
+        #{salePrice,jdbcType=DECIMAL}, #{unit,jdbcType=VARCHAR},
+        #{upperTime,jdbcType=TIMESTAMP},
+        #{downTime,jdbcType=TIMESTAMP},
+        #{preUpperTime,jdbcType=TIMESTAMP},
+        #{preDownTime,jdbcType=TIMESTAMP},
+        #{createTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR},
+        #{modifyTime,jdbcType=TIMESTAMP},
+        #{modifier,jdbcType=VARCHAR},
+        #{categoryId,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{brandId,jdbcType=VARCHAR},
+        #{cooker,jdbcType=VARCHAR},
+        #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        insert into t_goods_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="cookStyle != null">
+                cook_style,
+            </if>
+            <if test="serverType != null">
+                server_type,
+            </if>
+            <if test="basePrice != null">
+                base_price,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="unit != null">
+                unit,
+            </if>
+            <if test="upperTime != null">
+                upper_time,
+            </if>
+            <if test="downTime != null">
+                down_time,
+            </if>
+            <if test="preUpperTime != null">
+                pre_upper_time,
+            </if>
+            <if test="preDownTime != null">
+                pre_down_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="brandId != null">
+                brand_id,
+            </if>
+            <if test="cooker != null">
+                cooker,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="cookStyle != null">
+                #{cookStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="unit != null">
+                #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="upperTime != null">
+                #{upperTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="downTime != null">
+                #{downTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="preUpperTime != null">
+                #{preUpperTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="preDownTime != null">
+                #{preDownTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="brandId != null">
+                #{brandId,jdbcType=VARCHAR},
+            </if>
+            <if test="cooker != null">
+                #{cooker,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        update t_goods_info
+        <set>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status =
+                #{serverStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="cookStyle != null">
+                cook_style = #{cookStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                base_price = #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                sale_price = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="unit != null">
+                unit = #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="upperTime != null">
+                upper_time = #{upperTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="downTime != null">
+                down_time = #{downTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="preUpperTime != null">
+                pre_upper_time =
+                #{preUpperTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="preDownTime != null">
+                pre_down_time =
+                #{preDownTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="brandId != null">
+                brand_id = #{brandId,jdbcType=VARCHAR},
+            </if>
+            <if test="cooker != null">
+                cooker = #{cooker,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        update t_goods_info
+        set goods_name = #{goodsName,jdbcType=VARCHAR},
+            description = #{description,jdbcType=VARCHAR},
+            server_status = #{serverStatus,jdbcType=VARCHAR},
+            cook_style = #{cookStyle,jdbcType=VARCHAR},
+            server_type = #{serverType,jdbcType=INTEGER},
+            base_price = #{basePrice,jdbcType=DECIMAL},
+            sale_price = #{salePrice,jdbcType=DECIMAL},
+            unit = #{unit,jdbcType=VARCHAR},
+            upper_time = #{upperTime,jdbcType=TIMESTAMP},
+            down_time = #{downTime,jdbcType=TIMESTAMP},
+            pre_upper_time = #{preUpperTime,jdbcType=TIMESTAMP},
+            pre_down_time = #{preDownTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            creator = #{creator,jdbcType=VARCHAR},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            modifier = #{modifier,jdbcType=VARCHAR},
+            category_id = #{categoryId,jdbcType=VARCHAR},
+            type_id = #{typeId,jdbcType=VARCHAR},
+            brand_id = #{brandId,jdbcType=VARCHAR},
+            cooker = #{cooker,jdbcType=VARCHAR},
+            sort = #{sort,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        SELECT
+        <include refid="Base_GoodsVo_List" />
+        FROM t_goods_info g
+        <where>
+            <if test="markId != null">
+                g.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND g.goods_name LIKE CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND g.server_status = #{serverStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="cookStyle != null">
+                AND g.cook_style = #{cookStyle,jdbcType=VARCHAR}
+            </if>
+            <if test="serverType != null">
+                AND g.server_type = #{serverType,jdbcType=INTEGER}
+            </if>
+            <if test="basePrice != null">
+                AND g.base_price = #{basePrice,jdbcType=DECIMAL}
+            </if>
+            <if test="salePrice != null">
+                AND g.sale_price = #{salePrice,jdbcType=DECIMAL}
+            </if>
+            <if test="unit != null">
+                AND g.unit = #{unit,jdbcType=VARCHAR}
+            </if>
+            <if test="upperTime != null">
+                AND g.upper_time = #{upperTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="downTime != null">
+                AND g.down_time = #{downTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="preUpperTime != null">
+                AND g.pre_upper_time = #{preUpperTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="preDownTime != null">
+                AND g.pre_down_time = #{preDownTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null">
+                AND g.create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="creator != null">
+                AND g.creator = #{creator,jdbcType=VARCHAR}
+            </if>
+            <if test="modifyTime != null">
+                AND g.modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifier != null">
+                AND g.modifier = #{modifier,jdbcType=VARCHAR}
+            </if>
+            <if test="typeId != null">
+                AND g.type_id = #{typeId,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryId != null">
+                AND g.category_id = #{categoryId,jdbcType=VARCHAR}
+            </if>
+            <if test="brandId != null">
+                AND g.brand_id = #{brandId,jdbcType=VARCHAR}
+            </if>
+            <if test="cooker != null">
+                AND g.cooker = #{cooker,jdbcType=VARCHAR}
+            </if>
+            <if test="sort != null">
+                AND g.sort = #{sort,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectByExampleSelectiveNotColumn" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        SELECT
+        <include refid="Base_GoodsVo_List" />
+        FROM t_goods_info g
+        LEFT JOIN t_column_goods i
+        ON i.goods_id = g.mark_id
+        <where>
+            NOT EXISTS (SELECT c.mark_id FROM t_column_info c WHERE c.mark_id = i.column_id)
+            AND g.server_status IN ('ZT01', 'ZT02')
+            <if test="markId != null">
+                AND g.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND g.goods_name LIKE
+                CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND g.server_status =
+                #{serverStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByExampleSelectiveNotLabel" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        SELECT
+        <include refid="Base_GoodsVo_List" />
+        FROM t_goods_info g
+        <where>
+            NOT EXISTS (SELECT i.mark_id FROM t_label_goods i WHERE i.goods_id = g.mark_id )
+            AND g.server_status IN ('ZT01', 'ZT02')
+            <if test="markId != null">
+                AND g.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND g.goods_name LIKE
+                CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND g.server_status =
+                #{serverStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByExampleSelectiveNotIcon" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        SELECT
+        <include refid="Base_GoodsVo_List" />
+        FROM t_goods_info g
+        <where>
+            NOT EXISTS (SELECT i.mark_id FROM t_icon_item i WHERE i.goods_id = g.mark_id )
+            AND g.server_status IN ('ZT01', 'ZT02')
+            <if test="markId != null">
+                AND g.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND g.goods_name LIKE
+                CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND g.server_status =
+                #{serverStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByExampleSelectiveNotSpecial" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsInfo">
+        SELECT
+        <include refid="Base_GoodsVo_List" />
+        FROM t_goods_info g
+        <where>
+            NOT EXISTS (SELECT i.mark_id FROM t_special_item i WHERE i.goods_id = g.mark_id )
+            AND g.server_status IN ('ZT01', 'ZT02')
+            <if test="markId != null">
+                AND g.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND g.goods_name LIKE
+                CONCAT('%',#{goodsName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND g.server_status =
+                #{serverStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <sql id="Base_Special_Table">
+        (SELECT s.promotion_mode,s.price,s.discount,i.goods_id 
+         FROM t_special_info s LEFT JOIN t_special_item i ON s.mark_id=i.special_id 
+         WHERE s.server_status=1 AND s.promotion_type=1 AND 
+               (CASE WHEN s.start_time IS NOT NULL THEN 
+                         s.start_time <![CDATA[ < ]]> NOW() 
+                     ELSE 
+                         1=1 
+                END) AND 
+                (CASE WHEN s.end_time IS NOT NULL THEN 
+                          s.end_time <![CDATA[ > ]]> NOW() 
+                      ELSE 
+                          1=1 
+                 END))
+    </sql>
+    <!-- 获取标签分类商品列表 -->
+    <select id="selectLabelGoods" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,g.description,
+            <!-- (SELECT image_path 
+             FROM t_goods_image 
+             WHERE goods_id=g.mark_id AND server_type=0 limit 1) AS goodsImage, -->
+             g.sale_price AS basePrice,
+            IF(s.promotion_mode IS NULL,g.sale_price,
+               CASE WHEN s.promotion_mode=0 THEN 
+                        g.sale_price-s.price 
+                    WHEN s.promotion_mode=1 THEN 
+                        g.sale_price * s.discount 
+               END) AS salePrice,
+            c.image_path AS iconPath, 0 AS productType 
+        FROM t_label_goods i LEFT JOIN 
+             t_goods_info g ON i.goods_id=g.mark_id LEFT JOIN 
+            <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id LEFT JOIN 
+            (SELECT i.image_path, t.goods_id 
+             FROM t_icon_info i LEFT JOIN 
+                  t_icon_item t ON i.mark_id=t.icon_id 
+             WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON g.mark_id=c.goods_id 
+        WHERE i.label_id=#{labelId,jdbcType=VARCHAR}
+            AND i.server_status=1 AND g.mark_id IS NOT NULL AND g.server_status='ZT02' 
+        ORDER BY i.sort
+    </select>
+    <!-- 用户未登录状态下的商品推荐 -->
+    <select id="selectRecommend" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,g.description,g.server_type AS serverType,
+                <!-- (SELECT image_path 
+                 FROM t_goods_image 
+                 WHERE goods_id=g.mark_id AND server_type=1 limit 1) AS goodsImage, -->
+                 g.sale_price AS basePrice,
+                IF(s.promotion_mode IS NULL,g.sale_price,
+                   CASE WHEN s.promotion_mode=0 THEN 
+                            g.sale_price-s.price 
+                        WHEN s.promotion_mode=1 THEN 
+                            g.sale_price * s.discount 
+                    END) AS salePrice, 
+                c.image_path AS iconPath, 0 AS productType, 
+                (SELECT SUM(j.star)/SUM(5) FROM t_goods_judge j WHERE j.goods_id=g.mark_id GROUP BY j.goods_id) AS praise,
+                (SELECT c.short_name FROM t_cook_certified c WHERE c.mark_id=g.cooker) AS cooker
+        FROM t_goods_info g LEFT JOIN (
+                SELECT o.product_id, SUM(o.quantity) AS quantity 
+                FROM ((SELECT i.product_id, SUM(i.quantity) AS quantity FROM db_order.t_order_item i WHERE i.product_type=0 GROUP BY i.product_id LIMIT 10)
+                       UNION ALL 
+                      (SELECT s.product_id, SUM(s.quantity) AS quantity FROM db_order.t_seckill_order s WHERE s.product_type=0 GROUP BY s.product_id LIMIT 10)
+                       UNION ALL 
+                      (SELECT t.product_id, SUM(t.quantity) AS quantity FROM db_order.t_teambuy_order t WHERE t.product_type=0 GROUP BY t.product_id LIMIT 10)) o
+                GROUP BY o.product_id) o ON g.mark_id=o.product_id LEFT JOIN 
+            <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id LEFT JOIN 
+             (SELECT i.image_path, t.goods_id 
+              FROM t_icon_info i LEFT JOIN 
+                   t_icon_item t ON i.mark_id=t.icon_id 
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON g.mark_id=c.goods_id 
+        ORDER BY o.quantity DESC 
+        LIMIT 10
+    </select>
+    <!-- 用户已登录状态下的商品推荐 -->
+    <select id="selectRecommenByUser" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,
+               g.description,g.server_type AS serverType,
+               <!-- (SELECT image_path 
+                FROM t_goods_image 
+                WHERE goods_id=g.mark_id AND server_type=1 limit 1) AS goodsImage,  -->
+               g.sale_price AS basePrice,
+               IF(s.promotion_mode IS NULL,g.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN 
+                           g.sale_price-s.price 
+                       WHEN s.promotion_mode=1 THEN 
+                           g.sale_price * s.discount 
+                  END) AS salePrice,
+               c.image_path AS iconPath, 0 AS productType, 
+               (SELECT SUM(j.star)/SUM(5)
+                FROM t_goods_judge j 
+                WHERE j.goods_id=g.mark_id GROUP BY j.goods_id) AS praise,
+               (SELECT c.short_name 
+                FROM t_cook_certified c 
+                WHERE c.mark_id=g.cooker) AS cooker
+        FROM t_goods_info g LEFT JOIN 
+             t_cook_follow f ON (g.cooker=f.cook_id AND f.follow=1 AND f.user_id=#{userId,jdbcType=VARCHAR}) LEFT JOIN 
+             <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id LEFT JOIN 
+             (SELECT i.image_path, t.goods_id 
+              FROM t_icon_info i LEFT JOIN 
+                   t_icon_item t ON i.mark_id=t.icon_id 
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON g.mark_id=c.goods_id 
+        WHERE g.server_status='ZT02'
+        ORDER BY f.follow DESC
+        LIMIT 10
+    </select>
+    <!-- 获取某一菜品详细信息 -->
+    <select id="selectById" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.GoodsInfoVo">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,g.description,
+               g.sale_price AS basePrice,gc.content,g.server_type AS serverType,g.cooker,
+               IF(s.promotion_mode IS NULL,g.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN 
+                           g.sale_price-s.price 
+                       WHEN s.promotion_mode=1 THEN 
+                           g.sale_price * s.discount 
+                  END) AS salePrice,
+               c.image_path AS iconPath, 0 AS productType, 
+               (SELECT SUM(j.star)/SUM(5) 
+                FROM t_goods_judge j 
+                WHERE j.goods_id=g.mark_id 
+                GROUP BY j.goods_id) AS praise 
+        FROM t_goods_info g LEFT JOIN 
+             t_goods_content gc ON g.mark_id=gc.goods_id LEFT JOIN 
+             <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id LEFT JOIN 
+             (SELECT i.image_path, t.goods_id 
+              FROM t_icon_info i LEFT JOIN 
+                   t_icon_item t ON i.mark_id=t.icon_id 
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON g.mark_id=c.goods_id 
+        WHERE g.mark_id=#{goodsId,jdbcType=VARCHAR}
+    </select>
+    <!-- 获取某厨师的菜品列表 -->
+    <select id="selectByCooker" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,
+               g.description,g.server_type AS serverType,
+               <!-- (SELECT image_path 
+                FROM t_goods_image 
+                WHERE goods_id=g.mark_id AND server_type=1 limit 1) AS goodsImage, -->
+               g.sale_price AS basePrice,
+               IF(s.promotion_mode IS NULL,g.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN 
+                           g.sale_price-s.price 
+                       WHEN s.promotion_mode=1 THEN 
+                           g.sale_price * s.discount 
+                   END) AS salePrice,
+               c.image_path AS iconPath, 0 AS productType, 
+               (SELECT SUM(j.star)/SUM(5) 
+                FROM t_goods_judge j 
+                WHERE j.goods_id=g.mark_id 
+                GROUP BY j.goods_id) AS praise 
+        FROM t_goods_info g LEFT JOIN 
+             t_cook_follow f ON (g.cooker=f.cook_id AND f.follow=1) LEFT JOIN 
+             <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id LEFT JOIN 
+             (SELECT i.image_path, t.goods_id 
+              FROM t_icon_info i LEFT JOIN 
+                   t_icon_item t ON i.mark_id=t.icon_id 
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON g.mark_id=c.goods_id 
+        WHERE g.cooker=#{cooker,jdbcType=VARCHAR} AND g.server_status='ZT02' 
+        ORDER BY f.follow DESC
+        <if test="number != null">
+        LIMIT #{number,jdbcType=INTEGER}
+        </if>
+    </select>
+    <!-- 获取购物车商品基本信息 -->
+    <select id="selectCartGoodsInfo" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+        SELECT g.mark_id AS goodsId,g.goods_name AS goodsName,
+               g.description,g.server_type AS serverType, IF(g.server_status='ZT02', 1, 0) AS goodsStatus,
+               <!-- (SELECT image_path 
+                FROM t_goods_image 
+                WHERE goods_id=g.mark_id AND server_type=0 limit 1) AS goodsImage, -->
+                    IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price) AS basePrice,
+                    IF(s.promotion_mode IS NULL,g.sale_price,
+                      CASE WHEN s.promotion_mode=0 THEN 
+                               IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price)-s.price 
+                           WHEN s.promotion_mode=1 THEN 
+                               IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price) * s.discount 
+                       END) AS salePrice
+        FROM t_goods_info g LEFT JOIN  
+             t_goods_specification gs ON (gs.goods_id=g.mark_id AND gs.specification_ids=#{specIds,jdbcType=VARCHAR}) LEFT JOIN
+             <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id 
+        WHERE g.mark_id=#{goodsId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectInfoById" resultMap="BaseResultMap">
+        SELECT g.mark_id, g.goods_name, g.description,
+            g.server_status,g.cook_style, g.server_type, 
+            IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price) AS base_price,
+                    IF(s.promotion_mode IS NULL,g.sale_price,
+                      CASE WHEN s.promotion_mode=0 THEN 
+                               IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price)-s.price 
+                           WHEN s.promotion_mode=1 THEN 
+                               IF(gs.sale_price IS NULL, g.sale_price, gs.sale_price) * s.discount 
+                       END) AS sale_price,
+            g.unit, g.upper_time, g.down_time, g.pre_upper_time,g.pre_down_time,
+            g.create_time, g.creator, g.modify_time, g.modifier,g.category_id, g.type_id,
+            g.brand_id, g.cooker, g.sort
+        FROM t_goods_info g LEFT JOIN t_goods_specification gs ON (gs.goods_id=g.mark_id AND gs.specification_ids=#{specIds,jdbcType=VARCHAR}) LEFT JOIN
+             <include refid="Base_Special_Table" /> AS s ON g.mark_id=s.goods_id
+        WHERE g.mark_id=#{goodsId,jdbcType=VARCHAR}
+    </select>
+</mapper>

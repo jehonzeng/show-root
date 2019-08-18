@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.SpecialInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.SpecialInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="theme" property="theme" jdbcType="VARCHAR" />
+        <result column="promotion_type" property="promotionType" jdbcType="INTEGER" />
+        <result column="promotion_mode" property="promotionMode" jdbcType="INTEGER" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="limit_price" property="limitPrice" jdbcType="DECIMAL" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="discount" property="discount" jdbcType="DECIMAL" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="user_type" property="userType" jdbcType="INTEGER" />
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+        <result column="share_type" property="shareType" jdbcType="BIT" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, theme, promotion_type, promotion_mode, server_status, limit_price, price,
+        discount, start_time, end_time, user_type, image_path, share_type
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_special_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_special_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.SpecialInfo">
+        insert into t_special_info (mark_id, theme, promotion_type,
+            promotion_mode, server_status, limit_price, price, discount, start_time,
+            end_time, user_type, image_path, share_type)
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR},#{promotionType,jdbcType=INTEGER},
+            #{promotionMode,jdbcType=INTEGER}, #{serverStatus,jdbcType=BIT}, #{limitPrice,jdbcType=DECIMAL},
+            #{price,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{startTime,jdbcType=TIMESTAMP},
+            #{endTime,jdbcType=TIMESTAMP}, #{userType,jdbcType=INTEGER},
+            #{imagePath,jdbcType=VARCHAR}, #{shareType,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.SpecialInfo">
+        insert into t_special_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="promotionType != null">
+                promotion_type,
+            </if>
+            <if test="promotionMode != null">
+                promotion_mode,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="limitPrice != null">
+                limit_price,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="shareType != null">
+                share_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                #{promotionType,jdbcType=INTEGER},
+            </if>
+            <if test="promotionMode != null">
+                #{promotionMode,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="limitPrice != null">
+                #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="shareType != null">
+                #{shareType,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.SpecialInfo">
+        update t_special_info
+        <set>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                promotion_type = #{promotionType,jdbcType=INTEGER},
+            </if>
+            <if test="promotionMode != null">
+                promotion_mode = #{promotionMode,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="limitPrice != null">
+                limit_price = #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="shareType != null">
+                share_type = #{shareType,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.SpecialInfo">
+        update t_special_info
+        set theme = #{theme,jdbcType=VARCHAR},
+            promotion_type = #{promotionType,jdbcType=INTEGER},
+            promotion_mode = #{promotionMode,jdbcType=INTEGER},
+            server_status = #{serverStatus,jdbcType=BIT},
+            limit_price = #{limitPrice,jdbcType=DECIMAL},
+            price = #{price,jdbcType=DECIMAL},
+            discount = #{discount,jdbcType=DECIMAL},
+            start_time = #{startTime,jdbcType=TIMESTAMP},
+            end_time = #{endTime,jdbcType=TIMESTAMP},
+            user_type = #{userType,jdbcType=INTEGER},
+            image_path = #{imagePath,jdbcType=VARCHAR},
+            share_type = #{shareType,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.SpecialInfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_special_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="theme != null">
+                AND theme LIKE
+                CONCAT('%',#{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="promotionType != null">
+                AND promotion_type =
+                #{promotionType,jdbcType=INTEGER}
+            </if>
+            <if test="promotionMode != null">
+                AND promotion_mode =
+                #{promotionMode,jdbcType=INTEGER}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="limitPrice != null">
+                AND limit_price = #{limitPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="price != null">
+                AND price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="discount != null">
+                AND discount = #{discount,jdbcType=DECIMAL}
+            </if>
+            <if test="startTime != null ">
+                AND TO_DAYS(start_time) =
+                TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="endTime != null">
+                AND TO_DAYS(end_time) =
+                TO_DAYS(#{endTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="userType != null">
+                AND user_type = #{userType,jdbcType=INTEGER}
+            </if>
+            <if test="shareType != null">
+                AND share_type = #{shareType,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <resultMap type="com.szhengzhu.bean.wechat.vo.IncreaseBase" id="IncreaseBaseResultMap">
+        <id column="mark_id" jdbcType="VARCHAR" property="increaseId" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="limit_price" jdbcType="DECIMAL" property="limitPrice" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="imagePath" jdbcType="VARCHAR" property="imagePath" />
+        <collection property="goodsList" ofType="com.szhengzhu.bean.wechat.vo.GoodsDefault" column="mark_id">
+            <id column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+            <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+            <result column="specificationIds" jdbcType="VARCHAR" property="specificationIds" />
+            <result column="salePrice" jdbcType="DECIMAL" property="salePrice" />
+            <result column="goodsType" property="goodsType" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
+    <select id="selectCartIncrease" resultMap="IncreaseBaseResultMap">      
+         SELECT s.mark_id,s.theme,s.limit_price,s.price,s.image_path, g.mark_id AS goods_id, g.goods_name, 0 AS goodsType,
+               (SELECT GROUP_CONCAT(s.specification_id SEPARATOR ',') AS specIds FROM t_type_specification s
+         WHERE s.type_id=g.type_id AND s.default_or=1 ORDER BY s.specification_id) AS specificationIds, s.price AS salePrice
+         FROM t_special_info s LEFT JOIN 
+              t_special_item i ON s.mark_id=i.special_id LEFT JOIN 
+              t_goods_info g ON (i.goods_id=g.mark_id AND g.server_status='ZT02' AND (SELECT gs.current_stock FROM t_goods_stock gs WHERE gs.goods_id=g.mark_id AND 
+              gs.specification_ids=(SELECT GROUP_CONCAT(s.specification_id SEPARATOR ',') AS specIds FROM t_type_specification s
+            WHERE s.type_id=g.type_id AND s.default_or=1 ORDER BY s.specification_id) ORDER BY gs.current_stock desc limit 1) > 0) 
+        WHERE s.promotion_type=2 AND s.server_status=1 AND 
+              (CASE WHEN s.start_time IS NOT NULL THEN
+                        s.start_time <![CDATA[ < ]]> NOW()
+                    ELSE
+                        1=1
+               END) AND
+               (CASE WHEN s.end_time IS NOT NULL THEN
+                         s.end_time <![CDATA[ > ]]> NOW()
+                     ELSE
+                         1=1
+                END) AND g.mark_id IS NOT NULL
+    </select>
+</mapper>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.UserVoucherMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.UserVoucher">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="voucher_id" jdbcType="VARCHAR" property="voucherId" />
+        <result column="voucher_name" jdbcType="VARCHAR" property="voucherName"/>
+        <result column="product_id" jdbcType="VARCHAR" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+        <result column="use_time" jdbcType="TIMESTAMP" property="useTime" />
+        <result column="specs" jdbcType="VARCHAR" property="specs" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_id, voucher_id, voucher_name, product_id, product_type, specification_ids, order_type,
+        order_no, create_time, quantity, use_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />,
+            (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, specification_ids)) AS specs
+        from t_user_voucher
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_user_voucher
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.UserVoucher">
+        insert into t_user_voucher (mark_id, user_id, voucher_id, voucher_name, product_id, product_type, specification_ids,
+            order_type, order_no, create_time, quantity, use_time)
+        values (#{markId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{voucherId,jdbcType=VARCHAR}, #{voucherName,jdbcType=VARCHAR},
+            #{productId,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{specificationIds,jdbcType=VARCHAR},
+            #{orderType,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+            #{quantity,jdbcType=INTEGER}, #{useTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.UserVoucher">
+        insert into t_user_voucher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="voucherId != null">
+                voucher_id,
+            </if>
+            <if test="voucherName != null">
+                voucher_name,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="orderType != null">
+                order_type,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="useTime != null">
+                use_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="voucherId != null">
+                #{voucherId,jdbcType=VARCHAR},
+            </if>
+            <if test="voucherName != null">
+                #{voucherName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="useTime != null">
+                #{useTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.UserVoucher">
+        update t_user_voucher
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="voucherId != null">
+                voucher_id = #{voucherId,jdbcType=VARCHAR},
+            </if>
+            <if test="voucherName != null">
+                voucher_name = #{voucherName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="useTime != null">
+                use_time = #{useTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.UserVoucher">
+        update t_user_voucher
+        set user_id = #{userId,jdbcType=VARCHAR},
+            voucher_id = #{voucherId,jdbcType=VARCHAR},
+            voucher_name = #{voucherName,jdbcType=VARCHAR},
+            product_id = #{productId,jdbcType=VARCHAR},
+            product_type = #{productType,jdbcType=INTEGER},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            order_type = #{orderType,jdbcType=INTEGER},
+            order_no = #{orderNo,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            quantity = #{quantity,jdbcType=INTEGER},
+            use_time = #{useTime,jdbcType=TIMESTAMP}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_user_voucher (mark_id, user_id, voucher_id, voucher_name, product_id, product_type, specification_ids, order_type, order_no, create_time, quantity)
+        VALUES 
+        <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.markId,jdbcType=VARCHAR},#{item.userId,jdbcType=VARCHAR},#{item.voucherId,jdbcType=VARCHAR}, 
+         #{item.voucherName,jdbcType=VARCHAR},#{item.productId,jdbcType=VARCHAR},#{item.productType,jdbcType=VARCHAR},
+         #{item.specificationIds,jdbcType=VARCHAR}, #{item.orderType,jdbcType=INTEGER},#{item.orderNo,jdbcType=VARCHAR},
+         #{item.createTime,jdbcType=TIMESTAMP},#{item.quantity,jdbcType=INTEGER})
+         </foreach> 
+    </insert>
+    <select id="selectByUser" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.VoucherBase">
+        SELECT v.mark_id AS voucherId,v.voucher_name AS voucherName, 
+               v.product_type AS productType, v.use_time AS useTime, product_id AS productId, 
+               specification_ids AS specificationIds,
+               (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
+                FROM db_goods.t_specification_info 
+                WHERE FIND_IN_SET(mark_id, v.specification_ids)) AS specs
+        FROM t_user_voucher v 
+        WHERE v.user_id=#{userId,jdbcType=VARCHAR} AND use_time IS NULL
+    </select>
+</mapper>

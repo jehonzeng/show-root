@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CookCertifiedMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.CookCertified">
+        <result column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="short_name" jdbcType="VARCHAR" property="shortName" />
+        <result column="cook_style" jdbcType="VARCHAR" property="cookStyle" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="certified" jdbcType="BIT" property="certified" />
+        <result column="userName" jdbcType="VARCHAR" property="userName" />
+        <result column="cookStyleDesc" jdbcType="VARCHAR" property="cookStyleDesc" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_id, short_name, cook_style, phone, province,
+        city, address, certified,image_path
+    </sql>
+    <insert id="insert" parameterType="com.szhengzhu.bean.user.CookCertified">
+        insert into t_cook_certified (mark_id, user_id, short_name,
+            cook_style, phone, province, city, address, certified,image_path)
+        values (#{markId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+            #{shortName,jdbcType=VARCHAR}, #{cookStyle,jdbcType=VARCHAR},
+            #{phone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+            #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+            #{certified,jdbcType=BIT},#{imagePath,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.CookCertified">
+        insert into t_cook_certified
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="shortName != null">
+                short_name,
+            </if>
+            <if test="cookStyle != null">
+                cook_style,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="certified != null">
+                certified,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="shortName != null">
+                #{shortName,jdbcType=VARCHAR},
+            </if>
+            <if test="cookStyle != null">
+                #{cookStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="certified != null">
+                #{certified,jdbcType=BIT},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.user.CookCertified">
+        update t_cook_certified
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="shortName != null">
+                short_name = #{shortName,jdbcType=VARCHAR},
+            </if>
+            <if test="cookStyle != null">
+                cook_style = #{cookStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="certified != null">
+                certified = #{certified,jdbcType=BIT},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.user.CookCertified">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        (SELECT u.nick_name FROM t_user_info u WHERE u.mark_id = user_id) AS userName,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=cook_style) AS cookStyleDesc
+        from t_cook_certified
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="shortName != null">
+                AND short_name LIKE CONCAT(CONCAT('%', #{shortName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="cookStyle != null">
+                AND cook_style = #{cookStyle,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="province != null">
+                AND province = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city != null">
+                AND city = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="address != null">
+                AND address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="certified != null">
+                AND certified = #{certified,jdbcType=BIT}
+            </if>
+            <if test="imagePath != null">
+                AND image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectCookList" resultType="com.szhengzhu.bean.wechat.vo.Cooker">
+        SELECT t.mark_id AS cookerId,t.short_name AS shortName, image_path AS imagePath,    
+        <choose>
+            <when test="userId != null">
+                (CASE WHEN f.user_id=t.user_id THEN -1 ELSE f.follow END) AS follow 
+            </when>
+            <otherwise>
+                0 AS follow
+            </otherwise>
+        </choose>   
+        FROM t_cook_certified t LEFT JOIN v_cooker_sale_rank c ON t.mark_id=c.cooker 
+        <if test="userId != null">
+            LEFT JOIN t_cook_follow f ON c.cooker=f.cook_id WHERE c.user_id=#{userId,jdbcType=VARCHAR}
+        </if>
+        ORDER BY c.quantity DESC
+        <if test="number != null">
+            limit #{number,jdbcType=INTEGER}
+        </if>
+    </select>
+</mapper>

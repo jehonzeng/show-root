@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.OrderDeliveryMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.OrderDelivery">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+        <result column="contact" jdbcType="VARCHAR" property="contact" />
+        <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="delivery_address" jdbcType="VARCHAR" property="deliveryAddress" />
+        <result column="delivery_area" jdbcType="VARCHAR" property="deliveryArea" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="area" property="area" jdbcType="VARCHAR" />
+        <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+        <result column="latitude" jdbcType="DOUBLE" property="latitude" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="track_no" jdbcType="VARCHAR" property="trackNo" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" /> 
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+        <result column="arrive_time" jdbcType="TIMESTAMP" property="arriveTime" />
+        <result column="order_status" jdbcType="VARCHAR" property="orderStatus" /> 
+        <result column="statusDesc" jdbcType="VARCHAR" property="statusDesc" /> 
+        <result column="deliveryTypeDesc" jdbcType="VARCHAR" property="deliveryTypeDesc" /> 
+    </resultMap>
+    <sql id="Base_Column_List">
+        d.mark_id, d.order_id, d.contact, d.delivery_date, d.phone,
+        d.delivery_address, d.delivery_area, d.province, d.city, d.area, d.longitude, d.latitude, d.remark,
+        d.delivery_type, d.order_type, d.track_no
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=delivery_type) AS deliveryTypeDesc
+        from t_order_delivery
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_order_delivery
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderDelivery">
+        insert into t_order_delivery (mark_id, order_id, contact,
+            delivery_date, phone, delivery_address, delivery_area, province, city, area, longitude, latitude,
+            remark, delivery_type, order_type, track_no)
+        values (#{markId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
+            #{contact,jdbcType=VARCHAR},
+            #{deliveryDate,jdbcType=TIMESTAMP},
+            #{phone,jdbcType=VARCHAR}, #{deliveryAddress,jdbcType=VARCHAR},
+            #{deliveryArea,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+            #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, 
+            #{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},
+            #{remark,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, 
+            #{orderType,jdbcType=INTEGER}, #{trackNo,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderDelivery">
+        insert into t_order_delivery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="contact != null">
+                contact,
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="deliveryAddress != null">
+                delivery_address,
+            </if>
+            <if test="deliveryArea != null">
+                delivery_area,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="area != null">
+                area,
+            </if>
+            <if test="longitude != null">
+                longitude,
+            </if>
+            <if test="latitude != null">
+                latitude,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="deliveryType != null">
+                delivery_type,
+            </if>
+            <if test="orderType != null">
+                order_type,
+            </if>
+            <if test="trackNo != null">
+                track_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="contact != null">
+                #{contact,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryDate != null">
+                #{deliveryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryAddress != null">
+                #{deliveryAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryArea != null">
+                #{deliveryArea,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                #{longitude,jdbcType=DOUBLE},
+            </if>
+            <if test="latitude != null">
+                #{latitude,jdbcType=DOUBLE},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryType != null">
+                #{deliveryType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="trackNo != null">
+                #{trackNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.OrderDelivery">
+        update t_order_delivery
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="contact != null">
+                contact = #{contact,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryAddress != null">
+                delivery_address = #{deliveryAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryArea != null">
+                delivery_area = #{deliveryArea,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=DOUBLE},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=DOUBLE},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryType != null">
+                delivery_type = #{deliveryType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="trackNo != null">
+                track_no = #{trackNo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.OrderDelivery">
+        update t_order_delivery
+        set order_id = #{orderId,jdbcType=VARCHAR},
+            contact = #{contact,jdbcType=VARCHAR},
+            delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+            phone = #{phone,jdbcType=VARCHAR},
+            delivery_address = #{deliveryAddress,jdbcType=VARCHAR},
+            delivery_area = #{deliveryArea,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            city = #{city,jdbcType=VARCHAR},
+            area = #{area,jdbcType=VARCHAR},
+            longitude = #{longitude,jdbcType=DOUBLE},
+            latitude = #{latitude,jdbcType=DOUBLE},
+            remark = #{remark,jdbcType=VARCHAR},
+            delivery_type = #{deliveryType,jdbcType=VARCHAR},
+            order_type = #{orderType,jdbcType=INTEGER},
+            track_no = #{trackNo,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.OrderDelivery" resultMap="BaseResultMap">
+        SELECT d.*,(SELECT `name` FROM db_base.t_attribute_info WHERE `code`=d.delivery_type) AS deliveryTypeDesc 
+        FROM(
+            SELECT
+                <include refid="Base_Column_List" />,
+                i.order_no, i.order_time, i.send_time, i.arrive_time, i.order_status, 
+                (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=i.order_status) AS statusDesc 
+            FROM (SELECT d.* FROM t_order_delivery d WHERE d.order_type=0) d LEFT JOIN 
+                 t_order_info i ON d.order_id=i.mark_id
+            UNION ALL
+            SELECT
+                <include refid="Base_Column_List" />,
+                i.order_no, i.order_time, i.send_time,  i.arrive_time, i.order_status, 
+                (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=i.order_status) AS statusDesc 
+            FROM (SELECT d.* FROM t_order_delivery d WHERE d.order_type=1) d LEFT JOIN 
+                 t_teambuy_order i ON d.order_id=i.mark_id
+            UNION ALL
+            SELECT
+                <include refid="Base_Column_List" />,
+                s.order_no, s.order_time, s.send_time, s.arrive_time, s.order_status, 
+                (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=s.order_status) AS statusDesc 
+            FROM (SELECT d.* FROM t_order_delivery d WHERE d.order_type=2) d LEFT JOIN 
+                 t_seckill_order s ON d.order_id=s.mark_id) d
+        <where>
+            <if test="markId != null">
+                d.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderId != null">
+                AND d.order_id = #{orderId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderNo != null">
+                AND d.order_no = #{orderNo,jdbcType=VARCHAR}
+            </if>
+            <if test="contact != null">
+                AND d.contact LIKE CONCAT(CONCAT('%', #{contact,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="deliveryDate != null">
+                AND d.delivery_date = #{deliveryDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="phone != null">
+                AND d.phone LIKE CONCAT(CONCAT('%', #{phone,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="deliveryAddress != null">
+                AND d.delivery_address = #{deliveryAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="deliveryArea != null">
+                AND d.delivery_area = #{deliveryArea,jdbcType=VARCHAR}
+            </if>
+            <if test="longitude != null">
+                AND d.longitude = #{longitude,jdbcType=DOUBLE}
+            </if>
+            <if test="latitude != null">
+                AND d.latitude = #{latitude,jdbcType=DOUBLE}
+            </if>
+            <if test="remark != null">
+                AND d.remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="deliveryType != null">
+                AND d.delivery_type = #{deliveryType,jdbcType=VARCHAR}
+            </if>
+            <if test="orderType != null">
+                AND d.order_type = #{orderType,jdbcType=INTEGER}
+            </if>
+            <if test="trackNo != null">
+                AND d.track_no = #{trackNo,jdbcType=VARCHAR}
+            </if>
+            <if test="orderStatus != null">
+                AND d.order_status = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="orderTime != null">
+                AND TO_DAYS(d.order_time) = TO_DAYS(#{orderTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="sendTime != null">
+                AND TO_DAYS(d.send_time) = TO_DAYS(#{sendTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="arriveTime != null">
+                AND TO_DAYS(d.arrive_time) = TO_DAYS(#{arriveTime,jdbcType=TIMESTAMP})
+            </if>
+        </where>
+    </select>
+    <select id="selectByOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />,
+        (SELECT o.order_no FROM t_order_info o WHERE o.mark_id=d.order_id) AS order_no,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=delivery_type) AS deliveryTypeDesc
+        FROM t_order_delivery d
+        WHERE d.order_id=#{orderId,jdbcType=VARCHAR}
+    </select>
+</mapper>

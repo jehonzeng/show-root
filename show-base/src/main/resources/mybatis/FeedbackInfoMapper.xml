@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.FeedbackInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.FeedbackInfo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+        <result column="creator" jdbcType="VARCHAR" property="creator" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="processor" jdbcType="VARCHAR" property="processor" />
+        <result column="description" jdbcType="LONGVARCHAR" property="description" />
+        <result column="process_time" jdbcType="TIMESTAMP" property="processTime" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, type_id, content, creator,
+        create_time, processor, description, process_time,
+        server_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_feedback_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_feedback_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.FeedbackInfo">
+        insert into t_feedback_info (mark_id, type_id,
+        creator, create_time, processor, process_time,
+        server_status, content, description)
+        values
+        (#{markId,jdbcType=VARCHAR},
+        #{typeId,jdbcType=VARCHAR},
+        #{creator,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{processor,jdbcType=VARCHAR},
+        #{processTime,jdbcType=TIMESTAMP}, #{serverStatus,jdbcType=BIT},
+        #{content,jdbcType=LONGVARCHAR},
+        #{description,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.FeedbackInfo">
+        insert into t_feedback_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="processor != null">
+                processor,
+            </if>
+            <if test="processTime != null">
+                process_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processor != null">
+                #{processor,jdbcType=VARCHAR},
+            </if>
+            <if test="processTime != null">
+                #{processTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.FeedbackInfo">
+        update t_feedback_info
+        <set>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="processor != null">
+                processor = #{processor,jdbcType=VARCHAR},
+            </if>
+            <if test="processTime != null">
+                process_time =
+                #{processTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="description != null">
+                description =
+                #{description,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.FeedbackInfo">
+        update t_feedback_info
+        set type_id = #{typeId,jdbcType=VARCHAR},
+        creator = #{creator,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        processor = #{processor,jdbcType=VARCHAR},
+        process_time = #{processTime,jdbcType=TIMESTAMP},
+        server_status = #{serverStatus,jdbcType=BIT},
+        content = #{content,jdbcType=LONGVARCHAR},
+        description = #{description,jdbcType=LONGVARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.FeedbackInfo" resultMap="BaseResultMap">
+        select mark_id, type_id,
+              (SELECT t.`name` FROM t_attribute_info t WHERE t.`code`=type_id) AS typeDesc,
+               content,
+              (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=creator) AS creator, create_time,
+              (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=processor) AS
+               processor, description, process_time, server_status
+        from t_feedback_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="typeId != null">
+                AND type_id = #{typeId,jdbcType=VARCHAR}
+            </if>
+            <if test="creator != null">
+                AND creator = #{creator,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="processor != null">
+                AND processor = #{processor,jdbcType=VARCHAR}
+            </if>
+            <if test="processTime != null">
+                AND TO_DAYS(process_time) = TO_DAYS(#{processTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="content != null">
+                AND content = #{content,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="description != null">
+                AND description = #{description,jdbcType=LONGVARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.OrderErrorMapper">
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.OrderError">
+    <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
+    <result column="error_type" jdbcType="INTEGER" property="errorType" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="user_mark" jdbcType="VARCHAR" property="userMark" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mark_id, order_no, error_info, error_type, add_time, user_mark, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_error
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_order_error
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderError">
+    insert into t_order_error (mark_id, order_no, error_info, 
+      error_type, add_time, user_mark,type)
+    values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{errorInfo,jdbcType=VARCHAR}, 
+      #{errorType,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{userMark,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderError">
+    insert into t_order_error
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="markId != null">
+        mark_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="errorInfo != null">
+        error_info,
+      </if>
+      <if test="errorType != null">
+        error_type,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="userMark != null">
+        user_mark,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="markId != null">
+        #{markId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="errorInfo != null">
+        #{errorInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="errorType != null">
+        #{errorType,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userMark != null">
+        #{userMark,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.OrderError">
+    update t_order_error
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="errorInfo != null">
+        error_info = #{errorInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="errorType != null">
+        error_type = #{errorType,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userMark != null">
+        user_mark = #{userMark,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.OrderError">
+    update t_order_error
+    set order_no = #{orderNo,jdbcType=VARCHAR},
+      error_info = #{errorInfo,jdbcType=VARCHAR},
+      error_type = #{errorType,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      user_mark = #{userMark,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER}
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+</mapper>

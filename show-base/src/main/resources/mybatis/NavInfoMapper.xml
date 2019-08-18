@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.NavInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.NavInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="nav_code" property="navCode" jdbcType="VARCHAR" />
+        <result column="server_type" property="serverType" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, nav_code, server_type, add_time, remark,server_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_nav_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_nav_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.NavInfo">
+        insert into t_nav_info (mark_id, nav_code, server_type,
+        add_time, remark,server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{navCode,jdbcType=VARCHAR},
+        #{serverType,jdbcType=INTEGER},#{addTime,jdbcType=TIMESTAMP},
+        #{remark,jdbcType=VARCHAR},#{serverStatus,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.NavInfo">
+        insert into t_nav_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="navCode != null">
+                nav_code,
+            </if>
+            <if test="serverType != null">
+                server_type,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="navCode != null">
+                #{navCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.NavInfo">
+        update t_nav_info
+        <set>
+            <if test="navCode != null">
+                nav_code = #{navCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.NavInfo">
+        update t_nav_info
+        set nav_code = #{navCode,jdbcType=VARCHAR},
+        server_type = #{serverType,jdbcType=INTEGER},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        remark = #{remark,jdbcType=VARCHAR},
+        server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.NavInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_nav_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="navCode != null">
+                AND nav_code = #{navCode,jdbcType=VARCHAR}
+            </if>
+            <if test="serverType != null">
+                AND server_type = #{serverType,jdbcType=INTEGER}
+            </if>
+            <if test="addTime != null">
+                AND add_time = #{addTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </where>
+    </select>
+    <resultMap id="ForeBaseResultMap" type="com.szhengzhu.bean.wechat.vo.NavVo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="nav_code" property="navCode" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <collection property="items" ofType="com.szhengzhu.bean.wechat.vo.NavItemVo" column="mark_id">
+            <result column="theme" property="theme" jdbcType="VARCHAR" />
+            <result column="server_type" property="serverType" jdbcType="INTEGER" />
+            <result column="link_url" property="linkUrl" jdbcType="VARCHAR" />
+            <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+    <select id="selectForeNav" resultMap="ForeBaseResultMap">
+        SELECT i.mark_id,i.nav_code,i.remark,v.theme,v.server_type,v.link_url,v.image_path,v.description
+        FROM t_nav_info i LEFT JOIN t_nav_item v ON i.mark_id=v.nav_id 
+        WHERE i.server_status=1 AND v.server_status=1 AND
+            (CASE WHEN v.start_time IS NOT NULL THEN  v.start_time <![CDATA[ < ]]> NOW() ELSE 1=1 END) AND 
+            (CASE WHEN v.end_time IS NOT NULL THEN v.end_time <![CDATA[ > ]]> NOW() ELSE 1=1 END)
+        ORDER BY v.sort
+    </select>
+</mapper>

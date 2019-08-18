@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SeckillOrderMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.SeckillOrder">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="product_id" jdbcType="VARCHAR" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="seckill_id" jdbcType="VARCHAR" property="seckillId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
+        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+        <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+        <result column="delivery_amount" jdbcType="DECIMAL" property="deliveryAmount" />
+        <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+        <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+        <result column="arrive_time" jdbcType="TIMESTAMP" property="arriveTime" />
+        <result column="order_source" jdbcType="VARCHAR" property="orderSource" />
+        <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
+        <result column="storehouse_id" jdbcType="VARCHAR" property="storehouseId" />
+        <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+        <result column="statusDesc" jdbcType="VARCHAR" property="statusDesc" />
+        <result column="specs" jdbcType="VARCHAR" property="specs" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        o.mark_id, o.order_no, o.theme, o.product_id, o.product_type,
+        o.seckill_id, o.user_id, o.product_name, o.specification_ids,
+        o.quantity, o.order_amount, o.delivery_amount,
+        o.pay_amount, o.order_time, o.cancel_time, o.delivery_date, o.send_time,
+        o.arrive_time, o.order_source, o.order_status, o.storehouse_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />,
+            (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=user_id) AS nickName,
+            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, o.specification_ids)) AS specs
+        from t_seckill_order o
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_seckill_order
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.SeckillOrder">
+        insert into t_seckill_order (mark_id, order_no, theme,
+            product_id, product_type, seckill_id,
+            user_id, product_name, specification_ids, quantity,
+            order_amount, delivery_amount, pay_amount, order_time,
+            cancel_time, delivery_date, send_time, arrive_time, order_source, order_status, storehouse_id)
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
+            #{theme,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
+            #{productType,jdbcType=INTEGER}, #{seckillId,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+            #{specificationIds,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},
+            #{orderAmount,jdbcType=DECIMAL}, #{deliveryAmount,jdbcType=DECIMAL},
+            #{payAmount,jdbcType=DECIMAL}, #{orderTime,jdbcType=TIMESTAMP},
+            #{cancelTime,jdbcType=TIMESTAMP}, #{deliveryDate,jdbcType=TIMESTAMP},
+            #{sendTime,jdbcType=TIMESTAMP}, #{arriveTime,jdbcType=TIMESTAMP}, 
+            #{orderSource,jdbcType=VARCHAR}, #{orderStatus,jdbcType=VARCHAR},#{storehouseId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.SeckillOrder">
+        insert into t_seckill_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="seckillId != null">
+                seckill_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="orderAmount != null">
+                order_amount,
+            </if>
+            <if test="deliveryAmount != null">
+                delivery_amount,
+            </if>
+            <if test="payAmount != null">
+                pay_amount,
+            </if>
+            <if test="orderTime != null">
+                order_time,
+            </if>
+            <if test="cancelTime != null">
+                cancel_time,
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date,
+            </if>
+            <if test="sendTime != null">
+                send_time,
+            </if>
+            <if test="arriveTime != null">
+                arrive_time,
+            </if>
+            <if test="orderSource != null">
+                order_source,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="storehouseId != null">
+                storehouse_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="seckillId != null">
+                #{seckillId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="orderAmount != null">
+                #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="deliveryAmount != null">
+                #{deliveryAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null">
+                #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="orderTime != null">
+                #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelTime != null">
+                #{cancelTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deliveryDate != null">
+                #{deliveryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="arriveTime != null">
+                #{arriveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderSource != null">
+                #{orderSource,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="storehouseId != null">
+                #{storehouseId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.SeckillOrder">
+        update t_seckill_order
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="seckillId != null">
+                seckill_id = #{seckillId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="orderAmount != null">
+                order_amount = #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="deliveryAmount != null">
+                delivery_amount = #{deliveryAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="orderTime != null">
+                order_time = #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelTime != null">
+                cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendTime != null">
+                send_time = #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="arriveTime != null">
+                arrive_time = #{arriveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderSource != null">
+                order_source = #{orderSource,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="storehouseId != null">
+                storehouse_id = #{storehouseId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.SeckillOrder">
+        update t_seckill_order
+        set order_no = #{orderNo,jdbcType=VARCHAR},
+            theme = #{theme,jdbcType=VARCHAR},
+            product_id = #{productId,jdbcType=VARCHAR},
+            product_type = #{productType,jdbcType=INTEGER},
+            seckill_id = #{seckillId,jdbcType=VARCHAR},
+            user_id = #{userId,jdbcType=VARCHAR},
+            product_name = #{productName,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            quantity = #{quantity,jdbcType=INTEGER},
+            order_amount = #{orderAmount,jdbcType=DECIMAL},
+            delivery_amount = #{deliveryAmount,jdbcType=DECIMAL},
+            pay_amount = #{payAmount,jdbcType=DECIMAL},
+            order_time = #{orderTime,jdbcType=TIMESTAMP},
+            cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+            delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+            send_time = #{sendTime,jdbcType=TIMESTAMP},
+            arrive_time = #{arriveTime,jdbcType=TIMESTAMP},
+            order_source = #{orderSource,jdbcType=VARCHAR},
+            order_status = #{orderStatus,jdbcType=VARCHAR},
+            storehouse_id = #{storehouseId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.SeckillOrder" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" /> ,
+            (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=user_id) AS nickName,
+            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, o.specification_ids)) AS specs
+        FROM t_seckill_order o
+        <where>
+            <if test="markId != null">
+                o.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderNo != null">
+                AND o.order_no LIKE CONCAT(CONCAT('%', #{orderNo,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="theme != null">
+                AND o.theme LIKE CONCAT(CONCAT('%', #{theme,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="productId != null">
+                AND o.product_id = #{productId,jdbcType=VARCHAR}
+            </if>
+            <if test="productType != null">
+                AND o.product_type = #{productType,jdbcType=INTEGER}
+            </if>
+            <if test="seckillId != null">
+                AND o.seckill_id = #{seckillId,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null">
+                AND o.user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="productName != null">
+                AND o.product_name LIKE CONCAT(CONCAT('%', #{productName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="specificationIds != null">
+                AND o.specification_ids = #{specificationIds,jdbcType=VARCHAR}
+            </if>
+            <if test="quantity != null">
+                AND o.quantity = #{quantity,jdbcType=INTEGER}
+            </if>
+            <if test="orderAmount != null">
+                AND o.order_amount = #{orderAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="deliveryAmount != null">
+                AND o.delivery_amount = #{deliveryAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="payAmount != null">
+                AND o.pay_amount = #{payAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="orderTime != null">
+                AND TO_DAYS(o.order_time) = TO_DAYS(#{orderTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="cancelTime != null">
+                AND o.cancel_time = #{cancelTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="deliveryDate != null">
+                AND TO_DAYS(o.delivery_date) = TO_DAYS(#{deliveryDate,jdbcType=TIMESTAMP})
+            </if>
+            <if test="sendTime != null">
+                AND TO_DAYS(o.send_time) = TO_DAYS(#{sendTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="arriveTime != null">
+                AND TO_DAYS(o.arrive_time) = TO_DAYS(#{arriveTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="orderSource != null">
+                AND o.order_source = #{orderSource,jdbcType=VARCHAR}
+            </if>
+            <if test="orderStatus != null">
+                AND o.order_status = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="storehouseId != null">
+                AND o.storehouse_id = #{storehouseId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectItemImg" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT (CASE WHEN o.product_type=0 THEN (SELECT g.image_path FROM db_goods.t_goods_image g WHERE g.goods_id=o.product_id AND g.server_type=0 LIMIT 1) 
+                WHEN o.product_type=1 THEN 
+            (SELECT g.image_path FROM db_goods.t_goods_voucher c LEFT JOIN db_goods.t_goods_image g ON c.product_id=g.goods_id WHERE c.product_id=o.product_id AND g.server_type=0 LIMIT 1) 
+            WHEN o.product_type=2 THEN 
+            (SELECT m.image_path FROM db_goods.t_meal_image m WHERE m.meal_id=o.product_id AND m.server_type=0 LIMIT 1) 
+            WHEN o.product_type=3 THEN 
+            (SELECT a.image_path FROM db_goods.t_accessory_info a WHERE a.mark_id=o.product_id) END) AS image_path 
+        FROM t_seckill_order o 
+        WHERE o.mark_id=#{orderId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_seckill_order o
+        where o.order_no = #{orderNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

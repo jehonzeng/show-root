@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.FoodsInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.FoodsInfo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="food_name" jdbcType="VARCHAR" property="foodName" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="purchase_rate" jdbcType="DECIMAL" property="purchaseRate" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+        <result column="unit" jdbcType="VARCHAR" property="unit" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, food_name, server_status, purchase_rate,
+        image_path, unit
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_food_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_food_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.FoodsInfo">
+        insert into t_food_info (mark_id, food_name,
+        server_status,
+        purchase_rate, image_path, unit
+        )
+        values
+        (#{markId,jdbcType=VARCHAR}, #{foodName,jdbcType=VARCHAR},
+        #{serverStatus,jdbcType=BIT},
+        #{purchaseRate,jdbcType=DECIMAL},
+        #{imagePath,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.FoodsInfo">
+        insert into t_food_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="foodName != null">
+                food_name,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="purchaseRate != null">
+                purchase_rate,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="unit != null">
+                unit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="foodName != null">
+                #{foodName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="purchaseRate != null">
+                #{purchaseRate,jdbcType=DECIMAL},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="unit != null">
+                #{unit,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.FoodsInfo">
+        update t_food_info
+        <set>
+            <if test="foodName != null">
+                food_name = #{foodName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="purchaseRate != null">
+                purchase_rate =
+                #{purchaseRate,jdbcType=DECIMAL},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="unit != null">
+                unit = #{unit,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.FoodsInfo">
+        update t_food_info
+        set food_name =
+        #{foodName,jdbcType=VARCHAR},
+        server_status =
+        #{serverStatus,jdbcType=BIT},
+        purchase_rate =
+        #{purchaseRate,jdbcType=DECIMAL},
+        image_path =
+        #{imagePath,jdbcType=VARCHAR},
+        unit = #{unit,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.goods.FoodsInfo">
+        select
+        mark_id, food_name, server_status, purchase_rate,
+        image_path, (select `name` from db_base.t_attribute_info where code = unit) as unit
+        from t_food_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="foodName != null">
+                AND food_name LIKE CONCAT('%',
+                #{foodName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="purchaseRate != null">
+                AND purchase_rate = #{purchaseRate,jdbcType=DECIMAL}
+            </if>
+        </where>
+    </select>
+</mapper>

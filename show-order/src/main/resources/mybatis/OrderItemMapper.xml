@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.OrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.OrderItem">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+        <result column="product_id" jdbcType="VARCHAR" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="increase_id" jdbcType="VARCHAR" property="increaseId" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
+        <result column="quantity" jdbcType="INTEGER" property="quantity" />
+        <result column="base_price" jdbcType="DECIMAL" property="basePrice" />
+        <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
+        <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+        <result column="voucher_ids" jdbcType="VARCHAR" property="voucherIds" />
+        <result column="storehouse_id" jdbcType="VARCHAR" property="storehouseId" />
+        <result column="specs" jdbcType="VARCHAR" property="specs" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="statusDesc" jdbcType="VARCHAR" property="statusDesc" />
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        i.mark_id, i.order_id, i.product_id, i.product_type, i.increase_id, i.product_name, i.specification_ids, i.quantity, i.base_price, i.sale_price,
+        i.pay_amount, i.voucher_ids, i.storehouse_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_order_item i
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_order_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderItem">
+    insert into t_order_item (mark_id, order_id, product_id, product_type, increase_id, product_name, specification_ids, quantity,
+        base_price, sale_price, pay_amount, voucher_ids, storehouse_id)
+    values (#{markId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
+        #{productId,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{increaseId,jdbcType=VARCHAR},
+        #{productName,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR},
+        #{quantity,jdbcType=INTEGER}, #{basePrice,jdbcType=DECIMAL},
+        #{salePrice,jdbcType=DECIMAL}, #{payAmount,jdbcType=DECIMAL},
+        #{voucherIds,jdbcType=VARCHAR}, #{storehouseId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderItem">
+        insert into t_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="increaseId != null">
+                increase_id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="basePrice != null">
+                base_price,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="payAmount != null">
+                pay_amount,
+            </if>
+            <if test="voucherIds != null">
+                voucher_ids,
+            </if>
+            <if test="storehouseId != null">
+                storehouse_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="increaseId != null">
+                #{increaseId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null">
+                #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="voucherIds != null">
+                #{voucherIds,jdbcType=VARCHAR},
+            </if>
+            <if test="storehouseId != null">
+                #{storehouseId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.OrderItem">
+        update t_order_item
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="increaseId != null">
+                increase_id = #{increaseId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="basePrice != null">
+                base_price = #{basePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                sale_price = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="voucherIds != null">
+                voucher_ids = #{voucherIds,jdbcType=VARCHAR},
+            </if>
+            <if test="storehouseId != null">
+                storehouse_id = #{storehouseId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.OrderItem">
+        update t_order_item
+        set order_id = #{orderId,jdbcType=VARCHAR},
+            product_id = #{productId,jdbcType=VARCHAR},
+            product_type = #{productType,jdbcType=INTEGER},
+            increase_id = #{increaseId,jdbcType=VARCHAR},
+            product_name = #{productName,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            quantity = #{quantity,jdbcType=INTEGER},
+            base_price = #{basePrice,jdbcType=DECIMAL},
+            sale_price = #{salePrice,jdbcType=DECIMAL},
+            pay_amount = #{payAmount,jdbcType=DECIMAL},
+            voucher_ids = #{voucherIds,jdbcType=VARCHAR},
+            storehouse_id = #{storehouseId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_order_item
+        (mark_id, order_id, product_id, product_type, increase_id, product_name, specification_ids, quantity, base_price, sale_price, pay_amount, voucher_ids, storehouse_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.orderId,jdbcType=VARCHAR},
+            #{item.productId,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER},#{item.increaseId,jdbcType=VARCHAR},
+            #{item.productName,jdbcType=VARCHAR}, #{item.specificationIds,jdbcType=VARCHAR},
+            #{item.quantity,jdbcType=INTEGER}, #{item.basePrice,jdbcType=DECIMAL},
+            #{item.salePrice,jdbcType=DECIMAL}, #{item.payAmount,jdbcType=DECIMAL},
+            #{item.voucherIds,jdbcType=VARCHAR}, #{item.storehouseId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete from t_order_item
+        where mark_id in
+        <foreach collection="list" item="markId" index="index" open="(" separator="," close=")">
+            #{markId}
+        </foreach>
+    </delete>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.OrderItem" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" />,
+            o.order_no, o.order_time, o.delivery_date, o.send_time,
+            (SELECT name FROM db_base.t_attribute_info WHERE `code`=o.order_status) AS statusDesc,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, i.specification_ids)) AS specs 
+        FROM t_order_item i LEFT JOIN t_order_info o ON i.order_id=o.mark_id
+        <where>
+            <if test="markId != null">
+                i.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderId != null">
+                AND i.order_id = #{orderId,jdbcType=VARCHAR}
+            </if>
+            <if test="productId != null">
+                AND i.product_id = #{productId,jdbcType=VARCHAR}
+            </if>
+            <if test="productType != null">
+                AND i.product_type = #{productType,jdbcType=INTEGER}
+            </if>
+            <if test="increaseId != null">
+                AND i.increase_id = #{increaseId,jdbcType=VARCHAR}
+            </if>
+            <if test="productName != null">
+                AND i.product_name = #{productName,jdbcType=VARCHAR}
+            </if>
+            <if test="specificationIds != null">
+                AND i.specification_ids = #{specificationIds,jdbcType=VARCHAR}
+            </if>
+            <if test="voucherIds != null">
+                AND i.voucher_ids = #{voucherIds,jdbcType=VARCHAR}
+            </if>
+            <if test="orderTime != null">
+                AND TO_DAYS(o.order_time) = TO_DAYS(#{orderTime,jdbcType=VARCHAR})
+            </if>
+            <if test="deliveryDate != null">
+                AND TO_DAYS(o.delivery_date) = TO_DAYS(#{deliveryDate,jdbcType=VARCHAR})
+            </if>
+            <if test="sendTime != null">
+                AND TO_DAYS(o.send_time) = TO_DAYS(#{sendTime,jdbcType=VARCHAR})
+            </if>
+            <if test="orderNo != null">
+                AND o.order_no = #{orderNo,jdbcType=VARCHAR}
+            </if>
+            <if test="orderStatus != null">
+                AND o.order_status = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="storehouseId != null">
+                AND i.storehouse_id = #{storehouseId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="Base_Column_List" />,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, i.specification_ids)) AS specs
+        FROM t_order_item i
+        WHERE i.order_id=#{orderId,jdbcType=VARCHAR}        
+    </select>
+    <select id="selectItemDetail" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderItemDetail">
+        SELECT i.product_id AS productId, i.product_type AS productType, i.increase_id AS increaseId, i.product_name AS productName, i.specification_ids AS specificationIds,
+               (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+                FROM db_goods.t_specification_info 
+                WHERE FIND_IN_SET(mark_id, i.specification_ids)) AS specs,
+               i.sale_price AS salePrice, i.pay_amount AS payAmount, i.quantity,
+               <!-- (CASE WHEN i.product_type=0 THEN 
+                          IFNULL((SELECT gi.image_path 
+                                  FROM db_goods.t_goods_image gi
+                                  WHERE gi.goods_id=i.product_id AND gi.specification_ids=i.specification_ids AND gi.server_type=2 limit 1),
+                                (SELECT gi.image_path 
+                                 FROM db_goods.t_goods_image gi
+                                 WHERE gi.goods_id=i.product_id AND gi.server_type=0 limit 1)) 
+                    WHEN i.product_type=1 THEN 
+                         IFNULL((SELECT gi.image_path 
+                                 FROM db_goods.t_goods_image gi LEFT JOIN 
+                                      db_goods.t_goods_voucher v ON (v.product_id=gi.goods_id AND v.specification_ids=gi.specification_ids)
+                                 WHERE gi.goods_id=i.product_id AND gi.specification_ids=i.specification_ids AND gi.server_type=2 limit 1),
+                                (SELECT gi.image_path 
+                                 FROM db_goods.t_goods_image gi LEFT JOIN 
+                                      db_goods.t_goods_voucher v ON (v.product_id=gi.goods_id AND v.specification_ids=gi.specification_ids)
+                                 WHERE gi.goods_id=i.product_id AND gi.server_type=0 limit 1))
+                    WHEN i.product_type=2 THEN
+                         (SELECT m.image_path FROM db_goods.t_meal_image m WHERE m.meal_id=i.product_id AND m.server_type=0)
+                    WHEN i.product_type=3 THEN
+                         (SELECT a.image_path FROM db_goods.t_accessory_info a WHERE a.mark_id=i.product_id)
+               END) AS goodsImage,  -->
+               IF(i.voucher_ids IS NULL, FALSE, TRUE) AS isVoucher
+        FROM t_order_item i 
+        WHERE i.order_id=#{orderId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectItemJudge" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.Judge">
+        SELECT (CASE WHEN product_type=0 THEN 
+                         product_id 
+                     WHEN product_type=1 THEN 
+                         (SELECT v.product_id FROM db_goods.t_goods_voucher v WHERE i.product_id=v.mark_id) 
+                END) AS productId, 
+                (CASE WHEN product_type=0 THEN 
+                         specification_ids 
+                     WHEN product_type=1 THEN 
+                         (SELECT v.specification_ids FROM db_goods.t_goods_voucher v WHERE i.product_id=v.mark_id) 
+                END) AS specificationIds,
+               (CASE WHEN product_type=1 THEN 0 ELSE product_type END) AS productType, 
+               product_name AS productNam,
+               order_id AS orderId
+        FROM t_order_item i 
+        WHERE order_id=#{orderId,jdbcType=VARCHAR} AND product_type IN (0,1,2);
+    </select>
+    <select id="selectItemImg" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT 
+            (CASE WHEN i.product_type=0 THEN (SELECT g.image_path FROM db_goods.t_goods_image g WHERE g.goods_id=i.product_id AND g.server_type=0 LIMIT 1) 
+                WHEN i.product_type=1 THEN 
+            (SELECT g.image_path FROM db_goods.t_goods_voucher c LEFT JOIN db_goods.t_goods_image g ON c.product_id=g.goods_id WHERE c.product_id=i.product_id AND g.server_type=0 LIMIT 1) 
+            WHEN i.product_type=2 THEN 
+            (SELECT m.image_path FROM db_goods.t_meal_image m WHERE m.meal_id=i.product_id AND m.server_type=0 LIMIT 1) 
+            WHEN i.product_type=3 THEN 
+            (SELECT a.image_path FROM db_goods.t_accessory_info a WHERE a.mark_id=i.product_id) END) AS image_path
+        FROM t_order_item i
+        WHERE i.order_id=#{orderId,jdbcType=VARCHAR}
+    </select>
+</mapper>

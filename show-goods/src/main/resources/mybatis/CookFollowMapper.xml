@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CookFollowMapper">
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.CookFollow">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <id column="cook_id" jdbcType="VARCHAR" property="cookId" />
+    <result column="follow" jdbcType="INTEGER" property="follow" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, cook_id, follow
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_cook_follow
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and cook_id = #{cookId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey">
+    delete from t_cook_follow
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and cook_id = #{cookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.goods.CookFollow">
+    insert into t_cook_follow (user_id, cook_id, follow
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{cookId,jdbcType=VARCHAR}, #{follow,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.CookFollow">
+    insert into t_cook_follow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="cookId != null">
+        cook_id,
+      </if>
+      <if test="follow != null">
+        follow,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="cookId != null">
+        #{cookId,jdbcType=VARCHAR},
+      </if>
+      <if test="follow != null">
+        #{follow,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.CookFollow">
+    update t_cook_follow
+    <set>
+      <if test="follow != null">
+        follow = #{follow,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and cook_id = #{cookId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.CookFollow">
+    update t_cook_follow
+    set follow = #{follow,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and cook_id = #{cookId,jdbcType=VARCHAR}
+  </update>
+</mapper>

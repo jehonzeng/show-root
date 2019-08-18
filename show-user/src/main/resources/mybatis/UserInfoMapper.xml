@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.UserInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.UserInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+        <result column="real_name" property="realName" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="header_img" property="headerImg" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="INTEGER" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="country" property="country" jdbcType="VARCHAR" />
+        <result column="language" property="language" jdbcType="VARCHAR" />
+        <result column="user_level" property="userLevel" jdbcType="VARCHAR" />
+        <result column="wopen_id" property="wopenId" jdbcType="VARCHAR" />
+        <result column="xopen_id" property="xopenId" jdbcType="VARCHAR" />
+        <result column="union_id" property="unionId" jdbcType="VARCHAR" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="wechat_status" property="wechatStatus" jdbcType="INTEGER" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.vo.UserVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <result column="userLevelname" property="userLevelname" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, nick_name, real_name, phone, header_img, gender, city,
+        province, country, language, user_level, wopen_id,
+        xopen_id, union_id, create_time, wechat_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_user_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_user_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.user.UserInfo">
+        insert into t_user_info (mark_id, nick_name, real_name,
+        phone, header_img, gender, city, province, country, language,
+        user_level,wopen_id, xopen_id, union_id, create_time, wechat_status)
+        values (#{markId,jdbcType=VARCHAR},
+            #{nickName,jdbcType=VARCHAR},
+            #{realName,jdbcType=VARCHAR},
+            #{phone,jdbcType=VARCHAR},
+            #{headerImg,jdbcType=VARCHAR},
+            #{gender,jdbcType=INTEGER},
+            #{city,jdbcType=VARCHAR},
+            #{province,jdbcType=VARCHAR},
+            #{country,jdbcType=VARCHAR},
+            #{language,jdbcType=VARCHAR},
+            #{userLevel,jdbcType=VARCHAR},
+            #{wopenId,jdbcType=VARCHAR},
+            #{xopenId,jdbcType=VARCHAR},
+            #{unionId,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP},
+            #{wechatStatus,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.UserInfo">
+        insert into t_user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="headerImg != null">
+                header_img,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="country != null">
+                country,
+            </if>
+            <if test="language != null">
+                language,
+            </if>
+            <if test="userLevel != null">
+                user_level,
+            </if>
+            <if test="wopenId != null">
+                wopen_id,
+            </if>
+            <if test="xopenId != null">
+                xopen_id,
+            </if>
+            <if test="unionId != null">
+                union_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="wechatStatus != null">
+                wechat_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="headerImg != null">
+                #{headerImg,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="language != null">
+                #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="userLevel != null">
+                #{userLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="wopenId != null">
+                #{wopenId,jdbcType=VARCHAR},
+            </if>
+            <if test="xopenId != null">
+                #{xopenId,jdbcType=VARCHAR},
+            </if>
+            <if test="unionId != null">
+                #{unionId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="wechatStatus != null">
+                #{wechatStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.user.UserInfo">
+        update t_user_info
+        <set>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="headerImg != null">
+                header_img = #{headerImg,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                country = #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="language != null">
+                language = #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="userLevel != null">
+                user_level = #{userLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="wopenId != null">
+                wopen_id = #{wopenId,jdbcType=VARCHAR},
+            </if>
+            <if test="xopenId != null">
+                xopen_id = #{xopenId,jdbcType=VARCHAR},
+            </if>
+            <if test="unionId != null">
+                union_id = #{unionId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="wechatStatus != null">
+                wechat_status = #{wechatStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.user.UserInfo">
+        update t_user_info
+        set nick_name = #{nickName,jdbcType=VARCHAR},
+            real_name = #{realName,jdbcType=VARCHAR},
+            phone = #{phone,jdbcType=VARCHAR},
+            header_img = #{headerImg,jdbcType=VARCHAR},
+            gender = #{gender,jdbcType=INTEGER},
+            city = #{city,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            country = #{country,jdbcType=VARCHAR},
+            language = #{language,jdbcType=VARCHAR},
+            user_level = #{userLevel,jdbcType=VARCHAR},
+            wopen_id = #{wopenId,jdbcType=VARCHAR},
+            xopen_id = #{xopenId,jdbcType=VARCHAR},
+            union_id = #{unionId,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            wechat_status = #{wechatStatus,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
+        select
+        <include refid="Base_Column_List" /> ,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
+        from t_user_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null">
+                AND nick_name LIKE CONCAT(CONCAT('%', #{nickName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="realName != null">
+                AND real_name LIKE CONCAT(CONCAT('%', #{realName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender,jdbcType=INTEGER}
+            </if>
+            <if test="userLevel != null">
+                AND user_level = #{userLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="wopenId != null">
+                AND wopen_id = #{wopenId,jdbcType=VARCHAR}
+            </if>
+            <if test="xopenId != null">
+                AND xopen_id = #{xopenId,jdbcType=VARCHAR}
+            </if>
+            <if test="unionId != null">
+                AND union_id = #{unionId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) =
+                TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="wechatStatus != null">
+                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
+            </if>
+            <if test="roleIds != null and roleIds.length > 0">
+                AND mark_id IN (SELECT ur.user_id
+                FROM t_user_role ur
+                WHERE ur.role_id IN
+                <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+    <select id="selectNotInByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
+        select
+        <include refid="Base_Column_List" /> ,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
+        from t_user_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null">
+                AND nick_name LIKE CONCAT(CONCAT('%', #{nickName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="realName != null">
+                AND real_name LIKE CONCAT(CONCAT('%', #{realName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender,jdbcType=INTEGER}
+            </if>
+            <if test="userLevel != null">
+                AND user_level = #{userLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="wopenId != null">
+                AND wopen_id = #{wopenId,jdbcType=VARCHAR}
+            </if>
+            <if test="xopenId != null">
+                AND xopen_id = #{xopenId,jdbcType=VARCHAR}
+            </if>
+            <if test="unionId != null">
+                AND union_id = #{unionId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="wechatStatus != null">
+                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
+            </if>
+            <if test="roleIds != null and roleIds.length > 0">
+                AND mark_id not IN (SELECT ur.user_id
+                FROM t_user_role ur
+                WHERE ur.role_id IN
+                <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+</mapper>

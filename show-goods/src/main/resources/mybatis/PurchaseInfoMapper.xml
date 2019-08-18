@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.PurchaseInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.PurchaseInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="food_id" property="foodId" jdbcType="VARCHAR" />
+        <result column="purchase_total" property="purchaseTotal" jdbcType="DECIMAL" />
+        <result column="buy_total" property="buyTotal" jdbcType="DECIMAL" />
+        <result column="buy_time" property="buyTime" jdbcType="DATE" />
+        <result column="server_status" property="serverStatus" jdbcType="INTEGER" />
+        <result column="reflash_time" property="reflashTime" jdbcType="TIMESTAMP" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="purchaser" property="purchaser" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.vo.PurchaseFood" id="BaseResultMapVo" extends="BaseResultMap">
+        <association property="food" javaType="com.szhengzhu.bean.goods.FoodsInfo" column="food_id">
+            <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+            <result column="food_name" jdbcType="VARCHAR" property="foodName" />
+            <result column="server_status" jdbcType="BIT" property="serverStatus" />
+            <result column="purchase_rate" jdbcType="DECIMAL" property="purchaseRate" />
+            <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+            <result column="unit" jdbcType="VARCHAR" property="unit" />
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, food_id, purchase_total, buy_total, buy_time,
+        server_status,
+        reflash_time,
+        user_id
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_purchase_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_purchase_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.PurchaseInfo">
+        insert into t_purchase_info (mark_id, food_id,
+        purchase_total,
+        buy_total, buy_time, server_status,
+        reflash_time,
+        user_id)
+        values (#{markId,jdbcType=VARCHAR},
+        #{foodId,jdbcType=VARCHAR},
+        #{purchaseTotal,jdbcType=DECIMAL},
+        #{buyTotal,jdbcType=DECIMAL}, #{buyTime,jdbcType=DATE},
+        #{serverStatus,jdbcType=INTEGER},
+        #{reflashTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.PurchaseInfo">
+        insert into t_purchase_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="foodId != null">
+                food_id,
+            </if>
+            <if test="purchaseTotal != null">
+                purchase_total,
+            </if>
+            <if test="buyTotal != null">
+                buy_total,
+            </if>
+            <if test="buyTime != null">
+                buy_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="reflashTime != null">
+                reflash_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="foodId != null">
+                #{foodId,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseTotal != null">
+                #{purchaseTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="buyTotal != null">
+                #{buyTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="buyTime != null">
+                #{buyTime,jdbcType=DATE},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="reflashTime != null">
+                #{reflashTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.PurchaseInfo">
+        update t_purchase_info
+        <set>
+            <if test="foodId != null">
+                food_id = #{foodId,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseTotal != null">
+                purchase_total =
+                #{purchaseTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="buyTotal != null">
+                buy_total = #{buyTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="buyTime != null">
+                buy_time = #{buyTime,jdbcType=DATE},
+            </if>
+            <if test="serverStatus != null">
+                server_status =
+                #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="reflashTime != null">
+                reflash_time =
+                #{reflashTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.PurchaseInfo">
+        update t_purchase_info
+        set food_id =
+        #{foodId,jdbcType=VARCHAR},
+        purchase_total =
+        #{purchaseTotal,jdbcType=DECIMAL},
+        buy_total =
+        #{buyTotal,jdbcType=DECIMAL},
+        buy_time =
+        #{buyTime,jdbcType=DATE},
+        server_status =
+        #{serverStatus,jdbcType=INTEGER},
+        reflash_time =
+        #{reflashTime,jdbcType=TIMESTAMP},
+        user_id =
+        #{userId,jdbcType=VARCHAR}
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.PurchaseInfo" resultMap="BaseResultMapVo">
+        SELECT
+        p.mark_id, p.food_id, p.purchase_total,p.buy_total,
+        p.buy_time,p.server_status,p.reflash_time,p.user_id,
+        f.food_name,f.server_status,f.purchase_rate,f.image_path,
+        (SELECT `name` FROM db_base.t_attribute_info where code =
+        f.unit) AS unit,
+        (SELECT real_name FROM db_user.t_user_info WHERE
+        mark_id = p.user_id) AS purchaser
+        FROM t_purchase_info p INNER
+        JOIN t_food_info f ON p.food_id = f.mark_id
+        <where>
+            <if test="markId != null">
+                p.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="foodId != null">
+                AND p.food_id = #{foodId,jdbcType=VARCHAR}
+            </if>
+            <if test="purchaseTotal != null">
+                AND p.purchase_total =
+                #{purchaseTotal,jdbcType=DECIMAL}
+            </if>
+            <if test="buyTotal != null">
+                AND p.buy_total = #{buyTotal,jdbcType=DECIMAL}
+            </if>
+            <if test="buyTime != null">
+                AND p.buy_time = #{buyTime,jdbcType=DATE}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status =
+                #{serverStatus,jdbcType=INTEGER}
+            </if>
+            <if test="reflashTime != null">
+                AND p.reflash_time =
+                #{reflashTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="userId != null">
+                AND p.user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectListByStatus" resultMap="BaseResultMapVo">
+        SELECT
+        p.mark_id, p.food_id, p.purchase_total,p.buy_total,
+        p.buy_time,p.server_status,p.reflash_time,p.user_id,
+        f.food_name,f.server_status,f.purchase_rate,f.image_path,
+        (SELECT `name` FROM db_base.t_attribute_info where code = f.unit) AS unit,
+        (SELECT real_name FROM db_user.t_user_info WHERE mark_id = p.user_id) AS purchaser
+        FROM t_purchase_info p INNER JOIN t_food_info f ON p.food_id = f.mark_id
+        WHERE TO_DAYS(p.buy_time)= TO_DAYS(NOW())
+         <choose>
+            <when test="status == 0">
+            AND p.user_id = #{userId}
+            AND p.server_status = 1 
+            AND <![CDATA[p.purchase_total > p.buy_total]]>
+            </when>
+            <when test="status == 1">
+            AND <![CDATA[p.purchase_total <= p.buy_total]]>
+            </when>
+            <otherwise>
+            AND p.server_status = 0 AND <![CDATA[p.purchase_total > p.buy_total]]>
+            </otherwise>
+         </choose>
+    </select>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_purchase_info
+        (mark_id, food_id, purchase_total,
+        buy_total, buy_time,server_status,reflash_time,user_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR},
+            #{item.foodId,jdbcType=VARCHAR},
+            #{item.purchaseTotal,jdbcType=DECIMAL},
+            #{item.buyTotal,jdbcType=DECIMAL},
+            #{item.buyTime,jdbcType=DATE},
+            #{item.serverStatus,jdbcType=INTEGER},
+            #{item.reflashTime,jdbcType=TIMESTAMP},
+            #{item.userId,jdbcType=VARCHAR})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        purchase_total = values(purchase_total),
+        reflash_time = values(reflash_time)
+    </insert>
+</mapper>

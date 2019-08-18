@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.MealItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.MealItem">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="meal_id" property="mealId" jdbcType="VARCHAR" />
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
+        <result column="quantity" property="quantity" jdbcType="INTEGER" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.vo.MealVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <result column="mealName" property="mealName" jdbcType="VARCHAR" />
+        <result column="goodsName" property="goodsName" jdbcType="VARCHAR" />
+        <result column="specList" property="specList" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, meal_id, goods_id,specification_ids, quantity, sort
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_meal_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_meal_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.MealItem">
+        insert into t_meal_item (mark_id, meal_id,
+        goods_id,specification_ids,
+        quantity, sort)
+        values
+        (#{markId,jdbcType=VARCHAR},
+        #{mealId,jdbcType=VARCHAR},
+        #{goodsId,jdbcType=VARCHAR},
+        #{specificationIds,jdbcType=VARCHAR},
+        #{quantity,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.MealItem">
+        insert into t_meal_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="mealId != null">
+                meal_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="mealId != null">
+                #{mealId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.MealItem">
+        update t_meal_item
+        <set>
+            <if test="mealId != null">
+                meal_id = #{mealId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids =
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.MealItem">
+        update t_meal_item
+        set meal_id =
+        #{mealId,jdbcType=VARCHAR},
+        goods_id =
+        #{goodsId,jdbcType=VARCHAR},
+        specification_ids =
+        #{specificationIds,jdbcType=VARCHAR},
+        quantity =
+        #{quantity,jdbcType=INTEGER},
+        sort = #{sort,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMapVo">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        (SELECT theme FROM t_meal_info where mark_id = meal_id) AS mealName,
+        (SELECT goods_name FROM t_goods_info where mark_id = goods_id)
+        AS goodsName,
+        (SELECT
+        GROUP_CONCAT(CONCAT_WS(':',attr_name,attr_value) SEPARATOR ';')
+        FROM
+        t_specification_info WHERE
+        FIND_IN_SET(mark_id,specification_ids)) AS specList
+        from
+        t_meal_item
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="mealId != null">
+                AND meal_id = #{mealId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsId != null">
+                AND goods_id = #{goodsId,jdbcType=VARCHAR}
+            </if>
+            <if test="specificationIds != null">
+                AND specification_ids =
+                #{specificationIds,jdbcType=VARCHAR}
+            </if>
+            <if test="quantity != null">
+                AND quantity = #{quantity,jdbcType=INTEGER}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>

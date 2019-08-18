@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.BrandInfoMapper">
+    <resultMap
+        id="BaseResultMap"
+        type="com.szhengzhu.bean.goods.BrandInfo">
+        <id
+            column="mark_id"
+            property="markId"
+            jdbcType="VARCHAR" />
+        <result
+            column="cn_name"
+            property="cnName"
+            jdbcType="VARCHAR" />
+        <result
+            column="en_name"
+            property="enName"
+            jdbcType="VARCHAR" />
+        <result
+            column="brand_status"
+            property="brandStatus"
+            jdbcType="BIT" />
+        <result
+            column="description"
+            property="description"
+            jdbcType="VARCHAR" />
+        <result
+            column="brand_url"
+            property="brandUrl"
+            jdbcType="VARCHAR" />
+        <result
+            column="brand_logo"
+            property="brandLogo"
+            jdbcType="VARCHAR" />
+        <result
+            column="reg_time"
+            property="regTime"
+            jdbcType="TIMESTAMP" />
+        <result
+            column="sort"
+            property="sort"
+            jdbcType="INTEGER" />
+        <result
+            column="owner_name"
+            property="ownerName"
+            jdbcType="VARCHAR" />
+        <result
+            column="server_type"
+            property="serverType"
+            jdbcType="VARCHAR" />
+        <result
+            column="phone"
+            property="phone"
+            jdbcType="VARCHAR" />
+            <result
+            column="cooperateType"
+            property="cooperateType"
+            jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, cn_name, en_name,
+        brand_status, description,
+        brand_url, brand_logo,
+        reg_time,sort,owner_name,
+        server_type,phone
+    </sql>
+    <select
+        id="selectByPrimaryKey"
+        resultMap="BaseResultMap"
+        parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_brand_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete
+        id="deleteByPrimaryKey"
+        parameterType="java.lang.String">
+        delete from t_brand_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert
+        id="insert"
+        parameterType="com.szhengzhu.bean.goods.BrandInfo">
+        insert into t_brand_info (mark_id, cn_name,
+        en_name,
+        brand_status, description, brand_url,
+        brand_logo,
+        reg_time, sort,owner_name,
+        server_type,phone
+        )
+        values
+        (#{markId,jdbcType=VARCHAR},
+        #{cnName,jdbcType=VARCHAR},
+        #{enName,jdbcType=VARCHAR},
+        #{brandStatus,jdbcType=BIT},
+        #{description,jdbcType=VARCHAR},
+        #{brandUrl,jdbcType=VARCHAR},
+        #{brandLogo,jdbcType=VARCHAR},
+        #{regTime,jdbcType=TIMESTAMP},
+        #{sort,jdbcType=INTEGER},
+        #{ownerName,jdbcType=VARCHAR},
+        #{serverType,jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert
+        id="insertSelective"
+        parameterType="com.szhengzhu.bean.goods.BrandInfo">
+        insert into t_brand_info
+        <trim
+            prefix="("
+            suffix=")"
+            suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="cnName != null">
+                cn_name,
+            </if>
+            <if test="enName != null">
+                en_name,
+            </if>
+            <if test="brandStatus != null">
+                brand_status,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="brandUrl != null">
+                brand_url,
+            </if>
+            <if test="brandLogo != null">
+                brand_logo,
+            </if>
+            <if test="regTime != null">
+                reg_time,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="ownerName != null">
+                owner_name,
+            </if>
+            <if test="serverType != null">
+                server_type,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+        </trim>
+        <trim
+            prefix="values ("
+            suffix=")"
+            suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="cnName != null">
+                #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandStatus != null">
+                #{brandStatus,jdbcType=BIT},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="brandUrl != null">
+                #{brandUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="brandLogo != null">
+                #{brandLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="regTime != null">
+                #{regTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="ownerName != null">
+                #{ownerName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update
+        id="updateByPrimaryKeySelective"
+        parameterType="com.szhengzhu.bean.goods.BrandInfo">
+        update t_brand_info
+        <set>
+            <if test="cnName != null">
+                cn_name = #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandStatus != null">
+                brand_status = #{brandStatus,jdbcType=BIT},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="brandUrl != null">
+                brand_url = #{brandUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="brandLogo != null">
+                brand_logo = #{brandLogo,jdbcType=VARCHAR},
+            </if>
+            <if test="regTime != null">
+                reg_time = #{regTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="ownerName != null">
+                owner_name = #{ownerName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update
+        id="updateByPrimaryKey"
+        parameterType="com.szhengzhu.bean.goods.BrandInfo">
+        update t_brand_info
+        set cn_name =
+        #{cnName,jdbcType=VARCHAR},
+        en_name = #{enName,jdbcType=VARCHAR},
+        brand_status = #{brandStatus,jdbcType=BIT},
+        description =
+        #{description,jdbcType=VARCHAR},
+        brand_url =
+        #{brandUrl,jdbcType=VARCHAR},
+        brand_logo =
+        #{brandLogo,jdbcType=VARCHAR},
+        reg_time =
+        #{regTime,jdbcType=TIMESTAMP},
+        sort = #{sort,jdbcType=INTEGER},
+        owner_name = #{ownerName,jdbcType=VARCHAR},
+        server_type =
+        #{serverType,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select
+        id="selectByExampleSelective"
+        resultMap="BaseResultMap"
+        parameterType="com.szhengzhu.bean.goods.BrandInfo">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= server_type) AS cooperateType
+        from t_brand_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="cnName != null">
+                AND cn_name LIKE
+                CONCAT('%',#{cnName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="enName != null">
+                AND en_name LIKE
+                CONCAT('%',#{enName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="brandStatus != null">
+                AND brand_status = #{brandStatus,jdbcType=BIT}
+            </if>
+            <if test="description != null">
+                AND description =
+                #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="brandUrl != null">
+                AND brand_url = #{brandUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="brandLogo != null">
+                AND brand_logo = #{brandLogo,jdbcType=VARCHAR}
+            </if>
+            <if test="regTime != null">
+                AND reg_time = #{regTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="ownerName != null">
+                AND owner_name LIKE CONCAT
+                ('%',#{ownerName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverType != null">
+                AND server_type = #{serverType,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>
