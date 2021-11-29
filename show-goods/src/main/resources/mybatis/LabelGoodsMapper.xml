@@ -2,49 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.LabelGoodsMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.LabelGoods">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
-        <result column="label_id" property="labelId" jdbcType="VARCHAR" />
-        <result column="server_status" property="serverStatus" jdbcType="BIT" />
-        <result column="goods_type" property="goodsType" jdbcType="INTEGER" />
-        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="label_id" property="labelId" jdbcType="VARCHAR"/>
+        <result column="server_status" property="serverStatus" jdbcType="BIT"/>
+        <result column="goods_type" property="goodsType" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap type="com.szhengzhu.bean.vo.LabelGoodsVo" id="BaseResultMapVo" extends="BaseResultMap">
         <association property="goods" javaType="com.szhengzhu.bean.goods.GoodsInfo" column="goods_id">
-            <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-            <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
-            <result column="description" property="description" jdbcType="VARCHAR" />
-            <result column="serverStatus" property="serverStatus" jdbcType="VARCHAR" />
-            <result column="cookStyle" property="cookStyle" jdbcType="VARCHAR" />
-            <result column="server_type" property="serverType" jdbcType="INTEGER" />
-            <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
-            <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
-            <result column="unit" property="unit" jdbcType="VARCHAR" />
-            <result column="upper_time" property="upperTime" jdbcType="TIMESTAMP" />
-            <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
-            <result column="pre_upper_time" property="preUpperTime" jdbcType="TIMESTAMP" />
-            <result column="pre_down_time" property="preDownTime" jdbcType="TIMESTAMP" />
-            <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-            <result column="creator" property="creator" jdbcType="VARCHAR" />
-            <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-            <result column="modifier" property="modifier" jdbcType="VARCHAR" />
-            <result column="categoryName" property="categoryId" jdbcType="VARCHAR" />
-            <result column="typeName" property="typeId" jdbcType="VARCHAR" />
-            <result column="brandName" property="brandId" jdbcType="VARCHAR" />
-            <result column="cooker" property="cooker" jdbcType="VARCHAR" />
-            <result column="sort" property="sort" jdbcType="INTEGER" />
+            <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+            <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+            <result column="description" property="description" jdbcType="VARCHAR"/>
+            <result column="serverStatus" property="serverStatus" jdbcType="VARCHAR"/>
+            <result column="cookStyle" property="cookStyle" jdbcType="VARCHAR"/>
+            <result column="server_type" property="serverType" jdbcType="INTEGER"/>
+            <result column="base_price" property="basePrice" jdbcType="DECIMAL"/>
+            <result column="sale_price" property="salePrice" jdbcType="DECIMAL"/>
+            <result column="unit" property="unit" jdbcType="VARCHAR"/>
+            <result column="upper_time" property="upperTime" jdbcType="TIMESTAMP"/>
+            <result column="down_time" property="downTime" jdbcType="TIMESTAMP"/>
+            <result column="pre_upper_time" property="preUpperTime" jdbcType="TIMESTAMP"/>
+            <result column="pre_down_time" property="preDownTime" jdbcType="TIMESTAMP"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="creator" property="creator" jdbcType="VARCHAR"/>
+            <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+            <result column="modifier" property="modifier" jdbcType="VARCHAR"/>
+            <result column="categoryName" property="categoryId" jdbcType="VARCHAR"/>
+            <result column="typeName" property="typeId" jdbcType="VARCHAR"/>
+            <result column="brandName" property="brandId" jdbcType="VARCHAR"/>
+            <result column="cooker" property="cooker" jdbcType="VARCHAR"/>
+            <result column="sort" property="sort" jdbcType="INTEGER"/>
         </association>
     </resultMap>
     <resultMap type="com.szhengzhu.bean.vo.LabelMealVo" id="BaseResultMapMealVo" extends="BaseResultMap">
         <association property="meal" javaType="com.szhengzhu.bean.goods.MealInfo" column="goods_id">
-            <id column="mealId" property="markId" jdbcType="VARCHAR" />
-            <result column="theme" property="theme" jdbcType="VARCHAR" />
-            <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
-            <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
-            <result column="stock_size" property="stockSize" jdbcType="INTEGER" />
-            <result column="server_status" property="serverStatus" jdbcType="BIT" />
-            <result column="description" property="description" jdbcType="VARCHAR" />
-            <result column="sort" property="sort" jdbcType="INTEGER" />
+            <id column="mealId" property="markId" jdbcType="VARCHAR"/>
+            <result column="theme" property="theme" jdbcType="VARCHAR"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="base_price" property="basePrice" jdbcType="DECIMAL"/>
+            <result column="sale_price" property="salePrice" jdbcType="DECIMAL"/>
+            <result column="server_status" property="serverStatus" jdbcType="BIT"/>
+            <result column="description" property="description" jdbcType="VARCHAR"/>
+            <result column="sort" property="sort" jdbcType="INTEGER"/>
+            <result column="meal_no" property="mealNo" jdbcType="VARCHAR"/>
         </association>
     </resultMap>
     <sql id="Base_Column_List">
@@ -67,28 +68,27 @@
         (SELECT cn_name FROM t_brand_info WHERE mark_id = g.brand_id) as brandName
     </sql>
     <sql id="Base_Meal_List">
-        m.mark_id as mealId, m.theme, m.base_price, m.sale_price,m.stock_size,
-        m.server_status,
-        m.description, m.sort
+        m.mark_id as mealId, m.theme,m.create_time, m.base_price, m.sale_price,m.server_status,m.description, m.sort,m.meal_no
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_label_goods
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_label_goods
+        delete
+        from t_label_goods
         where mark_id =
-        #{markId,jdbcType=VARCHAR}
+              #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.LabelGoods">
         insert into t_label_goods (mark_id, goods_id,
-        label_id,server_status,goods_type, sort)
+                                   label_id, server_status, goods_type, sort)
         values (#{markId,jdbcType=VARCHAR},
-        #{goodsId,jdbcType=VARCHAR},
-        #{labelId,jdbcType=VARCHAR},#{serverStatus,jdbcType=BIT},
-        #{goodsType,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
+                #{goodsId,jdbcType=VARCHAR},
+                #{labelId,jdbcType=VARCHAR}, #{serverStatus,jdbcType=BIT},
+                #{goodsType,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.LabelGoods">
         insert into t_label_goods
@@ -156,22 +156,23 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.LabelGoods">
         update t_label_goods
-        set goods_id =
-        #{goodsId,jdbcType=VARCHAR},
-        label_id =
-        #{labelId,jdbcType=VARCHAR},
-        server_status =
-        #{serverStatus,jdbcType=BIT},
-        goods_type =
-        #{goodsType,jdbcType=INTEGER},
-        sort = #{sort,jdbcType=INTEGER}
+        set goods_id      =
+                #{goodsId,jdbcType=VARCHAR},
+            label_id      =
+                #{labelId,jdbcType=VARCHAR},
+            server_status =
+                #{serverStatus,jdbcType=BIT},
+            goods_type    =
+                #{goodsType,jdbcType=INTEGER},
+            sort          = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.LabelGoods" resultMap="BaseResultMapVo">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.LabelGoods"
+            resultMap="BaseResultMapVo">
         SELECT
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         ,
-        <include refid="Base_Goods_List" />
+        <include refid="Base_Goods_List"/>
         FROM t_label_goods c
         LEFT JOIN t_goods_info g
         ON g.mark_id = c.goods_id
@@ -197,11 +198,12 @@
             </if>
         </where>
     </select>
-    <select id="selectMealByExampleSelective" parameterType="com.szhengzhu.bean.goods.LabelGoods" resultMap="BaseResultMapMealVo">
+    <select id="selectMealByExampleSelective" parameterType="com.szhengzhu.bean.goods.LabelGoods"
+            resultMap="BaseResultMapMealVo">
         SELECT
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         ,
-        <include refid="Base_Meal_List" />
+        <include refid="Base_Meal_List"/>
         FROM t_label_goods c
         LEFT JOIN t_meal_info m
         ON m.mark_id = c.goods_id

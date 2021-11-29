@@ -1,8 +1,8 @@
 package com.szhengzhu.bean.wechat.vo;
 
-import java.io.Serializable;
-
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 public class VoucherModel implements Serializable {

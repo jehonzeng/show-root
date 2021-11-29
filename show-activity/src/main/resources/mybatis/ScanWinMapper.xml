@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ScanWinMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ScanWin">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+        <result column="winner_num" jdbcType="INTEGER" property="winnerNum" />
+        <result column="level_num" jdbcType="INTEGER" property="levelNum" />
+        <result column="winner_total" jdbcType="INTEGER" property="winnerTotal" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="product_id" jdbcType="VARCHAR" property="productId" />
+        <result column="success_msg" jdbcType="VARCHAR" property="successMsg" />
+        <result column="fail_msg" jdbcType="VARCHAR" property="failMsg" />
+        <result column="scan_code" jdbcType="VARCHAR" property="scanCode" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, theme, start_time, stop_time, winner_num, level_num, winner_total, product_type,
+        product_id, success_msg, fail_msg, scan_code, server_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scan_win
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_scan_win
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ScanWin">
+        insert into t_scan_win (mark_id, theme, start_time,
+        stop_time, winner_num, level_num,
+        winner_total, product_type, product_id,
+        success_msg, fail_msg, scan_code,
+        server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP},
+        #{stopTime,jdbcType=TIMESTAMP}, #{winnerNum,jdbcType=INTEGER}, #{levelNum,jdbcType=INTEGER},
+        #{winnerTotal,jdbcType=INTEGER}, #{productType,jdbcType=INTEGER}, #{productId,jdbcType=VARCHAR},
+        #{successMsg,jdbcType=VARCHAR}, #{failMsg,jdbcType=VARCHAR}, #{scanCode,jdbcType=VARCHAR},
+        #{serverStatus,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ScanWin">
+        insert into t_scan_win
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="winnerNum != null">
+                winner_num,
+            </if>
+            <if test="levelNum != null">
+                level_num,
+            </if>
+            <if test="winnerTotal != null">
+                winner_total,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="successMsg != null">
+                success_msg,
+            </if>
+            <if test="failMsg != null">
+                fail_msg,
+            </if>
+            <if test="scanCode != null">
+                scan_code,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="winnerNum != null">
+                #{winnerNum,jdbcType=INTEGER},
+            </if>
+            <if test="levelNum != null">
+                #{levelNum,jdbcType=INTEGER},
+            </if>
+            <if test="winnerTotal != null">
+                #{winnerTotal,jdbcType=INTEGER},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="successMsg != null">
+                #{successMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="failMsg != null">
+                #{failMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="scanCode != null">
+                #{scanCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ScanWin">
+        update t_scan_win
+        <set>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="winnerNum != null">
+                winner_num = #{winnerNum,jdbcType=INTEGER},
+            </if>
+            <if test="levelNum != null">
+                level_num = #{levelNum,jdbcType=INTEGER},
+            </if>
+            <if test="winnerTotal != null">
+                winner_total = #{winnerTotal,jdbcType=INTEGER},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="successMsg != null">
+                success_msg = #{successMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="failMsg != null">
+                fail_msg = #{failMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="scanCode != null">
+                scan_code = #{scanCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ScanWin">
+        update t_scan_win
+        set theme = #{theme,jdbcType=VARCHAR},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        winner_num = #{winnerNum,jdbcType=INTEGER},
+        level_num = #{levelNum,jdbcType=INTEGER},
+        winner_total = #{winnerTotal,jdbcType=INTEGER},
+        product_type = #{productType,jdbcType=INTEGER},
+        product_id = #{productId,jdbcType=VARCHAR},
+        success_msg = #{successMsg,jdbcType=VARCHAR},
+        fail_msg = #{failMsg,jdbcType=VARCHAR},
+        scan_code = #{scanCode,jdbcType=VARCHAR},
+        server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.ScanWin" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+        (case when product_type=1 then (select v.voucher_name from db_goods.t_goods_voucher v where v.mark_id=s.product_id) END) as productName
+        from t_scan_win s
+        <where>
+            <if test="theme != null">
+                theme like concat('%', #{theme,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="stopTime != null">
+                and stop_time = #{stopTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="levelNum != null">
+                and level_num = #{levelNum,jdbcType=INTEGER}
+            </if>
+            <if test="productType != null">
+                and product_type = #{productType,jdbcType=INTEGER}
+            </if>
+            <if test="productId != null">
+                and product_id = #{productId,jdbcType=VARCHAR}
+            </if>
+            <if test="successMsg != null">
+                and success_msg = #{successMsg,jdbcType=VARCHAR}
+            </if>
+            <if test="failMsg != null">
+                and fail_msg = #{failMsg,jdbcType=VARCHAR}
+            </if>
+            <if test="scanCode != null">
+                and scan_code = #{scanCode,jdbcType=VARCHAR}
+            </if>
+            <if test="serverStatus != null">
+                and server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scan_win
+        where scan_code = #{scanCode,jdbcType=VARCHAR} and server_status=1 and start_time <![CDATA[ < ]]> NOW() and stop_time > NOW()
+        order by start_time
+        limit 1
+    </select>
+</mapper>

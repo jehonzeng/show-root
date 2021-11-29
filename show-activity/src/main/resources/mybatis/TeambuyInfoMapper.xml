@@ -3,44 +3,31 @@
 <mapper namespace="com.szhengzhu.mapper.TeambuyInfoMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.TeambuyInfo">
         <id column="mark_id" jdbcType="VARCHAR" property="markId" />
-        <result column="product_id" jdbcType="VARCHAR" property="productId" />
-        <result column="product_type" jdbcType="INTEGER" property="productType" />
-        <result column="product_name" jdbcType="VARCHAR" property="productName" />
         <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
         <result column="type" jdbcType="INTEGER" property="type" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
         <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
         <result column="req_count" jdbcType="INTEGER" property="reqCount" />
         <result column="vaild_time" jdbcType="INTEGER" property="vaildTime" />
         <result column="price" jdbcType="DECIMAL" property="price" />
-        <result column="share_url" jdbcType="VARCHAR" property="shareUrl" />
-        <result column="limited" jdbcType="VARCHAR" property="limited" />
+        <result column="total_stock" property="totalStock" jdbcType="INTEGER" />
+        <result column="limited" jdbcType="INTEGER" property="limited" />
         <result column="free" jdbcType="BIT" property="free" />
         <result column="server_status" jdbcType="BIT" property="serverStatus" />
-        <result column="limitDesc" jdbcType="VARCHAR" property="limitDesc" />
-        <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
-        <collection property="items" column="mark_id" ofType="com.szhengzhu.bean.activity.LinkItem">
-            <id column="itemId" jdbcType="VARCHAR" property="markId" />
-            <result column="itemPrice" jdbcType="DECIMAL" property="price" />
-            <result column="super_id" jdbcType="VARCHAR" property="superId" />
-            <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
-            <result column="specifications" jdbcType="VARCHAR" property="specifications" />
-            <result column="product_name" jdbcType="VARCHAR" property="productName" />
-        </collection>
+        <result column="specs" jdbcType="VARCHAR" property="specs"/>
     </resultMap>
     <sql id="Base_Column_List">
-        t.mark_id, t.product_id, t.product_type, t.product_name, t.theme, t.type,
-        t.start_time, t.stop_time, t.req_count,
-        t.vaild_time, t.price, t.share_url,
-        t.limited, t.free, t.server_status
-    </sql>
-    <sql id="Base_ItemColumn_List">
-        i.mark_id AS itemId, i.price AS itemPrice, i.specification_ids
+        mark_id, theme, description, goods_id, goods_name, specification_ids, type, start_time, stop_time,
+        req_count, vaild_time, price, total_stock, limited, free, server_status
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from t_teambuy_info t
+        from t_teambuy_info
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -48,20 +35,16 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.activity.TeambuyInfo">
-        insert into t_teambuy_info (mark_id, product_id,
-            product_type, product_name, theme, type, start_time, stop_time, req_count,
-            vaild_time, price, share_url, limited, free, server_status)
-        values (#{markId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
-            #{productType,jdbcType=INTEGER},#{productName,jdbcType=VARCHAR},
-            #{theme,jdbcType=VARCHAR},
-            #{type,jdbcType=INTEGER},
-            #{startTime,jdbcType=TIMESTAMP},
-            #{stopTime,jdbcType=TIMESTAMP}, #{reqCount,jdbcType=INTEGER},
-            #{vaildTime,jdbcType=INTEGER},
-            #{price,jdbcType=DECIMAL},
-            #{shareUrl,jdbcType=VARCHAR},
-            #{limited,jdbcType=VARCHAR},
-            #{free,jdbcType=BIT}, #{serverStatus,jdbcType=BIT})
+        insert into t_teambuy_info (mark_id, theme, description, goods_id,
+        goods_name, specification_ids, type,
+        start_time, stop_time, req_count,
+        vaild_time, price, total_stock, limited,
+        free, server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{goodsId,jdbcType=VARCHAR},
+        #{goodsName,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP}, #{reqCount,jdbcType=INTEGER},
+        #{vaildTime,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{totalStock,jdbcType=INTEGER}, #{limited,jdbcType=INTEGER},
+        #{free,jdbcType=BIT}, #{serverStatus,jdbcType=BIT})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.TeambuyInfo">
         insert into t_teambuy_info
@@ -69,17 +52,20 @@
             <if test="markId != null">
                 mark_id,
             </if>
-            <if test="productId != null">
-                product_id,
-            </if>
-            <if test="productType != null">
-                product_type,
-            </if>
-            <if test="productName != null">
-                product_name,
-            </if>
             <if test="theme != null">
                 theme,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
             </if>
             <if test="type != null">
                 type,
@@ -99,8 +85,8 @@
             <if test="price != null">
                 price,
             </if>
-            <if test="shareUrl != null">
-                share_url,
+            <if test="totalStock != null">
+                total_stock,
             </if>
             <if test="limited != null">
                 limited,
@@ -116,17 +102,20 @@
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
-            <if test="productId != null">
-                #{productId,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                #{productType,jdbcType=INTEGER},
-            </if>
-            <if test="productName != null">
-                #{productName,jdbcType=INTEGER},
-            </if>
             <if test="theme != null">
                 #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
             </if>
             <if test="type != null">
                 #{type,jdbcType=INTEGER},
@@ -146,11 +135,11 @@
             <if test="price != null">
                 #{price,jdbcType=DECIMAL},
             </if>
-            <if test="shareUrl != null">
-                #{shareUrl,jdbcType=VARCHAR},
+            <if test="totalStock != null">
+                #{totalStock,jdbcType=INTEGER},
             </if>
             <if test="limited != null">
-                #{limited,jdbcType=VARCHAR},
+                #{limited,jdbcType=INTEGER},
             </if>
             <if test="free != null">
                 #{free,jdbcType=BIT},
@@ -163,17 +152,20 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.TeambuyInfo">
         update t_teambuy_info
         <set>
-            <if test="productId != null">
-                product_id = #{productId,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                product_type = #{productType,jdbcType=INTEGER},
-            </if>
-            <if test="productName != null">
-                product_name = #{productName,jdbcType=VARCHAR},
-            </if>
             <if test="theme != null">
                 theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
             </if>
             <if test="type != null">
                 type = #{type,jdbcType=INTEGER},
@@ -193,11 +185,11 @@
             <if test="price != null">
                 price = #{price,jdbcType=DECIMAL},
             </if>
-            <if test="shareUrl != null">
-                share_url = #{shareUrl,jdbcType=VARCHAR},
+            <if test="totalStock != null">
+                total_stock = #{totalStock,jdbcType=INTEGER},
             </if>
             <if test="limited != null">
-                limited = #{limited,jdbcType=VARCHAR},
+                limited = #{limited,jdbcType=INTEGER},
             </if>
             <if test="free != null">
                 free = #{free,jdbcType=BIT},
@@ -210,93 +202,106 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.TeambuyInfo">
         update t_teambuy_info
-        set product_id = #{productId,jdbcType=VARCHAR},
-        product_type = #{productType,jdbcType=INTEGER},
-        product_name = #{productName,jdbcType=VARCHAR},
-        theme = #{theme,jdbcType=VARCHAR},
+        set theme = #{theme,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        goods_id = #{goodsId,jdbcType=VARCHAR},
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+        specification_ids = #{specificationIds,jdbcType=VARCHAR},
         type = #{type,jdbcType=INTEGER},
         start_time = #{startTime,jdbcType=TIMESTAMP},
         stop_time = #{stopTime,jdbcType=TIMESTAMP},
         req_count = #{reqCount,jdbcType=INTEGER},
         vaild_time = #{vaildTime,jdbcType=INTEGER},
         price = #{price,jdbcType=DECIMAL},
-        share_url = #{shareUrl,jdbcType=VARCHAR},
-        limited = #{limited,jdbcType=VARCHAR},
+        total_stock = #{totalStock,jdbcType=INTEGER},
+        limited = #{limited,jdbcType=INTEGER},
         free = #{free,jdbcType=BIT},
         server_status = #{serverStatus,jdbcType=BIT}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.TeambuyInfo" resultMap="BaseResultMap">
-        SELECT * from (select
-        <include refid="Base_Column_List" />
-        ,
-        (SELECT `name` FROM db_base.t_attribute_info WHERE
-        `code`=t.limited) AS limitDesc,
-        <include refid="Base_ItemColumn_List" />
-        ,
-        <!-- (CASE WHEN product_type = 1 THEN
-                ( SELECT c.coupon_name FROM db_goods.t_goods_coupon c WHERE c.mark_id = product_id )
-              WHEN product_type = 0 THEN
-                ( SELECT g.goods_name FROM db_goods.t_goods_info g WHERE g.mark_id = product_id )
-              WHEN product_type = 2 THEN
-                ( SELECT m.theme FROM db_goods.t_meal_info m WHERE m.mark_id = product_id)
-        END) AS goodsName, -->
-        (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';')
-        FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, i.specification_ids)) AS specifications
-        FROM t_teambuy_info t LEFT JOIN t_link_item i ON t.mark_id=i.super_id) t
+        select
+            <include refid="Base_Column_List" />,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, specification_ids)) AS specs
+        from t_teambuy_info
         <where>
-            <if test="markId != null">
-                t.mark_id = #{markId,jdbcType=VARCHAR}
-            </if>
-            <if test="productId != null">
-                AND t.product_id = #{productId,jdbcType=VARCHAR}
-            </if>
-            <if test="productType != null">
-                AND t.product_type = #{productType,jdbcType=INTEGER}
-            </if>
-            <if test="productName != null">
-                AND t.product_name = #{productName,jdbcType=VARCHAR}
-            </if>
             <if test="theme != null">
-                AND t.theme LIKE CONCAT(CONCAT('%', #{theme,jdbcType=VARCHAR}), '%')
+                theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="description != null">
+                AND description LIKE CONCAT('%', #{description,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="goodsId != null">
+                AND goods_id = #{goodsId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND goods_name = #{goodsName,jdbcType=VARCHAR}
+            </if>
+            <if test="specificationIds != null">
+                AND specification_ids = #{specificationIds,jdbcType=VARCHAR}
             </if>
             <if test="type != null">
-                AND t.type = #{type,jdbcType=INTEGER}
+                AND type = #{type,jdbcType=INTEGER}
             </if>
             <if test="startTime != null">
-                AND t.TO_DAYS(start_time) = TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
+                AND start_time = #{startTime,jdbcType=TIMESTAMP}
             </if>
             <if test="stopTime != null">
-                AND t.TO_DAYS(stop_time) = TO_DAYS(#{stopTime,jdbcType=TIMESTAMP})
+                AND stop_time = #{stopTime,jdbcType=TIMESTAMP}
             </if>
             <if test="reqCount != null">
-                AND t.req_count = #{reqCount,jdbcType=INTEGER}
+                AND req_count = #{reqCount,jdbcType=INTEGER}
             </if>
             <if test="vaildTime != null">
-                AND t.vaild_time = #{vaildTime,jdbcType=INTEGER}
+                AND vaild_time = #{vaildTime,jdbcType=INTEGER}
+            </if>
+            <if test="price != null">
+                AND price = #{price,jdbcType=DECIMAL}
             </if>
             <if test="limited != null">
-                AND t.limited = #{limited,jdbcType=VARCHAR}
+                AND limited = #{limited,jdbcType=INTEGER}
             </if>
             <if test="free != null">
-                AND t.free = #{free,jdbcType=BIT}
+                AND free = #{free,jdbcType=BIT}
             </if>
             <if test="serverStatus != null">
-                AND t.server_status = #{serverStatus,jdbcType=BIT}
+                AND server_status = #{serverStatus,jdbcType=BIT}
             </if>
         </where>
     </select>
-    <select id="selectByKeyAndSpec" resultMap="BaseResultMap">
-        select t.mark_id, t.product_id, t.product_type, t.theme, t.type,
-            t.start_time, t.stop_time, t.req_count,
-            t.vaild_time, t.share_url,
-            t.limited, t.free, t.server_status,
-            (CASE WHEN t.product_type = 0 THEN 
-                 (SELECT price FROM t_link_item WHERE super_id=t.mark_id AND specification_ids=#{spcIds,jdbcType=VARCHAR})
-                  WHEN t.product_type = 1 THEN
-                  t.price
-             END) AS price
-        from t_teambuy_info t
-        where mark_id = #{markId,jdbcType=VARCHAR}
+    <select id="selectForeList" resultType="java.util.HashMap">
+        SELECT mark_id AS markId, theme, description, goods_id AS goodsId, specification_ids AS specificationIds, price, start_time AS startTime, stop_time AS stopTime 
+        FROM t_teambuy_info WHERE server_status=1
+    </select>
+    <select id="selectDetail" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.TeambuyDetail">
+        SELECT i.mark_id AS markId, i.theme AS theme, i.description, i.goods_id AS goodsId, i.goods_name AS goodsName, i.specification_ids AS specificationIds, 
+               i.type AS type, i.start_time AS startTime, i.stop_time AS stopTime, i.req_count AS reqCount, i.vaild_time AS vaildTime, i.price AS price, 
+               IF(s.promotion_mode IS NULL,gs.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN
+                           gs.sale_price-s.price
+                       WHEN s.promotion_mode=1 THEN
+                           gs.sale_price *  s.discount
+                  END) AS salePrice
+        FROM t_teambuy_info i LEFT JOIN db_goods.t_goods_specification gs ON (i.goods_id=gs.goods_id AND i.specification_ids=gs.specification_ids) LEFT JOIN
+             (SELECT s.promotion_mode,s.price,s.discount,i.goods_id 
+              FROM db_goods.t_special_info s LEFT JOIN db_goods.t_special_item i ON s.mark_id=i.special_id
+              WHERE s.server_status=1 AND s.promotion_type=1 AND
+               (CASE WHEN s.start_time IS NOT NULL THEN
+                         s.start_time <![CDATA[ < ]]> NOW()
+                     ELSE 1=1
+                END) AND
+               (CASE WHEN s.end_time IS NOT NULL THEN
+                         s.end_time <![CDATA[ > ]]> NOW()
+                     ELSE 1=1
+                END)) AS s ON i.goods_id=s.goods_id
+        WHERE i.mark_id=#{markId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectValidData" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_teambuy_info
+        where server_status = 1
     </select>
 </mapper>

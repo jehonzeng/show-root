@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+/**
+ * 用户信息表
+ * @author Administrator
+ *
+ */
 @Data
 public class UserBase implements Serializable{
     

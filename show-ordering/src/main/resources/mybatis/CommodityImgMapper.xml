@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CommodityImgMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.CommodityImg">
+        <id column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+        <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        commodity_id, img_id, type, sort
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_commodity_img
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and img_id = #{imgId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_commodity_img
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and img_id = #{imgId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.CommodityImg">
+        insert into t_commodity_img (commodity_id, img_id, type,
+        sort)
+        values (#{commodityId,jdbcType=VARCHAR}, #{imgId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+        #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.CommodityImg">
+        insert into t_commodity_img
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="imgId != null">
+                img_id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="imgId != null">
+                #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.CommodityImg">
+        update t_commodity_img
+        <set>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and img_id = #{imgId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.CommodityImg">
+        update t_commodity_img
+        set type = #{type,jdbcType=INTEGER},
+        sort = #{sort,jdbcType=INTEGER}
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and img_id = #{imgId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert ignore into t_commodity_img (commodity_id, img_id)
+        values
+        <foreach collection="imgIdList" item="imgId" index="index" separator=",">
+            (#{commodityId,jdbcType=VARCHAR}, #{imgId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.OrderRecordMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.OrderRecord">
+        <result column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="reason" jdbcType="LONGVARCHAR" property="reason" />
+    </resultMap>
+    <sql id="Blob_Column_List">
+        reason
+    </sql>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderRecord">
+        insert into t_order_record (mark_id, order_no, reason
+        )
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{reason,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderRecord">
+        insert into t_order_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="reason != null">
+                reason,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

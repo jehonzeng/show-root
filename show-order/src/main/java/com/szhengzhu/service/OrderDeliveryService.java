@@ -1,10 +1,16 @@
 package com.szhengzhu.service;
 
+import com.szhengzhu.bean.excel.LogisticsModel;
 import com.szhengzhu.bean.order.OrderDelivery;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Jehon Zeng
+ */
 public interface OrderDeliveryService {
 
     /**
@@ -14,7 +20,7 @@ public interface OrderDeliveryService {
      * @param deliveryPage
      * @return
      */
-    Result<PageGrid<OrderDelivery>> pageDelivery(PageParam<OrderDelivery> deliveryPage);
+    PageGrid<OrderDelivery> pageDelivery(PageParam<OrderDelivery> deliveryPage);
     
     /**
      * 获取订单配送详情
@@ -23,7 +29,7 @@ public interface OrderDeliveryService {
      * @param orderId
      * @return
      */
-    Result<OrderDelivery> getDeliveryByOrderId(String orderId);
+    OrderDelivery getDeliveryByOrderId(String orderId);
     
     /**
      * 修改配送信息
@@ -32,5 +38,13 @@ public interface OrderDeliveryService {
      * @param orderDelivery
      * @return
      */
-    Result<?> modifyDelivery(OrderDelivery orderDelivery);
+    void modifyDelivery(OrderDelivery orderDelivery);
+
+     /**
+     * 批量修改配送信息
+     *
+     * @return
+     * @date 2019年9月16日
+     */
+    Map<String, Object> batchModifyDeliveryOrder(List<LogisticsModel> deliveryList);
 }

@@ -16,38 +16,41 @@
         <result column="goodsName" property="goodsName" jdbcType="VARCHAR" />
     </resultMap>
     <resultMap type="com.szhengzhu.bean.vo.GoodsJudgeVo" id="BaseResultMapVo" extends="BaseResultMap">
-        <association property="delivery" javaType="com.szhengzhu.bean.order.OrderDelivery" column="order_id">
-            <result column="contact" property="contact" jdbcType="VARCHAR" />
-            <result column="phone" property="phone" jdbcType="VARCHAR" />
-            <result column="delivery_area" property="deliveryArea" jdbcType="VARCHAR" />
-            <result column="delivery_address" property="deliveryAddress" jdbcType="VARCHAR" />
-        </association>
+        <result column="specList" property="specList" jdbcType="VARCHAR" />
+        <result column="contact" property="contact" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="delivery_area" property="deliveryArea" jdbcType="VARCHAR" />
+        <result column="delivery_address" property="deliveryAddress" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, goods_id, specification_ids, order_id,user_id, server_status,
+        mark_id, goods_id, specification_ids, order_id,user_id,
+        server_status,
         description, commentator, add_time, star,sort
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List" />
         from t_goods_judge
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_goods_judge
-        where mark_id = #{markId,jdbcType=VARCHAR}
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.GoodsJudge">
-        insert into t_goods_judge (mark_id, goods_id, specification_ids, order_id,user_id,
-            server_status, description, commentator, add_time, star,sort)
-        values (#{markId,jdbcType=VARCHAR},
-            #{goodsId,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR},
-            #{orderId,jdbcType=VARCHAR},
-            #{userId,jdbcType=VARCHAR},
-            #{serverStatus,jdbcType=BIT},
-            #{description,jdbcType=VARCHAR},
-            #{commentator,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP},
-            #{star,jdbcType=INTEGER},#{sort,jdbcType=INTEGER})
+        insert into t_goods_judge (mark_id, goods_id,
+        specification_ids, order_id,user_id,
+        server_status, description, commentator, add_time, star,sort)
+        values
+        (#{markId,jdbcType=VARCHAR},
+        #{goodsId,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR},
+        #{orderId,jdbcType=VARCHAR},
+        #{userId,jdbcType=VARCHAR},
+        #{serverStatus,jdbcType=BIT},
+        #{description,jdbcType=VARCHAR},
+        #{commentator,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP},
+        #{star,jdbcType=INTEGER},#{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.GoodsJudge">
         insert into t_goods_judge
@@ -129,7 +132,8 @@
                 goods_id = #{goodsId,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
-                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+                specification_ids =
+                #{specificationIds,jdbcType=VARCHAR},
             </if>
             <if test="orderId != null">
                 order_id = #{orderId,jdbcType=VARCHAR},
@@ -160,25 +164,28 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.GoodsJudge">
         update t_goods_judge
-        set goods_id = #{goodsId,jdbcType=VARCHAR},
-            specification_ids = #{specificationIds,jdbcType=VARCHAR},
-            order_id = #{orderId,jdbcType=VARCHAR},
-            user_id= #{userId,jdbcType=VARCHAR},
-            server_status = #{serverStatus,jdbcType=BIT},
-            description = #{description,jdbcType=VARCHAR},
-            commentator = #{commentator,jdbcType=VARCHAR},
-            add_time = #{addTime,jdbcType=TIMESTAMP},
-            star = #{star,jdbcType=INTEGER},
-            sort = #{sort,jdbcType=INTEGER}
+        set goods_id =
+        #{goodsId,jdbcType=VARCHAR},
+        specification_ids = #{specificationIds,jdbcType=VARCHAR},
+        order_id = #{orderId,jdbcType=VARCHAR},
+        user_id= #{userId,jdbcType=VARCHAR},
+        server_status = #{serverStatus,jdbcType=BIT},
+        description = #{description,jdbcType=VARCHAR},
+        commentator = #{commentator,jdbcType=VARCHAR},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        star = #{star,jdbcType=INTEGER},
+        sort = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.GoodsJudge">
-        SELECT j.mark_id, j.goods_id, j.specification_ids j.order_id,j.user_id, j.server_status,
-               j.description, j.commentator, j.add_time, j.star,j.sort,
-               (SELECT goods_name FROM t_goods_info WHERE mark_id = j.goods_id) AS goodsName,
-               d.contact,d.phone ,d.delivery_area,d.delivery_address
-        FROM t_goods_judge j LEFT JOIN 
-             db_order.t_order_delivery d ON d.order_id = j.order_id
+        SELECT j.mark_id, j.goods_id, j.specification_ids, j.order_id,j.user_id, j.server_status,
+            j.description, j.add_time, j.star,j.sort,
+            IFNULL(j.commentator, (SELECT u.nick_name FROM db_user.t_user_info u where u.mark_id=j.user_id)) AS commentator,
+            (SELECT goods_name FROM t_goods_info WHERE mark_id = j.goods_id) AS goodsName,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+            FROM t_specification_info WHERE FIND_IN_SET(mark_id, j.specification_ids)) AS specList,
+            d.contact,d.phone ,d.delivery_area,d.delivery_address
+        FROM t_goods_judge j LEFT JOIN db_order.t_order_delivery d ON d.order_id = j.order_id
         <where>
             <if test="markId != null">
                 j.mark_id = #{markId,jdbcType=VARCHAR}
@@ -196,8 +203,7 @@
                 AND j.server_status = #{serverStatus,jdbcType=BIT}
             </if>
             <if test="commentator != null">
-                AND j.commentator =
-                #{commentator,jdbcType=VARCHAR}
+                AND j.commentator = #{commentator,jdbcType=VARCHAR}
             </if>
             <if test="addTime != null">
                 AND j.add_time = #{addTime,jdbcType=TIMESTAMP}
@@ -208,24 +214,28 @@
             <if test="sort != null">
                 AND j.sort = #{sort,jdbcType=INTEGER}
             </if>
+            <if test="goodsName != null">
+                AND (SELECT goods_name FROM t_goods_info WHERE mark_id = j.goods_id) LIKE CONCAT('%', CONCAT(#{goodsName,jdbcType=VARCHAR}, '%'))
+            </if>
         </where>
     </select>
 
     <select id="selectJudge" resultType="com.szhengzhu.bean.wechat.vo.JudgeBase">
-        SELECT j.mark_id AS judgeId,IF(ISNULL(j.description) || LENGTH(TRIM(j.description)) <![CDATA[ < ]]> 1, '此用户未填写评价内容', j.description) AS description,
-               j.add_time AS addTime,j.star, u.nick_name AS nickName, u.header_img AS headerImg
-        FROM t_goods_judge j LEFT JOIN 
-             db_user.t_user_info u ON j.user_id=u.mark_id 
+        SELECT j.mark_id AS judgeId,j.description AS description,
+        j.add_time AS addTime,j.star, u.nick_name AS nickName, u.header_img AS headerImg
+        FROM t_goods_judge j LEFT JOIN
+        db_user.t_user_info u ON j.user_id=u.mark_id
         WHERE j.goods_id=#{goodsId,jdbcType=VARCHAR}
         <choose>
             <when test="userId != null">
-                AND (j.user_id=#{userId} OR j.server_status=1)
+                AND (j.user_id=#{userId} OR
+                j.server_status=1)
             </when>
             <otherwise>
                 AND j.server_status=1
             </otherwise>
         </choose>
-        ORDER BY j.star DESC
+        ORDER BY j.star DESC, j.add_time DESC
         <if test="number != null">
             LIMIT #{number,jdbcType=INTEGER}
         </if>

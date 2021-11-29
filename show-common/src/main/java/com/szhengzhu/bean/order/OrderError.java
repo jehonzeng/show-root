@@ -22,5 +22,5 @@ public class OrderError implements Serializable {
 
     private String userMark;
 
-    private Integer type;
+    private Integer orderType;
 }

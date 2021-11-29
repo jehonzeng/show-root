@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ActivityRuleMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ActivityRule">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="follow" property="follow" jdbcType="INTEGER" />
+        <result column="initiator_limit" property="initiatorLimit" jdbcType="VARCHAR" />
+        <result column="limited" property="limited" jdbcType="VARCHAR" />
+        <result column="helper_limit" property="helperLimit" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, follow, initiator_limit, limited, helper_limit
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_activity_rule
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_activity_rule
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ActivityRule">
+        insert into t_activity_rule (mark_id, follow, initiator_limit,
+        limited, helper_limit)
+        values (#{markId,jdbcType=VARCHAR}, #{follow,jdbcType=INTEGER}, #{initiatorLimit,jdbcType=VARCHAR},
+        #{limited,jdbcType=VARCHAR}, #{helperLimit,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ActivityRule">
+        insert into t_activity_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="follow != null">
+                follow,
+            </if>
+            <if test="initiatorLimit != null">
+                initiator_limit,
+            </if>
+            <if test="limited != null">
+                limited,
+            </if>
+            <if test="helperLimit != null">
+                helper_limit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="follow != null">
+                #{follow,jdbcType=INTEGER},
+            </if>
+            <if test="initiatorLimit != null">
+                #{initiatorLimit,jdbcType=VARCHAR},
+            </if>
+            <if test="limited != null">
+                #{limited,jdbcType=VARCHAR},
+            </if>
+            <if test="helperLimit != null">
+                #{helperLimit,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ActivityRule">
+        update t_activity_rule
+        <set>
+            <if test="follow != null">
+                follow = #{follow,jdbcType=INTEGER},
+            </if>
+            <if test="initiatorLimit != null">
+                initiator_limit = #{initiatorLimit,jdbcType=VARCHAR},
+            </if>
+            <if test="limited != null">
+                limited = #{limited,jdbcType=VARCHAR},
+            </if>
+            <if test="helperLimit != null">
+                helper_limit = #{helperLimit,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ActivityRule">
+        update t_activity_rule
+        set follow = #{follow,jdbcType=INTEGER},
+        initiator_limit = #{initiatorLimit,jdbcType=VARCHAR},
+        limited = #{limited,jdbcType=VARCHAR},
+        helper_limit = #{helperLimit,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

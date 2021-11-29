@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.HelpLimitMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.HelpLimit">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" />
+        <result column="max_point" property="maxPoint" jdbcType="INTEGER" />
+        <result column="min_point" property="minPoint" jdbcType="INTEGER" />
+        <result column="limit_point" property="limitPoint" jdbcType="INTEGER" />
+        <result column="priority" property="priority" jdbcType="INTEGER" />
+        <result column="actName" property="actName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, activity_id, max_point, min_point, limit_point, priority
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_help_limit
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_help_limit
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.HelpLimit">
+        insert into t_help_limit (mark_id, activity_id, max_point,
+        min_point, limit_point, priority
+        )
+        values (#{markId,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR}, #{maxPoint,jdbcType=INTEGER},
+        #{minPoint,jdbcType=INTEGER}, #{limitPoint,jdbcType=INTEGER}, #{priority,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.HelpLimit">
+        insert into t_help_limit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="maxPoint != null">
+                max_point,
+            </if>
+            <if test="minPoint != null">
+                min_point,
+            </if>
+            <if test="limitPoint != null">
+                limit_point,
+            </if>
+            <if test="priority != null">
+                priority,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="maxPoint != null">
+                #{maxPoint,jdbcType=INTEGER},
+            </if>
+            <if test="minPoint != null">
+                #{minPoint,jdbcType=INTEGER},
+            </if>
+            <if test="limitPoint != null">
+                #{limitPoint,jdbcType=INTEGER},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.HelpLimit">
+        update t_help_limit
+        <set>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="maxPoint != null">
+                max_point = #{maxPoint,jdbcType=INTEGER},
+            </if>
+            <if test="minPoint != null">
+                min_point = #{minPoint,jdbcType=INTEGER},
+            </if>
+            <if test="limitPoint != null">
+                limit_point = #{limitPoint,jdbcType=INTEGER},
+            </if>
+            <if test="priority != null">
+                priority = #{priority,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.HelpLimit">
+        update t_help_limit
+        set activity_id = #{activityId,jdbcType=VARCHAR},
+        max_point = #{maxPoint,jdbcType=INTEGER},
+        min_point = #{minPoint,jdbcType=INTEGER},
+        limit_point = #{limitPoint,jdbcType=INTEGER},
+        priority = #{priority,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.HelpLimit" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+         (select theme from t_activity_info where mark_id = activity_id) as actName
+        from t_help_limit
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="activityId != null">
+                and activity_id = #{activityId,jdbcType=VARCHAR}
+            </if>
+            <if test="maxPoint != null">
+                and max_point = #{maxPoint,jdbcType=INTEGER}
+            </if>
+            <if test="minPoint != null">
+                and min_point = #{minPoint,jdbcType=INTEGER}
+            </if>
+            <if test="limitPoint != null">
+                and limit_point = #{limitPoint,jdbcType=INTEGER}
+            </if>
+            <if test="priority != null">
+                and priority = #{priority,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>

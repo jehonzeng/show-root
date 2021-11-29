@@ -1,8 +1,11 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 促销商品中间表
@@ -10,6 +13,9 @@ import lombok.Data;
  * @author Administrator
  * @date 2019年4月26日
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class SpecialItem implements Serializable {
 

@@ -1,9 +1,10 @@
 package com.szhengzhu.bean.base;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * 导航详情信息
@@ -18,8 +19,10 @@ public class NavItem implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String navId;
 
+    @NotBlank
     private String theme;
     
     private Integer serverType;

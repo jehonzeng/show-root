@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ReceiveRecordMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.ReceiveRecord">
+        <!--@Table t_receive_record-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mark_id, user_id, description, create_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_receive_record
+        where mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_receive_record
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="createTime != null">
+                and TO_DAYS(create_time) = TO_DAYS(#{createTime})
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_receive_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_receive_record
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_receive_record
+        where mark_id = #{markId}
+    </delete>
+    <!--查询用户券-->
+    <select id="userTicket" resultType="com.szhengzhu.bean.ordering.vo.UserTicketVo">
+        SELECT mark_id     AS markId,
+               name,
+               type,
+               description,
+               limit_price AS limitPrice,
+               discount,
+               start_time  AS startTime,
+               stop_time   AS stopTime,
+               status
+        FROM db_ordering.t_user_ticket
+        WHERE user_id = #{userId}
+          and template_id = #{templateId}
+          and TO_DAYS(create_time) = TO_DAYS(#{time})
+    </select>
+</mapper>

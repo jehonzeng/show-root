@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.PrinterItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.PrinterItem">
+        <id column="printer_id" property="printerId" jdbcType="VARCHAR"/>
+        <id column="commodity_id" property="commodityId" jdbcType="VARCHAR"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+    </resultMap>
+
+    <resultMap id="ProduceResultMap" type="com.szhengzhu.bean.ordering.print.PrintBase">
+        <result column="printerCode" jdbcType="VARCHAR" property="printerCode"/>
+        <result column="socket" jdbcType="VARCHAR" property="socket"/>
+        <result column="portType" jdbcType="VARCHAR" property="portType"/>
+        <result column="deptName" jdbcType="VARCHAR" property="deptName"/>
+        <result column="detailId" jdbcType="VARCHAR" property="detailId"/>
+        <collection property="produce" javaType="com.szhengzhu.bean.ordering.print.PrintProduce">
+            <result column="tableCode" jdbcType="VARCHAR" property="tableCode"/>
+            <result column="manNum" jdbcType="INTEGER" property="manNum"/>
+            <result column="operate" jdbcType="INTEGER" property="operate"/>
+            <result column="commodityName" jdbcType="VARCHAR" property="commodityName"/>
+            <result column="specs" jdbcType="VARCHAR" property="specs"/>
+            <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+            <result column="unit" jdbcType="VARCHAR" property="unit"/>
+        </collection>
+    </resultMap>
+    <resultMap id="IndentResultMap" type="com.szhengzhu.bean.ordering.print.PrintIndent">
+        <result column="storeName" jdbcType="VARCHAR" property="storeName"/>
+        <result column="indentNo" jdbcType="VARCHAR" property="indentNo"/>
+        <result column="tableCode" jdbcType="VARCHAR" property="tableCode"/>
+        <result column="manNum" jdbcType="INTEGER" property="manNum"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="schedule" jdbcType="VARCHAR" property="schedule"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="totalAmount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="discount" jdbcType="DECIMAL" property="discount"/>
+<!--        <result column="memberDiscount" jdbcType="DECIMAL" property="memberDiscount"/>-->
+        <result column="receivedAmount" jdbcType="DECIMAL" property="receivedAmount"/>
+        <result column="paidAmount" jdbcType="DECIMAL" property="paidAmount"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="printCount" jdbcType="INTEGER" property="printCount"/>
+        <collection property="detailList" ofType="com.szhengzhu.bean.ordering.print.PrintDetail">
+            <id column="detailId" jdbcType="VARCHAR" property="detailId"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+            <result column="unit" jdbcType="VARCHAR" property="unit"/>
+            <result column="price" jdbcType="DECIMAL" property="price"/>
+            <result column="specs" jdbcType="VARCHAR" property="specs"/>
+        </collection>
+        <collection property="payList" ofType="com.szhengzhu.bean.ordering.print.PrintPay">
+            <id column="payId" jdbcType="VARCHAR" property="payId"/>
+            <result column="payAmount" jdbcType="DECIMAL" property="payAmount"/>
+            <result column="payName" jdbcType="VARCHAR" property="payName"/>
+        </collection>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.PrinterItem">
+        delete
+        from t_printer_item
+        where printer_id = #{printerId,jdbcType=VARCHAR}
+          and commodity_id = #{commodityId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.PrinterItem">
+        insert into t_printer_item (printer_id, commodity_id, sort)
+        values (#{printerId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.PrinterItem">
+        insert into t_printer_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="printerId != null">
+                printer_id,
+            </if>
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="printerId != null">
+                #{printerId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatchCommodity" parameterType="java.util.List">
+        insert ignore into t_printer_item (printer_id, commodity_id,sort)
+        values
+        <foreach collection="commoditys" item="item" index="index" separator=",">
+            (#{printerId,jdbcType=VARCHAR}, #{item.commodityId,jdbcType=VARCHAR},#{item.sort,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <select id="selectPrintIndent" parameterType="java.lang.String" resultMap="IndentResultMap">
+        SELECT
+        (SELECT s.`name` FROM t_store_info s WHERE s.mark_id = i.store_id) AS storeName,
+        i.indent_no AS indentNo,
+        i.man_num as manNum,
+        if(i.bill_time is null, i.indent_time, i.bill_time) as date,
+        (select t.code from t_table_info t where i.table_id=t.mark_id) as tableCode,
+        IF(i.indent_status='IS04', (SELECT e.`name` FROM t_employee_info e WHERE e.mark_id=i.bill_by),
+        (SELECT e.`name` FROM t_employee_info e WHERE e.mark_id=i.employee_id)) AS operator,
+        (SELECT SUM(IFNULL(d.quantity,0) * d.cost_price) FROM t_indent_detail d WHERE d.indent_id=i.mark_id GROUP BY
+        d.indent_id) AS totalAmount,
+<!--        (SELECT IFNULL(SUM(IFNULL(d.quantity,0) * d.member_price),0) FROM t_indent_detail d-->
+<!--        WHERE d.indent_id=i.mark_id GROUP BY d.indent_id) AS memberDiscount,-->
+        (SELECT IFNULL(SUM(pay_amount),0) FROM t_indent_pay WHERE indent_id = d.indent_id and status=1 and pay_id='1437672656857075712') AS memberDiscount,
+        (SELECT IFNULL(SUM(amount),0) FROM t_indent_pay WHERE indent_id=d.indent_id and status=1) AS paidAmount,
+        i.indent_total AS receivedAmount,
+        1 AS printCount,
+        d.mark_id AS detailId,
+        d.commodity_name AS name,
+        d.quantity,
+        d.cost_price AS price,
+        cp.unit,
+        (SELECT CONCAT('（',GROUP_CONCAT(i.name SEPARATOR ';') ,'）') FROM t_specs_item i WHERE
+        FIND_IN_SET(i.mark_id,d.specs_items)) AS specs,
+        ip.mark_id AS payId,
+        ip.pay_name AS payName,
+        ip.pay_amount AS payAmount
+        FROM t_printer_item pi LEFT JOIN
+        t_indent_detail d ON pi.commodity_id=d.commodity_id LEFT JOIN t_commodity_price cp ON d.price_id=cp.mark_id LEFT
+        JOIN
+        t_indent_info i ON i.mark_id=d.indent_id LEFT JOIN t_table_info t ON i.table_id=t.mark_id LEFT JOIN t_indent_pay
+        ip ON (ip.indent_id = i.mark_id AND ip.status = 1)
+        WHERE d.indent_id=#{indentId,jdbcType=VARCHAR} AND pi.printer_id=#{printerId,jdbcType=VARCHAR}
+        <if test="timeCodes != null">
+            AND FIND_IN_SET(d.time_code,#{timeCodes,jdbcType=VARCHAR})
+        </if>
+        <if test="status != null">
+            AND d.status=#{status,jdbcType=VARCHAR}
+        </if>
+        ORDER BY pi.sort, d.create_time
+    </select>
+    <select id="selectPrintProduce" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.ordering.print.PrintProduce">
+        SELECT (select t.`code` from t_table_info t where i.table_id=t.mark_id) AS tableCode,
+        i.man_num AS manNum,
+        1 AS printCount,
+        1 AS operate,
+        d.commodity_name AS commodityName,
+        (SELECT CONCAT('（',GROUP_CONCAT(si.name SEPARATOR ';'),'）') FROM t_specs_item si WHERE
+        FIND_IN_SET(si.mark_id,d.specs_items)) AS specs,
+        d.quantity,
+        cp.unit
+        FROM t_printer_item pi LEFT JOIN
+        t_indent_detail d ON pi.commodity_id=d.commodity_id LEFT JOIN t_commodity_price cp ON d.price_id=cp.mark_id LEFT
+        JOIN
+        t_indent_info i ON i.mark_id=d.indent_id
+        WHERE d.indent_id=#{indentId,jdbcType=VARCHAR} and pi.printer_id=#{printerId,jdbcType=VARCHAR} AND d.`status`= 1
+        <if test="timeCodes != null and timeCodes != ''">
+            AND FIND_IN_SET(d.time_code,#{timeCodes,jdbcType=VARCHAR})
+        </if>
+        ORDER BY pi.sort,d.create_time
+    </select>
+
+    <select id="selectReturnProduce" parameterType="java.lang.String" resultMap="ProduceResultMap">
+        SELECT p.printer_code                                                     AS printerCode,
+               p.port_name                                                        AS socket,
+               p.port_type                                                        AS portType,
+               p.tail,
+               (select t.`code` from t_table_info t where i.table_id = t.mark_id) AS tableCode,
+               i.man_num                                                          AS manNum,
+               1                                                                  AS printCount,
+               p.dept_name                                                        AS deptName,
+               1                                                                  AS operate,
+               d.mark_id                                                          AS detailId,
+               d.commodity_name                                                   AS commodityName,
+               (SELECT CONCAT('（', GROUP_CONCAT(si.name SEPARATOR ';'), '）')
+                FROM t_specs_item si
+                WHERE FIND_IN_SET(si.mark_id, d.specs_items))                     AS specs,
+               d.quantity,
+               cp.unit
+        FROM t_printer_info p
+                     LEFT JOIN t_printer_item pi ON p.mark_id = pi.printer_id
+                     LEFT JOIN
+                     t_indent_detail d ON pi.commodity_id = d.commodity_id
+                     LEFT JOIN t_commodity_price cp ON d.price_id = cp.mark_id
+                     LEFT JOIN
+                     t_indent_info i ON i.mark_id = d.indent_id
+        WHERE d.mark_id = #{detailId,jdbcType=VARCHAR}
+          and p.printer_code not in ('P207', 'P208', 'P209')
+        ORDER BY pi.sort, d.create_time
+    </select>
+</mapper>

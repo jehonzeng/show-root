@@ -1,18 +1,19 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.MealImage;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.MealImageService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Map;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "mImages")
 public class MealImageController {
@@ -20,30 +21,29 @@ public class MealImageController {
     @Resource
     private MealImageService mealImageService;
     
-    @RequestMapping(value="/add",method=RequestMethod.POST)
-    public Result<?> addMealImage(@RequestBody MealImage base) {
+    @PostMapping(value="/add")
+    public MealImage addMealImage(@RequestBody MealImage base) {
         return mealImageService.addMealImage(base);
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public Result<?> modifyMealImage(@RequestBody MealImage base) {
-        return mealImageService.midifyMealImage(base);
+    @PatchMapping(value = "/edit")
+    public MealImage modifyMealImage(@RequestBody MealImage base) {
+        return mealImageService.modifyMealImage(base);
     }
 
-    @RequestMapping(value = "/{markId}", method = RequestMethod.DELETE)
-    public Result<?> deleteMealImage(@PathVariable("markId") String markId) {
-        return mealImageService.deleteMealImage(markId);
+    @DeleteMapping(value = "/{markId}")
+    public void deleteMealImage(@PathVariable("markId") @NotBlank String markId) {
+        mealImageService.deleteMealImage(markId);
     }
 
-    @RequestMapping(value = "/list/{mealId}", method = RequestMethod.GET)
-    public Result<?> getMealImages(@PathVariable("mealId") String mealId,
-            @RequestParam("serverType") Integer serverType) {
+    @GetMapping(value = "/list/{mealId}")
+    public Map<String, Object> getMealImages(@PathVariable("mealId") @NotBlank String mealId,
+                                             @RequestParam("serverType") @NotNull Integer serverType) {
         return mealImageService.getMealImageList(mealId, serverType);
     }
     
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public MealImage getMealImageInfo(@PathVariable("markId")String markId) {
+    @GetMapping(value = "/{markId}")
+    public MealImage getMealImageInfo(@PathVariable("markId") @NotBlank String markId) {
         return mealImageService.getImageInfo(markId);
     }
-
 }

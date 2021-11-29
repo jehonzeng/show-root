@@ -1,16 +1,24 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import lombok.Data;
 /**
  * 采购信息表
  * 
  * @author Administrator
  * @date 2019年5月7日
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class PurchaseInfo implements Serializable{
  
@@ -18,6 +26,7 @@ public class PurchaseInfo implements Serializable{
 
     private String markId;
 
+    @NotBlank
     private String foodId;
 
     private BigDecimal purchaseTotal;

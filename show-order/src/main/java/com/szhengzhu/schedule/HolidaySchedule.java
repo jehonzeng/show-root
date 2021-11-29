@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import com.szhengzhu.service.HolidayService;
 
+/**
+ * @author Jehon Zeng
+ */
 @Component
 public class HolidaySchedule {
     
@@ -30,7 +33,7 @@ public class HolidaySchedule {
         int daySize = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int index = 1; index <= daySize; index++) {
             int week = calendar.get(Calendar.DAY_OF_WEEK);
-            if (week == Calendar.SATURDAY || week == Calendar.SUNDAY) {
+            if (week == Calendar.SUNDAY) {
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH) + 1;
                 int day = calendar.get(Calendar.DATE);

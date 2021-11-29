@@ -6,9 +6,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 商品分类信息
- * 
+ *
  * @author Administrator
  * @date 2019年2月27日
  */
@@ -21,9 +23,11 @@ public class CategoryInfo implements Serializable {
     @ApiModelProperty(value = "ID", name = "markId")
     private String markId;
 
+    @NotBlank
     @ApiModelProperty(value = "上级类", name = "superId")
     private String superId;
 
+    @NotBlank
     @ApiModelProperty(value = "类别名称", name = "name")
     private String name;
 
@@ -35,8 +39,8 @@ public class CategoryInfo implements Serializable {
 
     @ApiModelProperty(hidden = true)
     private Integer sort;
-    
+
     private String superName;
-    
-    
+
+
 }

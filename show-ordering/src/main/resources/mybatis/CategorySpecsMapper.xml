@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CategorySpecsMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.CategorySpecs">
+        <id column="category_id" jdbcType="VARCHAR" property="categoryId" />
+        <id column="specs_id" jdbcType="VARCHAR" property="specsId" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        category_id, specs_id, sort
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_category_specs
+        where category_id = #{categoryId,jdbcType=VARCHAR} and specs_id = #{specsId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_category_specs
+        where category_id = #{categoryId,jdbcType=VARCHAR} and specs_id = #{specsId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.CategorySpecs">
+        insert into t_category_specs (category_id, specs_id,
+        sort)
+        values (#{categoryId,jdbcType=VARCHAR}, #{specsId,jdbcType=VARCHAR},
+        #{sort,jdbcType=INTEGER})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.CategorySpecs">
+        update t_category_specs
+        set sort = #{sort,jdbcType=INTEGER}
+        where category_id = #{categoryId,jdbcType=VARCHAR} and specs_id = #{specsId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert ignore into t_category_specs (category_id, specs_id)
+        values
+        <foreach collection="specsIds" item="specsId" index="index" separator=",">
+            (#{cateId,jdbcType=VARCHAR}, #{specsId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

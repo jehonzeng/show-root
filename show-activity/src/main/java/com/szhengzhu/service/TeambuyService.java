@@ -1,9 +1,11 @@
 package com.szhengzhu.service;
 
 import com.szhengzhu.bean.activity.TeambuyInfo;
+import com.szhengzhu.bean.wechat.vo.TeambuyDetail;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.Map;
 
 public interface TeambuyService {
 
@@ -14,7 +16,7 @@ public interface TeambuyService {
      * @param teambuyPage
      * @return
      */
-    Result<PageGrid<TeambuyInfo>> pageTeambuy(PageParam<TeambuyInfo> teambuyPage);
+    PageGrid<TeambuyInfo> pageTeambuy(PageParam<TeambuyInfo> teambuyPage);
     
     /**
      * 添加团购活动
@@ -23,7 +25,7 @@ public interface TeambuyService {
      * @param teambuyInfo
      * @return
      */
-    Result<TeambuyInfo> saveTeambuy(TeambuyInfo teambuyInfo);
+    TeambuyInfo addInfo(TeambuyInfo teambuyInfo);
     
     /**
      * 修改团购活动
@@ -32,7 +34,7 @@ public interface TeambuyService {
      * @param teambuyInfo
      * @return
      */
-    Result<TeambuyInfo> updateTeambuy(TeambuyInfo teambuyInfo);
+    void modifyInfo(TeambuyInfo teambuyInfo);
     
     /**
      * 获取团购活动详细信息
@@ -41,5 +43,39 @@ public interface TeambuyService {
      * @param markId
      * @return
      */
-    Result<TeambuyInfo> getTeambuyInfo(String markId, String specIds);
+    TeambuyInfo getInfo(String markId);
+    
+    /**
+     * 商城获取团购列表
+     * 
+     * @date 2019年10月9日 下午3:13:22
+     * @param pageParam
+     * @return
+     */
+    PageGrid<Map<String, Object>> pageForeList(PageParam<String> pageParam);
+    
+    /**
+     * 获取团购详细信息
+     * 
+     * @date 2019年10月9日 下午3:45:12
+     * @param markId
+     * @return
+     */
+    TeambuyDetail getDetail(String markId);
+    
+    /**
+     * 减库存
+     * 
+     * @date 2019年10月22日 上午9:49:41
+     * @param markId
+     */
+    void subStock(String markId);
+    
+    /**
+     * 加库存
+     * 
+     * @date 2019年10月22日 上午9:50:12
+     * @param markId
+     */
+    void addStock(String markId);
 }

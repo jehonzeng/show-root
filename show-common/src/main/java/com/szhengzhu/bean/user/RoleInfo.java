@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 用户角色信息
  * 
@@ -17,6 +19,7 @@ public class RoleInfo implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String roleName;
 
     private String description;

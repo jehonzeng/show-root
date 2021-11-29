@@ -5,6 +5,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 合作商信息表
  * 
@@ -20,6 +22,7 @@ public class PartnerInfo implements Serializable{
 
     private String identificationCode;
 
+    @NotBlank
     private String name;
 
     private Date addTime;

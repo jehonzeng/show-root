@@ -11,6 +11,7 @@
         <result column="description" jdbcType="LONGVARCHAR" property="description" />
         <result column="process_time" jdbcType="TIMESTAMP" property="processTime" />
         <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="createName" jdbcType="BIT" property="createName" />
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, type_id, content, creator,
@@ -149,8 +150,8 @@
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.FeedbackInfo" resultMap="BaseResultMap">
         select mark_id, type_id,
               (SELECT t.`name` FROM t_attribute_info t WHERE t.`code`=type_id) AS typeDesc,
-               content,
-              (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=creator) AS creator, create_time,
+               content, creator,
+              (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=creator) AS createName, create_time,
               (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=processor) AS
                processor, description, process_time, server_status
         from t_feedback_info
@@ -183,5 +184,15 @@
                 AND description = #{description,jdbcType=LONGVARCHAR}
             </if>
         </where>
+    </select>
+    <select id="selectIndexFeebackCount" resultType="com.szhengzhu.bean.rpt.IndexDisplay">
+    SELECT COUNT(*) AS quantity,'投诉待处理问题' AS `name`
+    FROM t_feedback_info WHERE server_status = 0
+    UNION ALL
+    SELECT COUNT(*) AS quantity,'已处理问题' AS `name` 
+    FROM t_feedback_info WHERE server_status = 1 
+    UNION ALL
+    SELECT ROUND(AVG(TIMESTAMPDIFF(HOUR,create_time,process_time))) AS quantity,'平均处理周期' AS 'name' 
+    FROM t_feedback_info WHERE server_status = 1
     </select>
 </mapper>

@@ -1,12 +1,13 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 商品基础信息
@@ -23,6 +24,7 @@ public class GoodsInfo implements Serializable {
     @ApiModelProperty(value = "ID", name = "markId")
     private String markId;
 
+    @NotBlank
     @ApiModelProperty(value = "商品名称", name = "goodsName")
     private String goodsName;
 

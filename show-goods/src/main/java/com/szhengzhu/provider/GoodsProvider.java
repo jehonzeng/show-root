@@ -2,6 +2,9 @@ package com.szhengzhu.provider;
 
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 public class GoodsProvider {
 
     public String selectGoodsImageList(Map<String, String> map) {
@@ -21,7 +24,7 @@ public class GoodsProvider {
         sql.append("SELECT s.mark_id AS markId,s.attr_name AS attrName,");
         sql.append("s.attr_value AS attrValue FROM t_specification_info s ");
         sql.append("LEFT JOIN t_type_specification t ON s.mark_id=t.specification_id ");
-        sql.append("WHERE s.server_status = '1' AND t.type_id IN ");
+        sql.append("WHERE s.server_status = 1 AND t.type_id IN ");
         sql.append("(SELECT type_id FROM t_goods_info ");
         sql.append("WHERE mark_id = '" + markId + "' ) ");
         sql.append("ORDER BY s.sort ");
@@ -72,8 +75,21 @@ public class GoodsProvider {
         sql.append("SELECT DISTINCT(attr_name) AS attrName ");
         sql.append("FROM t_specification_info s ");
         sql.append("LEFT JOIN t_type_specification t ON t.specification_id = s.mark_id ");
-        sql.append("WHERE s.server_status = '1' AND t.type_id IN ( ");
+        sql.append("WHERE s.server_status = 1 AND t.type_id IN ( ");
         sql.append("SELECT type_id FROM t_goods_info WHERE mark_id ='" + goodsId + "' )");
+        return sql.toString();
+    }
+
+    public String selectByCategoryId(Map<String, String> map) {
+        String productId = map.get("productId");
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT CASE a.`level` WHEN 0 THEN a.`name` WHEN 1 ");
+        sql.append("THEN b.`name` WHEN 2 THEN c.`name` ELSE '超限定' END  AS `name` ");
+        sql.append("FROM t_category_info a ");
+        sql.append("LEFT JOIN t_category_info b ON a.super_id = b.mark_id ");
+        sql.append("LEFT JOIN t_category_info c ON b.super_id = c.mark_id ");
+        sql.append("WHERE a.mark_id IN (SELECT category_id FROM t_goods_info ");
+        sql.append("WHERE mark_id = '" + productId + "')");
         return sql.toString();
     }
 }

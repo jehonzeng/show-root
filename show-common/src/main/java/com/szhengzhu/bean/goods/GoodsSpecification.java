@@ -3,8 +3,21 @@ package com.szhengzhu.bean.goods;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
+/**
+ * 
+ * @author Administrator
+ *
+ */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class GoodsSpecification implements Serializable {
     
@@ -12,6 +25,7 @@ public class GoodsSpecification implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String goodsId;
     
     private String specificationIds;

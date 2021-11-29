@@ -1,16 +1,19 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.LabelGoods;
+import com.szhengzhu.bean.vo.LabelGoodsVo;
+import com.szhengzhu.bean.vo.LabelMealVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.LabelGoods;
-import com.szhengzhu.bean.vo.LabelGoodsVo;
-import com.szhengzhu.bean.vo.LabelMealVo;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface LabelGoodsMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(LabelGoods record);

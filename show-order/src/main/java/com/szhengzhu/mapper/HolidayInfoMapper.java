@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Select;
 
 import com.szhengzhu.bean.order.HolidayInfo;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface HolidayInfoMapper {
     
     int deleteByPrimaryKey(Date holiday);

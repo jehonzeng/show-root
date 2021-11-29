@@ -1,14 +1,15 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
+import com.szhengzhu.bean.excel.MealGoodsModel;
 import com.szhengzhu.bean.goods.PurchaseHistory;
 import com.szhengzhu.bean.goods.PurchaseInfo;
 import com.szhengzhu.bean.vo.PurchaseFood;
 import com.szhengzhu.bean.vo.PurchaseHistoryVo;
+import com.szhengzhu.bean.vo.TodayProductVo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface PurchaseService {
     /**
@@ -18,7 +19,7 @@ public interface PurchaseService {
      * @param base
      * @return
      */
-    Result<PageGrid<PurchaseFood>> getPurchasePage(PageParam<PurchaseInfo> base);
+    PageGrid<PurchaseFood> getPurchasePage(PageParam<PurchaseInfo> base);
 
     /**
      * 获取采购记录列表
@@ -27,7 +28,7 @@ public interface PurchaseService {
      * @param base
      * @return
      */
-    Result<PageGrid<PurchaseHistoryVo>> getHistoryPage(PageParam<PurchaseHistory> base);
+    PageGrid<PurchaseHistoryVo> getHistoryPage(PageParam<PurchaseHistory> base);
 
     /**
      * 指定指派人
@@ -37,7 +38,7 @@ public interface PurchaseService {
      * @param userId
      * @return
      */
-    Result<?> appoinStaff(String markId, String userId);
+    void appoinStaff(String markId, String userId);
 
     /**
      * 撤销指派人
@@ -46,10 +47,10 @@ public interface PurchaseService {
      * @param markId
      * @return
      */
-    Result<?> revokeStaff(String markId);
+    void revokeStaff(String markId);
     
   
-    Result<?> buyFood(PurchaseInfo base);
+    void buyFood(PurchaseInfo base);
 
     /**
      * 生成今日采购单
@@ -57,7 +58,7 @@ public interface PurchaseService {
      * @date 2019年5月21日 上午11:07:30
      * @return
      */
-    Result<?> createPurchaseOrder();
+    void createPurchaseOrder();
 
     /**
      * 删除昨天的采购单
@@ -65,7 +66,7 @@ public interface PurchaseService {
      * @date 2019年5月21日 上午11:07:34
      * @param buyTime
      */
-    Result<?> deletePurchaseOrder(String buyTime);
+    void deletePurchaseOrder(String buyTime);
 
     /**
      * 更新采购单
@@ -73,7 +74,7 @@ public interface PurchaseService {
      * @date 2019年5月21日 上午11:07:37
      * @return
      */
-    Result<?> reflashPurchaseOrder();
+    void refreshPurchaseOrder();
 
     /**
      * 获取不同状态列表
@@ -83,5 +84,14 @@ public interface PurchaseService {
      * @return
      * @date 2019年7月10日
      */
-    Result<List<PurchaseFood>> getListByStatus(String userId, Integer status);
+    List<PurchaseFood> getListByStatus(String userId, Integer status);
+    
+    /**
+     * 统计（已支付或者备货订单）采购商品
+     * @param list 
+     *
+     * @return
+     * @date 2019年9月16日
+     */
+    List<MealGoodsModel> getProductList(List<TodayProductVo> list);
 }

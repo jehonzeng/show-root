@@ -2,42 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.MealJudgeMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.MealJudge">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
-        <result column="meal_id" property="mealId" jdbcType="VARCHAR" />
-        <result column="user_id" jdbcType="VARCHAR" property="userId" />
-        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
-        <result column="server_status" property="serverStatus" jdbcType="BIT" />
-        <result column="description" property="description" jdbcType="VARCHAR" />
-        <result column="commentator" property="commentator" jdbcType="VARCHAR" />
-        <result column="star" property="star" jdbcType="INTEGER" />
-        <result column="sort" property="sort" jdbcType="INTEGER" />
-        <result column="mealName" property="mealName" jdbcType="VARCHAR" />
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="meal_id" property="mealId" jdbcType="VARCHAR"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="server_status" property="serverStatus" jdbcType="BIT"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="commentator" property="commentator" jdbcType="VARCHAR"/>
+        <result column="star" property="star" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="mealName" property="mealName" jdbcType="VARCHAR"/>
     </resultMap>
-        <resultMap
-        type="com.szhengzhu.bean.vo.MealJudgeVo"
-        id="BaseResultMapVo"
-        extends="BaseResultMap">
-        <association
-            property="delivery"
-            javaType="com.szhengzhu.bean.order.OrderDelivery"
-            column="order_id">
-            <result
-                column="contact"
-                property="contact"
-                jdbcType="VARCHAR" />
-            <result
-                column="phone"
-                property="phone"
-                jdbcType="VARCHAR" />
-                <result
-                column="delivery_area"
-                property="deliveryArea"
-                jdbcType="VARCHAR" />
-            <result
-                column="delivery_address"
-                property="deliveryAddress"
-                jdbcType="VARCHAR" />
+    <resultMap type="com.szhengzhu.bean.vo.MealJudgeVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <association property="delivery" javaType="com.szhengzhu.bean.order.OrderDelivery" column="order_id">
+            <result column="contact" property="contact" jdbcType="VARCHAR"/>
+            <result column="phone" property="phone" jdbcType="VARCHAR"/>
+            <result column="delivery_area" property="deliveryArea" jdbcType="VARCHAR"/>
+            <result column="delivery_address" property="deliveryAddress" jdbcType="VARCHAR"/>
         </association>
     </resultMap>
     <sql id="Base_Column_List">
@@ -45,23 +27,24 @@
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_meal_judge
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_meal_judge
+        delete
+        from t_meal_judge
         where mark_id =
-        #{markId,jdbcType=VARCHAR}
+              #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.MealJudge">
-        insert into t_meal_judge (mark_id, order_id, meal_id,user_id,
-            add_time, server_status, description, commentator, star, sort )
+        insert into t_meal_judge (mark_id, order_id, meal_id, user_id,
+                                  add_time, server_status, description, commentator, star, sort)
         values (#{markId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
-            #{mealId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
-            #{addTime,jdbcType=TIMESTAMP}, #{serverStatus,jdbcType=BIT},
-            #{description,jdbcType=VARCHAR}, #{commentator,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER},
-            #{sort,jdbcType=INTEGER} )
+                #{mealId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+                #{addTime,jdbcType=TIMESTAMP}, #{serverStatus,jdbcType=BIT},
+                #{description,jdbcType=VARCHAR}, #{commentator,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER},
+                #{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.MealJudge">
         insert into t_meal_judge
@@ -165,25 +148,25 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.MealJudge">
         update t_meal_judge
-        set order_id = #{orderId,jdbcType=VARCHAR},
-            meal_id = #{mealId,jdbcType=VARCHAR},
+        set order_id      = #{orderId,jdbcType=VARCHAR},
+            meal_id       = #{mealId,jdbcType=VARCHAR},
             user_id= #{userId,jdbcType=VARCHAR},
-            add_time = #{addTime,jdbcType=TIMESTAMP},
+            add_time      = #{addTime,jdbcType=TIMESTAMP},
             server_status = #{serverStatus,jdbcType=BIT},
-            description = #{description,jdbcType=VARCHAR},
-            commentator = #{commentator,jdbcType=VARCHAR},
-            star = #{star,jdbcType=INTEGER},
-            sort = #{sort,jdbcType=INTEGER}
+            description   = #{description,jdbcType=VARCHAR},
+            commentator   = #{commentator,jdbcType=VARCHAR},
+            star          = #{star,jdbcType=INTEGER},
+            sort          = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.goods.MealJudge">
-       SELECT
-        j.mark_id, j.order_id, j.meal_id,j.user_id, j.add_time, 
-        j.server_status,j.description,j.commentator, j.star, j.sort,
+    <select id="selectByExampleSelective" resultMap="BaseResultMapVo"
+            parameterType="com.szhengzhu.bean.goods.MealJudge">
+        SELECT j.mark_id, j.order_id, j.meal_id,j.user_id, j.add_time,
+        j.server_status,j.description, j.star, j.sort,
+        IFNULL(j.commentator, (SELECT u.nick_name FROM db_user.t_user_info u where u.mark_id=j.user_id)) AS commentator,
         (SELECT theme FROM t_meal_info WHERE mark_id = j.meal_id) AS mealName,
         d.contact,d.phone ,d.delivery_area,d.delivery_address
-        FROM t_meal_judge j LEFT JOIN db_order.t_order_delivery d
-        ON d.order_id = j.order_id
+        FROM t_meal_judge j LEFT JOIN db_order.t_order_delivery d ON d.order_id = j.order_id
         <where>
             <if test="markId != null">
                 j.mark_id = #{markId,jdbcType=VARCHAR}
@@ -201,8 +184,7 @@
                 AND server_status = #{serverStatus,jdbcType=BIT}
             </if>
             <if test="commentator != null">
-                AND j.commentator =
-                #{commentator,jdbcType=VARCHAR}
+                AND j.commentator = #{commentator,jdbcType=VARCHAR}
             </if>
             <if test="addTime != null">
                 AND j.add_time = #{addTime,jdbcType=TIMESTAMP}
@@ -213,23 +195,28 @@
             <if test="sort != null">
                 AND j.sort = #{sort,jdbcType=INTEGER}
             </if>
+            <if test="mealName != null">
+                AND (SELECT theme FROM t_meal_info WHERE mark_id = j.meal_id) LIKE CONCAT('%',
+                CONCAT(#{mealName,jdbcType=VARCHAR}, '%'))
+            </if>
         </where>
     </select>
-   <select id="selectJudge" resultType="com.szhengzhu.bean.wechat.vo.JudgeBase">
-        SELECT j.mark_id AS judgeId, IF(ISNULL(j.description) || LENGTH(TRIM(j.description)) <![CDATA[ < ]]> 1, '此用户未填写评价内容', j.description) AS description,j.add_time AS addTime,j.star,
-               u.nick_name AS nickName, u.header_img AS headerImg 
-        FROM t_meal_judge j LEFT JOIN db_user.t_user_info u ON j.user_id=u.mark_id WHERE j.meal_id=#{mealId,jdbcType=VARCHAR}
+    <select id="selectJudge" resultType="com.szhengzhu.bean.wechat.vo.JudgeBase">
+        SELECT j.mark_id AS judgeId, j.description AS description,j.add_time AS addTime,j.star,
+        u.nick_name AS nickName, u.header_img AS headerImg
+        FROM t_meal_judge j LEFT JOIN db_user.t_user_info u ON j.user_id=u.mark_id WHERE
+        j.meal_id=#{mealId,jdbcType=VARCHAR}
         <choose>
             <when test="userId != null">
-             AND (j.user_id=#{userId} OR j.server_status=1)
+                AND (j.user_id=#{userId} OR j.server_status=1)
             </when>
             <otherwise>
-             AND j.server_status=1
+                AND j.server_status=1
             </otherwise>
         </choose>
-        ORDER BY j.star DESC 
+        ORDER BY j.star DESC, j.add_time DESC
         <if test="number != null">
-        LIMIT #{number,jdbcType=INTEGER}
+            LIMIT #{number,jdbcType=INTEGER}
         </if>
-   </select>
+    </select>
 </mapper>

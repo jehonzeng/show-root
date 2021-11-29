@@ -1,9 +1,9 @@
 package com.szhengzhu.bean.base;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 @Data
 public class FeedbackInfo implements Serializable {
@@ -13,7 +13,7 @@ public class FeedbackInfo implements Serializable {
     private String markId;
 
     private String typeId;
-    
+
     private String content;
 
     private String creator;
@@ -29,4 +29,6 @@ public class FeedbackInfo implements Serializable {
     private Boolean serverStatus;
     
     private String typeDesc;
+    
+    private String createName;
 }

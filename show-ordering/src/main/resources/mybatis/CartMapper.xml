@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CartMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.Cart">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="table_id" jdbcType="VARCHAR" property="tableId"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="commodity_type" jdbcType="VARCHAR" property="commodityType"/>
+        <result column="commodity_id" jdbcType="VARCHAR" property="commodityId"/>
+        <result column="commodity_name" jdbcType="VARCHAR" property="commodityName"/>
+        <result column="price_id" jdbcType="VARCHAR" property="priceId"/>
+        <result column="specs_items" jdbcType="VARCHAR" property="specsItems"/>
+        <result column="cost_price" jdbcType="DECIMAL" property="costPrice"/>
+        <result column="price_type" jdbcType="INTEGER" property="priceType"/>
+        <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
+        <result column="integral_price" jdbcType="DECIMAL" property="integralPrice"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, table_id, store_id, user_id, commodity_type, commodity_id, commodity_name, price_id,
+        specs_items, ifnull(cost_price, 0) as cost_price, ifnull(price_type, 0) as price_type, ifnull(sale_price, 0) as sale_price, ifnull(integral_price, 0) as integral_price, quantity,
+        create_time, modify_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_cart_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_cart_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.Cart">
+        insert into t_cart_info (mark_id, table_id, store_id, user_id,
+                                 commodity_type, commodity_id, commodity_name,
+                                 price_id, specs_items, cost_price, price_type,
+                                 sale_price, integral_price, quantity,
+                                 create_time, modify_time)
+        values (#{markId,jdbcType=VARCHAR}, #{tableId,jdbcType=VARCHAR}, #{storeId,jdbcType=VARCHAR},
+                #{userId,jdbcType=VARCHAR},
+                #{commodityType,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, #{commodityName,jdbcType=VARCHAR},
+                #{priceId,jdbcType=VARCHAR}, #{specsItems,jdbcType=VARCHAR}, #{costPrice,jdbcType=DECIMAL},
+                #{priceType,jdbcType=INTEGER},
+                #{salePrice,jdbcType=DECIMAL}, #{integralPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.Cart">
+        insert into t_cart_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="tableId != null">
+                table_id,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="commodityType != null">
+                commodity_type,
+            </if>
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="commodityName != null">
+                commodity_name,
+            </if>
+            <if test="priceId != null">
+                price_id,
+            </if>
+            <if test="specsItems != null">
+                specs_items,
+            </if>
+            <if test="costPrice != null">
+                cost_price,
+            </if>
+            <if test="priceType != null">
+                price_type,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="integralPrice != null">
+                integral_price,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityType != null">
+                #{commodityType,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityName != null">
+                #{commodityName,jdbcType=VARCHAR},
+            </if>
+            <if test="priceId != null">
+                #{priceId,jdbcType=VARCHAR},
+            </if>
+            <if test="specsItems != null">
+                #{specsItems,jdbcType=VARCHAR},
+            </if>
+            <if test="costPrice != null">
+                #{costPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="priceType != null">
+                #{priceType,jdbcType=INTEGER},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="integralPrice != null">
+                #{integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.Cart">
+        update t_cart_info
+        <set>
+            <if test="tableId != null">
+                table_id = #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityType != null">
+                commodity_type = #{commodityType,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityId != null">
+                commodity_id = #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityName != null">
+                commodity_name = #{commodityName,jdbcType=VARCHAR},
+            </if>
+            <if test="priceId != null">
+                price_id = #{priceId,jdbcType=VARCHAR},
+            </if>
+            <if test="specsItems != null">
+                specs_items = #{specsItems,jdbcType=VARCHAR},
+            </if>
+            <if test="costPrice != null">
+                cost_price = #{costPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="priceType != null">
+                price_type = #{priceType,jdbcType=INTEGER},
+            </if>
+            <if test="salePrice != null">
+                sale_price = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="integralPrice != null">
+                integral_price = #{integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.Cart">
+        update t_cart_info
+        set table_id       = #{tableId,jdbcType=VARCHAR},
+            store_id       = #{storeId,jdbcType=VARCHAR},
+            user_id        = #{userId,jdbcType=VARCHAR},
+            commodity_type = #{commodityType,jdbcType=VARCHAR},
+            commodity_id   = #{commodityId,jdbcType=VARCHAR},
+            commodity_name = #{commodityName,jdbcType=VARCHAR},
+            price_id       = #{priceId,jdbcType=VARCHAR},
+            specs_items    = #{specsItems,jdbcType=VARCHAR},
+            cost_price     = #{costPrice,jdbcType=DECIMAL},
+            price_type     = #{priceType,jdbcType=INTEGER},
+            sale_price     = #{salePrice,jdbcType=DECIMAL},
+            integral_price = #{integralPrice,jdbcType=DECIMAL},
+            quantity       = #{quantity,jdbcType=INTEGER},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            modify_time    = #{modifyTime,jdbcType=TIMESTAMP}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByTableComm" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_cart_info
+        where table_id = #{tableId,jdbcType=VARCHAR} and commodity_id = #{commodityId,jdbcType=VARCHAR} and
+        price_id=#{priceId,jdbcType=VARCHAR} and specs_items = #{specsItems,jdbcType=VARCHAR} and user_id =
+        #{userId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectVoByTable" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.xwechat.vo.DetailModel">
+        SELECT c.mark_id AS markId, c.commodity_type AS commodityType, c.commodity_id AS commodityId,
+            c.commodity_name AS commodityName, c.price_id AS priceId, (SELECT unit FROM t_commodity_price WHERE
+            mark_id=price_id) AS unit, c.specs_items AS specsItems,
+            (SELECT GROUP_CONCAT(`name`) FROM t_specs_item WHERE FIND_IN_SET(mark_id,c.specs_items)) AS specsNames,
+            c.create_time as crateTime,
+            c.price_type as priceType, c.sale_price AS salePrice, c.integral_price as integralPrice,c.quantity,c.user_id AS
+            userId,u.nick_name AS
+            nickName,(SELECT i.image_path FROM db_base.t_image_info i WHERE i.mark_id=u.header_img) AS headerImg
+        FROM t_cart_info c LEFT JOIN db_user.t_user_info u ON c.user_id=u.mark_id
+        WHERE c.table_id=#{tableId,jdbcType=VARCHAR}
+        <!-- 只能是售价排序，为了计算买减活动 -->
+        order by c.sale_price
+    </select>
+    <select id="selectByTable" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_cart_info
+        where table_id = #{tableId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectExpire" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_cart_info
+        WHERE NOW() > DATE_ADD(create_time, INTERVAL 2 HOUR)
+    </select>
+    <select id="userCart" resultType="com.szhengzhu.bean.ordering.UserIndent">
+        SELECT table_id                                                          AS tableId,
+               `name`                                                            AS tableNum,
+               (SELECT `name` FROM t_store_info WHERE c.store_id = mark_id)      AS storeName,
+               (SELECT `name` FROM t_table_status WHERE `code` = t.table_status) AS tableStatus,
+               c.create_time                                                     AS time
+        FROM t_cart_info c
+                 INNER JOIN t_table_info t ON t.mark_id = c.table_id
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+          AND table_status NOT IN ('TS01', 'TS06')
+        ORDER BY c.create_time DESC
+        LIMIT 1
+    </select>
+</mapper>

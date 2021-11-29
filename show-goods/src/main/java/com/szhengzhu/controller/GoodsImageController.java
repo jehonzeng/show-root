@@ -1,18 +1,19 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.GoodsImage;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.GoodsImageService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Map;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "images")
 public class GoodsImageController {
@@ -20,29 +21,29 @@ public class GoodsImageController {
     @Resource
     private GoodsImageService goodsImageService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> addGoodsImage(@RequestBody GoodsImage base) {
+    @PostMapping(value = "/add")
+    public GoodsImage addGoodsImage(@RequestBody GoodsImage base) {
         return goodsImageService.addGoodsImage(base);
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public Result<?> modifyGoodsImage(@RequestBody GoodsImage base) {
-        return goodsImageService.midifyGoodsImage(base);
+    @PatchMapping(value = "/edit")
+    public GoodsImage modifyGoodsImage(@RequestBody GoodsImage base) {
+        return goodsImageService.modifyGoodsImage(base);
     }
 
-    @RequestMapping(value = "/delete/{markId}", method = RequestMethod.DELETE)
-    public Result<?> deleteGoodsImage(@PathVariable("markId") String markId) {
-        return goodsImageService.deleteGoodsImage(markId);
+    @DeleteMapping(value = "/delete/{markId}")
+    public void deleteGoodsImage(@PathVariable("markId") @NotBlank String markId) {
+        goodsImageService.deleteGoodsImage(markId);
     }
 
-    @RequestMapping(value = "/list/{goodsId}", method = RequestMethod.GET)
-    public Result<?> showGoodsImage(@PathVariable("goodsId") String goodsId,
-            @RequestParam("serverType") Integer serverType) {
+    @GetMapping(value = "/list/{goodsId}")
+    public Map<String, Object> showGoodsImage(@PathVariable("goodsId") @NotBlank String goodsId,
+                                              @RequestParam("serverType") @NotNull Integer serverType) {
         return goodsImageService.getGoodsImage(goodsId, serverType);
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public GoodsImage getImageInfo(@RequestParam("markId") String markId) {
+    @GetMapping(value = "/info")
+    public GoodsImage getImageInfo(@RequestParam("markId") @NotBlank String markId) {
         return goodsImageService.getImageInfo(markId);
     }
 

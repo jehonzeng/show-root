@@ -2,35 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.GoodsImageMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.GoodsImage">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
-        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
-        <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
-        <result column="server_type" property="serverType" jdbcType="INTEGER" />
-        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR"/>
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+        <result column="server_type" property="serverType" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, goods_id, specification_ids, image_path, server_type, sort
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_goods_image
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_goods_image
+        delete
+        from t_goods_image
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.GoodsImage">
         insert into t_goods_image (mark_id, goods_id, specification_ids,
-        image_path, server_type, sort
-        )
+                                   image_path, server_type, sort)
         values (#{markId,jdbcType=VARCHAR}, #{goodsId,jdbcType=VARCHAR},
-        #{specificationIds,jdbcType=VARCHAR},
-        #{imagePath,jdbcType=VARCHAR}, #{serverType,jdbcType=INTEGER},
-        #{sort,jdbcType=INTEGER}
-        )
+                #{specificationIds,jdbcType=VARCHAR},
+                #{imagePath,jdbcType=VARCHAR}, #{serverType,jdbcType=INTEGER},
+                #{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.GoodsImage">
         insert into t_goods_image
@@ -98,11 +97,11 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.GoodsImage">
         update t_goods_image
-        set goods_id = #{goodsId,jdbcType=VARCHAR},
-        specification_ids = #{specificationIds,jdbcType=VARCHAR},
-        image_path = #{imagePath,jdbcType=VARCHAR},
-        server_type = #{serverType,jdbcType=INTEGER},
-        sort = #{sort,jdbcType=INTEGER}
+        set goods_id          = #{goodsId,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            image_path        = #{imagePath,jdbcType=VARCHAR},
+            server_type       = #{serverType,jdbcType=INTEGER},
+            sort              = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
 </mapper>

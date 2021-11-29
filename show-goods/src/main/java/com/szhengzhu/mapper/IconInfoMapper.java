@@ -1,15 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.IconInfo;
+import com.szhengzhu.bean.vo.Combobox;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.IconInfo;
-import com.szhengzhu.bean.vo.Combobox;
+import java.util.List;
 
-
+/**
+ * @author Administrator
+ */
 public interface IconInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(IconInfo record);

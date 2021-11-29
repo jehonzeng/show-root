@@ -2,37 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.WechatInfoMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.WechatInfo">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="open_id" property="openId" jdbcType="VARCHAR" />
+        <id column="open_id" property="openId" jdbcType="VARCHAR" />
         <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
         <result column="header_img" property="headerImg" jdbcType="VARCHAR" />
         <result column="source" property="source" jdbcType="VARCHAR" />
         <result column="wechat_status" property="wechatStatus" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, open_id, nick_name, header_img, source, wechat_status
+        open_id, nick_name, header_img, source, wechat_status
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List" />
         from t_wechat_info
-        where mark_id = #{markId,jdbcType=VARCHAR}
+        where open_id = #{openId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_wechat_info
-        where mark_id = #{markId,jdbcType=VARCHAR}
+        where open_id = #{openId,jdbcType=VARCHAR}
     </delete>
-    <insert id="insert" parameterType="com.szhengzhu.bean.user.WechatInfo">
-        insert into t_wechat_info (mark_id, open_id, nick_name, header_img, source, wechat_status)
-        values (#{markId,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
+    <insert id="replaceInsert" parameterType="com.szhengzhu.bean.user.WechatInfo">
+        replace into t_wechat_info (open_id, nick_name, header_img, source, wechat_status)
+        values (#{openId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
         #{headerImg,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{wechatStatus,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.WechatInfo">
         insert into t_wechat_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="markId != null">
-                mark_id,
-            </if>
             <if test="openId != null">
                 open_id,
             </if>
@@ -50,9 +46,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="markId != null">
-                #{markId,jdbcType=VARCHAR},
-            </if>
             <if test="openId != null">
                 #{openId,jdbcType=VARCHAR},
             </if>
@@ -73,9 +66,6 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.user.WechatInfo">
         update t_wechat_info
         <set>
-            <if test="openId != null">
-                open_id = #{openId,jdbcType=VARCHAR},
-            </if>
             <if test="nickName != null">
                 nick_name = #{nickName,jdbcType=VARCHAR},
             </if>
@@ -89,15 +79,14 @@
                 wechat_status = #{wechatStatus,jdbcType=INTEGER},
             </if>
         </set>
-        where mark_id = #{markId,jdbcType=VARCHAR}
+        where open_id = #{openId,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.user.WechatInfo">
         update t_wechat_info
-        set open_id = #{openId,jdbcType=VARCHAR},
-            nick_name = #{nickName,jdbcType=VARCHAR},
+        set nick_name = #{nickName,jdbcType=VARCHAR},
             header_img = #{headerImg,jdbcType=VARCHAR},
             source = #{source,jdbcType=VARCHAR},
             wechat_status = #{wechatStatus,jdbcType=INTEGER}
-        where mark_id = #{markId,jdbcType=VARCHAR}
+        where open_id = #{openId,jdbcType=VARCHAR}
     </update>
 </mapper>

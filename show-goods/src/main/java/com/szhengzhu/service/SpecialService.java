@@ -3,33 +3,35 @@ package com.szhengzhu.service;
 import com.szhengzhu.bean.goods.SpecialInfo;
 import com.szhengzhu.bean.goods.SpecialItem;
 import com.szhengzhu.bean.vo.BatchVo;
+import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.SpecialBatchVo;
 import com.szhengzhu.bean.vo.SpecialGoodsVo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface SpecialService {
 
-    Result<?> addSpecial(SpecialInfo base);
+    SpecialInfo addSpecial(SpecialInfo base);
 
-    Result<PageGrid<SpecialInfo>> getSpecialPage(PageParam<SpecialInfo> base);
+    PageGrid<SpecialInfo> getSpecialPage(PageParam<SpecialInfo> base);
 
-    Result<?> editSpecial(SpecialInfo base);
+    SpecialInfo editSpecial(SpecialInfo base);
 
-    Result<?> addItemBatchByColumn(SpecialBatchVo base);
+    List<SpecialItem> addItemBatchByColumn(SpecialBatchVo base);
 
-    Result<?> addItemBatchByLabel(SpecialBatchVo base);
+    List<SpecialItem> addItemBatchByLabel(SpecialBatchVo base);
 
-    Result<PageGrid<SpecialGoodsVo>> getItemPage(PageParam<SpecialItem> base);
+    PageGrid<SpecialGoodsVo> getItemPage(PageParam<SpecialItem> base);
 
-    Result<?> deleteItem(SpecialItem base);
+    void deleteItem(SpecialItem base);
 
-    Result<?> sepcialInfoById(String markId);
+    SpecialInfo specialInfoById(String markId);
 
-    Result<?> listSpecialByGoods(String goodsId);
+    List<Combobox> listSpecialByGoods(String goodsId);
 
-    Result<?> addSpecialItem(SpecialItem base);
+    void addSpecialItem(SpecialItem base);
 
-    Result<?> addBatchGoods(BatchVo base);
+    void addBatchGoods(BatchVo base);
 }

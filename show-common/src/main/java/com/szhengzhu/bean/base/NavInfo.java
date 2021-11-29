@@ -5,6 +5,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 首页导航信息
  * 
@@ -18,6 +20,7 @@ public class NavInfo implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String navCode;
 
     private Integer serverType;

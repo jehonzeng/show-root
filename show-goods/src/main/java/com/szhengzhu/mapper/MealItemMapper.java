@@ -1,15 +1,18 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.MealItem;
+import com.szhengzhu.bean.vo.MealVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.MealItem;
-import com.szhengzhu.bean.vo.MealVo;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface MealItemMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(MealItem record);

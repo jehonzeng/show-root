@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.PrinterLogMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.PrinterLog">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="table_id" jdbcType="VARCHAR" property="tableId"/>
+        <result column="indent_id" jdbcType="VARCHAR" property="indentId"/>
+        <result column="printer_code" jdbcType="VARCHAR" property="printerCode"/>
+        <result column="status_code" jdbcType="INTEGER" property="statusCode"/>
+        <result column="print_type" jdbcType="INTEGER" property="printType"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="error_info" jdbcType="LONGVARCHAR" property="errorInfo"/>
+        <result column="print_data" jdbcType="LONGVARCHAR" property="printData"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, table_id, indent_id, printer_code, status_code, print_type, send_time,
+        error_info, print_data
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_printer_log
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_printer_log
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.PrinterLog">
+        insert into t_printer_log (mark_id, table_id, indent_id, printer_code, status_code,
+                                   print_type, send_time, error_info, print_data)
+        values (#{markId,jdbcType=VARCHAR}, #{tableId,jdbcType=VARCHAR}, #{indentId,jdbcType=VARCHAR},
+                #{printerCode,jdbcType=VARCHAR}, #{statusCode,jdbcType=INTEGER},
+                #{printType,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{errorInfo,jdbcType=LONGVARCHAR},
+                #{printData,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.PrinterLog">
+        insert into t_printer_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="tableId != null">
+                table_id,
+            </if>
+            <if test="indentId != null">
+                indent_id,
+            </if>
+            <if test="printerCode != null">
+                printer_code,
+            </if>
+            <if test="statusCode != null">
+                status_code,
+            </if>
+            <if test="printType != null">
+                print_type,
+            </if>
+            <if test="sendTime != null">
+                send_time,
+            </if>
+            <if test="errorInfo != null">
+                error_info,
+            </if>
+            <if test="printData != null">
+                print_data,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="indentId != null">
+                #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="printerCode != null">
+                #{printerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="statusCode != null">
+                #{statusCode,jdbcType=INTEGER},
+            </if>
+            <if test="printType != null">
+                #{printType,jdbcType=INTEGER},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="errorInfo != null">
+                #{errorInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="printData != null">
+                #{printData,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.PrinterLog">
+        update t_printer_log
+        <set>
+            <if test="tableId != null">
+                table_id = #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="indentId != null">
+                indent_id = #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="printerCode != null">
+                printer_code = #{printerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="statusCode != null">
+                status_code = #{statusCode,jdbcType=INTEGER},
+            </if>
+            <if test="printType != null">
+                print_type = #{printType,jdbcType=INTEGER},
+            </if>
+            <if test="sendTime != null">
+                send_time = #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="errorInfo != null">
+                error_info = #{errorInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="printData != null">
+                print_data = #{printData,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.PrinterLog">
+        update t_printer_log
+        set table_id     = #{tableId,jdbcType=VARCHAR},
+            indent_id    = #{indentId,jdbcType=VARCHAR},
+            printer_code = #{printerCode,jdbcType=VARCHAR},
+            status_code  = #{statusCode,jdbcType=INTEGER},
+            print_type   = #{printType,jdbcType=INTEGER},
+            send_time    = #{sendTime,jdbcType=TIMESTAMP},
+            error_info   = #{errorInfo,jdbcType=LONGVARCHAR},
+            print_data   = #{printData,jdbcType=LONGVARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectManageList" parameterType="com.szhengzhu.bean.ordering.param.PrintLogParam"
+            resultType="com.szhengzhu.bean.ordering.vo.PrintLogVo">
+        SELECT l.mark_id AS logId, t.`code` AS tableCode, l.`status_code`,l.print_type AS printType, l.error_info AS
+        errorInfo, p.dept_name AS deptName, p.remark AS printName, l.send_time AS sendTime, l.`status_code` as
+        statusCode, l.printer_code as printerCode
+        FROM t_printer_log l LEFT JOIN t_table_info t ON l.table_id=t.mark_id LEFT JOIN t_printer_info p ON
+        p.printer_code=l.printer_code
+        <where>
+            <if test="statusCode == 0">
+                and l.status_code=#{statusCode,jdbcType=INTEGER}
+            </if>
+            <if test="statusCode == -1">
+                and l.status_code <![CDATA[<>]]> 0
+            </if>
+            <if test="businessTime != null">
+                and TO_DAYS(l.send_time)=TO_DAYS(#{businessTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="storeId != null and storeId != ''">
+                and p.store_id = #{storeId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_printer_log
+        (mark_id, table_id, indent_id, printer_code, status_code, print_type, send_time, error_info, print_data)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.tableId,jdbcType=VARCHAR},
+            #{item.indentId,jdbcType=VARCHAR},#{item.printerCode,jdbcType=VARCHAR},
+            #{item.statusCode,jdbcType=INTEGER}, #{item.printType,jdbcType=INTEGER},#{item.sendTime,jdbcType=TIMESTAMP},
+            #{item.errorInfo,jdbcType=LONGVARCHAR}, #{item.printData,jdbcType=LONGVARCHAR})
+        </foreach>
+    </insert>
+</mapper>

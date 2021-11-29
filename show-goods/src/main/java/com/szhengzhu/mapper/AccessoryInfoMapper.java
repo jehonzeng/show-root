@@ -1,14 +1,14 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-import java.util.Map;
-
+import com.szhengzhu.bean.goods.AccessoryInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.AccessoryInfo;
+import java.util.List;
+import java.util.Map;
 
 public interface AccessoryInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(AccessoryInfo record);

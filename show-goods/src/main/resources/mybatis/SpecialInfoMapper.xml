@@ -266,4 +266,30 @@
                          1=1
                 END) AND g.mark_id IS NOT NULL
     </select>
+    <select id="selectByTotal" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" /> 
+        FROM t_special_info WHERE promotion_type=0 AND server_status=1 AND limit_price <![CDATA[ <= ]]> #{total,jdbcType=DECIMAL} 
+             AND (CASE WHEN start_time IS NOT NULL THEN
+                        start_time <![CDATA[ < ]]> NOW()
+                    ELSE
+                        1=1
+               END) AND
+               (CASE WHEN end_time IS NOT NULL THEN
+                         end_time <![CDATA[ > ]]> NOW()
+                     ELSE
+                         1=1
+                END) 
+        ORDER BY limit_price DESC 
+        LIMIT 1
+    </select>
+    <select id="selectFullPiece" resultType="com.szhengzhu.bean.wechat.vo.SpecialBase">
+        SELECT s.theme AS theme, s.promotion_mode AS promotionMode,
+               s.limit_price AS limitPrice,s.price AS price,s.discount AS discount,s.start_time AS startTime,s.end_time AS endTime,i.goods_id AS goodsId 
+        FROM t_special_item i LEFT JOIN t_special_info s ON i.special_id=s.mark_id
+        WHERE  s.server_status=1 AND promotion_type = 3 AND (CASE WHEN end_time IS NOT NULL THEN
+                         end_time <![CDATA[ > ]]> NOW()
+                     ELSE
+                         1=1
+                END) 
+    </select>
 </mapper>

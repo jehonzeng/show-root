@@ -1,128 +1,126 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.GoodsInfo;
 import com.szhengzhu.bean.vo.BatchVo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsVo;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.GoodsService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "/goods")
 public class GoodsController {
-
+    
     @Resource
     private GoodsService goodsService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> addGoods(@RequestBody GoodsInfo goodsInfo) {
+    @PostMapping(value = "/add")
+    public GoodsInfo addGoods(@RequestBody @Validated GoodsInfo goodsInfo) {
         return goodsService.addGoods(goodsInfo);
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public Result<?> modifyGoods(@RequestBody GoodsInfo goodsInfo) {
-        return goodsService.editGoods(goodsInfo);
+    @PatchMapping(value = "/edit")
+    public GoodsInfo modifyGoods(@RequestBody GoodsInfo goodsInfo) {
+        return goodsService.modifyGoods(goodsInfo);
     }
 
-    @RequestMapping(value = "/editStatus", method = RequestMethod.PATCH)
-    public Result<?> editGoodsStatus(@RequestBody GoodsInfo base) {
-        return goodsService.editGoodsStatus(base);
+    @PatchMapping(value = "/editStatus")
+    public GoodsInfo modifyGoodsStatus(@RequestBody GoodsInfo base)  {
+        return goodsService.modifyGoodsStatus(base);
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<GoodsVo>> page(@RequestBody PageParam<GoodsInfo> base) {
+    @PostMapping(value = "/page")
+    public PageGrid<GoodsVo> page(@RequestBody PageParam<GoodsInfo> base) {
         return goodsService.getPage(base);
     }
 
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<?> goodsInfo(@PathVariable("markId") String markId) {
+    @GetMapping(value = "/{markId}")
+    public GoodsInfo goodsInfo(@PathVariable("markId") @NotBlank String markId) {
         return goodsService.getGoodsInfo(markId);
     }
 
-    @RequestMapping(value = "/combobox", method = RequestMethod.GET)
-    public Result<List<Combobox>> selectCombobox() {
+    @GetMapping(value = "/combobox")
+    public List<Combobox> selectCombobox() {
         return goodsService.listCombobox();
     }
 
-    @RequestMapping(value = "/listNotColumn", method = RequestMethod.GET)
-    public Result<List<Combobox>> listNotColumn() {
+    @GetMapping(value = "/listNotColumn")
+    public List<Combobox> listNotColumn() {
         return goodsService.getListNotColumn();
     }
 
-    @RequestMapping(value = "/listNotLabel", method = RequestMethod.GET)
-    public Result<List<Combobox>> listNotLabel(@RequestParam("labelId") String labelId) {
+    @GetMapping(value = "/listNotLabel")
+    public List<Combobox> listNotLabel(@RequestParam("labelId") @NotBlank String labelId) {
         return goodsService.getListNotLabel(labelId);
     }
 
-    @RequestMapping(value = "/servesIn", method = RequestMethod.GET)
-    public Result<?> listGoodsServer(@RequestParam("goodsId") String goodsId) {
+    @GetMapping(value = "/servesIn")
+    public List<String> listGoodsServer(@RequestParam("goodsId") @NotBlank String goodsId) {
         return goodsService.listInnerServer(goodsId);
     }
 
-    @RequestMapping(value = "/addBatchServe", method = RequestMethod.POST)
-    public Result<?> saveBatchGoodsServe(@RequestBody BatchVo base) {
-        return goodsService.addBatchServer(base);
+    @PostMapping(value = "/addBatchServe")
+    public void saveBatchGoodsServe(@RequestBody BatchVo base) {
+        goodsService.addBatchServer(base);
     }
 
-    @RequestMapping(value = "/deleteBatchServe", method = RequestMethod.POST)
-    public Result<?> deleteBatchGoodsServer(@RequestBody BatchVo base) {
-        return goodsService.moveBatchServer(base);
+    @PostMapping(value = "/deleteBatchServe")
+    public void deleteBatchGoodsServer(@RequestBody BatchVo base) {
+        goodsService.moveBatchServer(base);
     }
 
-    @RequestMapping(value = "/listNotSpecial", method = RequestMethod.GET)
-    public Result<List<Combobox>> getListNotSpecial() {
+    @GetMapping(value = "/listNotSpecial")
+    public List<Combobox> getListNotSpecial() {
         return goodsService.getListNotSpecial();
     }
 
-    @RequestMapping(value = "/listNotIcon", method = RequestMethod.GET)
-    public Result<List<Combobox>> getListNotIcon() {
+    @GetMapping(value = "/listNotIcon")
+    public List<Combobox> getListNotIcon() {
         return goodsService.getListNotIcon();
     }
 
-    @RequestMapping(value = "/column/page", method = RequestMethod.POST)
-    public Result<PageGrid<GoodsVo>> getPageByColumn(@RequestBody PageParam<GoodsInfo> base) {
+    @PostMapping(value = "/column/page")
+    public PageGrid<GoodsVo> getPageByColumn(@RequestBody PageParam<GoodsInfo> base) {
         return goodsService.getPageByColumn(base);
     }
 
-    @RequestMapping(value = "/label/page", method = RequestMethod.POST)
-    public Result<PageGrid<GoodsVo>> getPageByLabel(@RequestBody PageParam<GoodsInfo> base) {
+    @PostMapping(value = "/label/page")
+    public PageGrid<GoodsVo> getPageByLabel(@RequestBody PageParam<GoodsInfo> base) {
         return goodsService.getPageByLabel(base);
     }
 
-    @RequestMapping(value = "/icon/page", method = RequestMethod.POST)
-    public Result<PageGrid<GoodsVo>> getPageByIcon(@RequestBody PageParam<GoodsInfo> base) {
+    @PostMapping(value = "/icon/page")
+    public PageGrid<GoodsVo> getPageByIcon(@RequestBody PageParam<GoodsInfo> base) {
         return goodsService.getPageByIcon(base);
     }
 
-    @RequestMapping(value = "/special/page", method = RequestMethod.POST)
-    public Result<PageGrid<GoodsVo>> getPageBySpecial(@RequestBody PageParam<GoodsInfo> base) {
+    @PostMapping(value = "/special/page")
+    public PageGrid<GoodsVo> getPageBySpecial(@RequestBody PageParam<GoodsInfo> base) {
         return goodsService.getPageBySpecial(base);
     }
 
-    @RequestMapping(value = "/fore/index/recommend", method = RequestMethod.GET)
-    public Result<List<GoodsBase>> listRecommend(@RequestParam(value = "userId", required = false) String userId) {
+    @GetMapping(value = "/fore/index/recommend")
+    public List<GoodsBase> listRecommend(
+            @RequestParam(value = "userId", required = false) String userId) {
         return goodsService.listRecommend(userId);
     }
 
-    @RequestMapping(value = "/fore/detail", method = RequestMethod.GET)
-    public Result<GoodsInfoVo> getGoodsDetail(@RequestParam("goodsId") String goodsId,
-            @RequestParam(value = "userId", required = false) String userId) {
+    @GetMapping(value = "/fore/detail")
+    public GoodsDetail getGoodsDetail(@RequestParam("goodsId") @NotBlank String goodsId,
+            @RequestParam(value = "userId", required = false) String userId) throws Exception {
         return goodsService.getGoodsDetail(goodsId, userId);
     }
-
 }

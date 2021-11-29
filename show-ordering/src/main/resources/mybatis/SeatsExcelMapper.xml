@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SeatsExcelMapper">
+    <select id="seatsInfo" resultType="java.util.Map">
+        SELECT date_format(a.time, '%Y-%m-%d %H.%i') as times,SUM(IF(a.seats=2,IFNULL(a.num,0),0)) as
+        two,SUM(IF(a.seats=4,IFNULL(a.num,0),0)) as four,SUM(IF(a.seats=6,IFNULL(a.num,0),0)) as six,
+        SUM(IF(a.seats=10,IFNULL(a.num,0),0)) as ten
+        FROM(
+        SELECT CONCAT(DATE_FORMAT(indent_time, '%Y-%m-%d
+        %H'),':',RPAD(floor(DATE_FORMAT(i.indent_time,'%i')/30) * 30,2,0)) as
+        time,t.seats as seats,COUNT(t.mark_id) as num
+        FROM t_table_info t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        WHERE t.`status`=1 and i.indent_status in ('IS03','IS04', 'IS07')
+        <choose>
+            <when test="beginDate != null and lastDate != null">
+                AND TO_DAYS(i.indent_time) between TO_DAYS(#{beginDate}) and TO_DAYS(#{lastDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY i.indent_time,t.seats
+        ) a GROUP BY a.time
+    </select>
+    <select id="seatsTypeInfo" resultType="java.util.Map">
+        SELECT IFNULL(t.seats,0) as seats,COUNT(t.seats) as useNum,SUM(i.man_num)
+        as peopleNum,CONVERT(SUM(i.indent_total)/SUM(i.man_num),DECIMAL(10,2))
+        as avgPrice
+        ,CONVERT(SUM(TIMESTAMPDIFF(MINUTE,(DATE_FORMAT(i.indent_time,'%Y-%m-%d
+        %H:%i')),(DATE_FORMAT(i.bill_time, '%Y-%m-%d
+        %H:%i'))))/SUM(i.man_num),DECIMAL(10,0)) as avgMinute
+        FROM t_table_info
+        t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        WHERE t.`status`=1 and i.indent_status in ('IS03','IS04', 'IS07')
+        <choose>
+            <when test="beginDate != null and lastDate != null">
+                AND TO_DAYS(i.indent_time) between TO_DAYS(#{beginDate}) and TO_DAYS(#{lastDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY t.seats
+    </select>
+</mapper>

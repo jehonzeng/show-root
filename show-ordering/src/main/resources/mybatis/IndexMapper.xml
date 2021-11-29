@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IndexMapper">
+    <select id="todayTurnover" resultType="java.util.Map">
+        SELECT IFNULL(SUM(indent_total), 0)
+                                       AS todayTotal,
+               IFNULL(SUM(man_num), 0) AS
+                                          todayNum,
+               CONVERT(IFNULL(SUM(indent_total) / SUM(man_num), 0), DECIMAL(10, 2))
+                                       AS avgSale,
+               COUNT(mark_id)          AS
+                                          todaySaleNum,
+               CONVERT(IFNULL(SUM(indent_total) / COUNT(mark_id), 0), DECIMAL(10, 2))
+                                       AS unitPrice
+        FROM t_indent_info
+        WHERE store_id = #{storeId,jdbcType=VARCHAR}
+          AND indent_status = 'IS04'
+          AND TO_DAYS(indent_time) = TO_DAYS(NOW())
+    </select>
+    <select id="weekTurnover" resultType="java.util.Map">
+        SELECT SUM(a.total) AS total, a.date AS date
+        FROM (
+                     SELECT SUM(d.quantity) * d.sale_price AS total, DATE_FORMAT(i.indent_time, '%m-%d') AS date
+                     FROM t_indent_info i
+                                  INNER JOIN t_indent_detail d ON i.mark_id = d.indent_id
+                     WHERE i.indent_status = 'IS04'
+                       AND d.`status` = 1
+                       AND i.store_id = #{storeId,jdbcType=VARCHAR}
+                       AND TO_DAYS(i.indent_time) BETWEEN TO_DAYS(DATE_SUB(NOW(), INTERVAL 6 DAY)) AND TO_DAYS(i.indent_time)
+                     GROUP BY d.mark_id
+                     ) a
+        GROUP BY a.date
+    </select>
+    <select id="goodsSalesRank" resultType="com.szhengzhu.bean.ordering.param.GoodSaleRankParam">
+        SELECT c.commodity_name                                                     AS goodsName,
+               c.unit                                                               AS goodsUnit,
+               c.type                                                               AS goodsType,
+               SUM(c.quantity)                                                      AS num,
+               c.sale_price                                                         AS price,
+               IFNULL(CONVERT((c.sale_price) * SUM(c.quantity), DECIMAL(10, 2)), 0) AS saleTotalPrice
+        FROM (SELECT d.commodity_name,
+                     (SELECT p.unit from t_commodity_price p WHERE p.mark_id = d.price_id)
+                                                  AS unit,
+                     d.quantity,
+                     d.sale_price,
+                     (SELECT GROUP_CONCAT(ci.`name`)
+                      FROM t_category_commodity cc
+                                   LEFT JOIN t_category_info ci ON cc.category_id = ci.mark_id
+                      WHERE cc.commodity_id = i.mark_id
+                        and ci.`status` <![CDATA[<>]]> -1) AS type
+              FROM t_indent_detail d
+                           INNER JOIN t_commodity_info i
+                      ON d.commodity_id = i.mark_id
+              WHERE d.`status` = 1
+                AND i.store_id = #{storeId,jdbcType=VARCHAR}
+                AND TO_DAYS(d.create_time) = TO_DAYS(NOW())) c
+        GROUP BY c.type, c.commodity_name, c.unit, c.sale_price
+        ORDER BY SUM(c.quantity) DESC
+    </select>
+    <select id="goodsSales" resultType="com.szhengzhu.bean.ordering.param.GoodSaleRankParam"
+            parameterType="com.szhengzhu.bean.ordering.GoodsSales">
+        SELECT a.commodity_name AS goodsName,
+        any_value(ci.`name`) AS goodsType,
+        SUM(a.quantity) AS num,
+        SUM(a.sale_price * a.quantity) AS saleTotalPrice
+        FROM ( SELECT d.commodity_id, d.commodity_name, d.sale_price, SUM(d.quantity) AS quantity
+        FROM t_indent_detail d
+        WHERE d.`status` = 1
+        and d.commodity_name not in ('纸巾', '茶位', '包厢茶位', '一元打包盒')
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(d.create_time) between TO_DAYS(#{beginDate}) and TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(d.create_time) = TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY d.commodity_id, d.sale_price, d.commodity_name) a
+        INNER JOIN t_category_commodity cc ON a.commodity_id = cc.commodity_id
+        INNER JOIN t_category_info ci ON ci.mark_id = cc.category_id
+        WHERE ci.`status` = 1
+        and ci.store_id = #{storeId,jdbcType=VARCHAR}
+        <if test="typeList!= null and typeList.size>0">
+            AND ci.mark_id in
+            <foreach item="type" index="index" collection="typeList" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
+        GROUP BY a.commodity_name
+        ORDER BY SUM(a.quantity) DESC
+    </select>
+    <select id="yesterdaySituation" resultType="java.util.Map">
+        SELECT IFNULL(SUM(man_num), 0) AS yesterdayNum,
+               COUNT(mark_id)          AS yesterdaySaleNum
+        FROM t_indent_info
+        WHERE store_id = #{storeId,jdbcType=VARCHAR}
+          AND TO_DAYS(indent_time) = TO_DAYS(DATE_SUB(NOW(), INTERVAL 1 DAY))
+          AND indent_status = 'IS04'
+    </select>
+    <select id="goodsSaleCompare" resultType="com.szhengzhu.bean.ordering.param.GoodSaleParam">
+        SELECT c.goodsName AS goodsName, IFNULL(c.currentSale, 0) AS csaleNum, IFNULL(d.lastSale, 0) AS lsaleNum
+        FROM (SELECT a.commodity_name AS goodsName, SUM(a.quantity) AS currentSale
+              FROM t_indent_detail a
+              WHERE TO_DAYS(a.create_time) = TO_DAYS(NOW())
+                AND a.`status` = 1
+                AND a.indent_id =
+                    (SELECT i.mark_id FROM t_indent_info i WHERE i.mark_id = a.indent_id AND i.indent_status = 'IS04')
+              GROUP BY a.commodity_name) c
+                     LEFT JOIN
+                     (SELECT b.commodity_name AS goodsName, SUM(b.quantity) AS lastSale
+                      FROM t_indent_detail b
+                      WHERE TO_DAYS(b.create_time) = TO_DAYS(DATE_SUB(NOW(), INTERVAL 7 DAY))
+                        AND b.`status` = 1
+                        AND b.indent_id = (SELECT i.mark_id
+                                           FROM t_indent_info i
+                                           WHERE i.mark_id = b.indent_id
+                                             AND i.indent_status = 'IS04')
+                      GROUP BY b.commodity_name) d ON d.goodsName = c.goodsName
+        WHERE c.goodsName NOT IN ('纸巾', '茶位', '包厢茶位', '一元打包盒')
+        ORDER BY IFNULL(c.currentSale, 0) DESC
+    </select>
+    <select id="goodsTypeSale" resultType="com.szhengzhu.bean.ordering.param.GoodTypeSaleParam">
+        SELECT ci.`name` AS goodsType, SUM(a.sale_price * a.quantity) AS saleTotalPrice, SUM(a.quantity) AS saleNum
+        FROM (
+                     SELECT d.commodity_id, d.sale_price, SUM(d.quantity) AS quantity
+                     FROM t_indent_detail d
+                     WHERE d.`status` = 1
+                       AND TO_DAYS(d.create_time) = TO_DAYS(NOW())
+                       AND d.indent_id = (SELECT i.mark_id
+                                          FROM t_indent_info i
+                                          WHERE i.mark_id = d.indent_id
+                                            AND i.indent_status = 'IS04')
+                     GROUP BY d.commodity_id, d.sale_price) a
+                     INNER JOIN t_category_commodity cc ON a.commodity_id = cc.commodity_id
+                     INNER JOIN t_category_info ci
+                ON ci.mark_id = cc.category_id
+        WHERE ci.`status` = 1
+          AND ci.store_id = #{storeId,jdbcType=VARCHAR}
+        GROUP BY ci.mark_id, ci.`name`
+        ORDER BY SUM(a.sale_price * a.quantity) DESC
+    </select>
+    <select id="todayNetReceipts" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(p.amount), 0) AS todayTotal
+        FROM t_indent_info i
+                     INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+        WHERE i.indent_status = 'IS04'
+          AND p.`status` = 1
+          AND TO_DAYS(i.indent_time) = TO_DAYS(NOW())
+          AND i.store_id = #{storeId,jdbcType=VARCHAR}
+    </select>
+    <select id="yesterdayNetReceipts"
+            resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(p.amount), 0) AS yesterdayTotal
+        FROM t_indent_info i
+                     INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+        WHERE i.indent_status = 'IS04'
+          AND p.`status` = 1
+          AND TO_DAYS(i.indent_time) = TO_DAYS(DATE_SUB(NOW(), INTERVAL 1 DAY))
+          AND i.store_id = #{storeId,jdbcType=VARCHAR}
+    </select>
+    <select id="todayTimeSlotIncome" resultType="java.util.Map">
+        SELECT SUM(a.total) AS todayTotal, a.time AS `hour`
+        FROM (
+                     SELECT IFNULL(p.amount, 0) AS total, DATE_FORMAT(i.indent_time, '%H:00') AS time
+                     FROM t_indent_info i
+                                  INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+                     WHERE i.indent_status = 'IS04'
+                       AND p.`status` = 1
+                       AND TO_DAYS(i.indent_time) = TO_DAYS(NOW())
+                       AND i.store_id = #{storeId,jdbcType=VARCHAR}
+                     ) a
+        GROUP BY a.time
+    </select>
+    <select id="yesterdayTimeSlotIncome" resultType="java.util.Map">
+        SELECT SUM(a.total) AS yesterdayTotal, a.time AS `hour`
+        FROM (
+                     SELECT IFNULL(p.amount, 0) AS total, DATE_FORMAT(i.indent_time, '%H:00') AS time
+                     FROM t_indent_info i
+                                  INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+                     WHERE i.indent_status = 'IS04'
+                       AND p.`status` = 1
+                       AND TO_DAYS(i.indent_time) = TO_DAYS(DATE_SUB(NOW(), INTERVAL 1 DAY))
+                       AND i.store_id = #{storeId,jdbcType=VARCHAR}
+                     ) a
+        GROUP BY a.time
+    </select>
+    <select id="weekNetReceipts" resultType="java.util.Map">
+        SELECT SUM(IF(YEARWEEK(DATE_FORMAT(i.indent_time, '%Y-%m-%d')) = YEARWEEK(NOW()), IFNULL(p.amount, 0),
+                      0)) AS nowWeek,
+               SUM(IF(YEARWEEK(DATE_FORMAT(i.indent_time, '%Y-%m-%d')) = YEARWEEK(NOW()) - 1, IFNULL(p.amount, 0),
+                      0)) AS lastWeek
+        FROM t_indent_info i
+                     INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+        WHERE i.indent_status = 'IS04'
+          AND p.`status` = 1
+          AND i.store_id = #{storeId,jdbcType=VARCHAR}
+    </select>
+</mapper>

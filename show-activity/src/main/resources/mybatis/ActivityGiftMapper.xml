@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ActivityGiftMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ActivityGift">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="gift_id" property="giftId" jdbcType="VARCHAR" />
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" />
+        <result column="point" property="point" jdbcType="INTEGER" />
+        <result column="gift_total" property="giftTotal" jdbcType="INTEGER" />
+        <result column="exchange_total" property="exchangeTotal" jdbcType="INTEGER" />
+        <result column="grant_type" property="grantType" jdbcType="INTEGER" />
+        <result column="pay_price" property="payPrice" jdbcType="DECIMAL" />
+        <result column="limit_type" property="limitType" jdbcType="VARCHAR" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="part_type" property="partType" jdbcType="INTEGER" />
+        <result column="gift_name" property="giftName" jdbcType="VARCHAR" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="limitTypeDesc" property="limitTypeDesc" jdbcType="VARCHAR" />
+        <result column="actName" property="actName" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.wechat.vo.ActivityGiftVo" id="BaseResultMapVo" extends="BaseResultMap">
+            <result column="product_id" property="productId" jdbcType="VARCHAR" />
+            <result column="gift_type" property="giftType" jdbcType="INTEGER" />
+            <result column="gift_status" property="giftStatus" jdbcType="BIT" />
+            <result column="price" property="price" jdbcType="DECIMAL" />
+            <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="specList" property="specList" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, gift_id, activity_id, point, gift_total, exchange_total, grant_type, pay_price,
+        limit_type, sort,part_type,gift_name,server_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_activity_gift
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_activity_gift
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ActivityGift">
+        insert into t_activity_gift (mark_id, gift_id, activity_id,
+        point, gift_total, exchange_total,
+        grant_type, pay_price, limit_type,
+        sort,part_type,gift_name,server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{giftId,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR},
+        #{point,jdbcType=INTEGER}, #{giftTotal,jdbcType=INTEGER}, #{exchangeTotal,jdbcType=INTEGER},
+        #{grantType,jdbcType=INTEGER}, #{payPrice,jdbcType=DECIMAL}, #{limitType,jdbcType=VARCHAR},
+        #{sort,jdbcType=INTEGER},#{partType,jdbcType=INTEGER},#{giftName,jdbcType=VARCHAR},#{serverStatus,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ActivityGift">
+        insert into t_activity_gift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="giftId != null">
+                gift_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="point != null">
+                point,
+            </if>
+            <if test="giftTotal != null">
+                gift_total,
+            </if>
+            <if test="exchangeTotal != null">
+                exchange_total,
+            </if>
+            <if test="grantType != null">
+                grant_type,
+            </if>
+            <if test="payPrice != null">
+                pay_price,
+            </if>
+            <if test="limitType != null">
+                limit_type,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="partType != null">
+                part_type,
+            </if>
+            <if test="giftName != null">
+                gift_name,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftId != null">
+                #{giftId,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="point != null">
+                #{point,jdbcType=INTEGER},
+            </if>
+            <if test="giftTotal != null">
+                #{giftTotal,jdbcType=INTEGER},
+            </if>
+            <if test="exchangeTotal != null">
+                #{exchangeTotal,jdbcType=INTEGER},
+            </if>
+            <if test="grantType != null">
+                #{grantType,jdbcType=INTEGER},
+            </if>
+            <if test="payPrice != null">
+                #{payPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="limitType != null">
+                #{limitType,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="partType != null">
+                #{partType,jdbcType=INTEGER},
+            </if>
+            <if test="giftName != null">
+                #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ActivityGift">
+        update t_activity_gift
+        <set>
+            <if test="giftId != null">
+                gift_id = #{giftId,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="point != null">
+                point = #{point,jdbcType=INTEGER},
+            </if>
+            <if test="giftTotal != null">
+                gift_total = #{giftTotal,jdbcType=INTEGER},
+            </if>
+            <if test="exchangeTotal != null">
+                exchange_total = #{exchangeTotal,jdbcType=INTEGER},
+            </if>
+            <if test="grantType != null">
+                grant_type = #{grantType,jdbcType=INTEGER},
+            </if>
+            <if test="payPrice != null">
+                pay_price = #{payPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="limitType != null">
+                limit_type = #{limitType,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="partType != null">
+                part_type = #{partType,jdbcType=INTEGER},
+            </if>
+            <if test="giftName != null">
+                gift_name = #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ActivityGift">
+        update t_activity_gift
+        set gift_id = #{giftId,jdbcType=VARCHAR},
+        activity_id = #{activityId,jdbcType=VARCHAR},
+        point = #{point,jdbcType=INTEGER},
+        gift_total = #{giftTotal,jdbcType=INTEGER},
+        exchange_total = #{exchangeTotal,jdbcType=INTEGER},
+        grant_type = #{grantType,jdbcType=INTEGER},
+        pay_price = #{payPrice,jdbcType=DECIMAL},
+        limit_type = #{limitType,jdbcType=VARCHAR},
+        sort = #{sort,jdbcType=INTEGER},
+        part_type = #{partType,jdbcType=INTEGER},
+        gift_name = #{giftName,jdbcType=VARCHAR},
+        server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.ActivityGift" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        (SELECT theme FROM t_activity_info WHERE mark_id = activity_id) as actName,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code` = limit_type) as limitTypeDesc
+        from t_activity_gift
+        <where>
+            <if test="markId !=null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="giftId != null">
+                and gift_id = #{giftId,jdbcType=VARCHAR}
+            </if>
+            <if test="activityId != null">
+                and activity_id = #{activityId,jdbcType=VARCHAR}
+            </if>
+            <if test="partType != null">
+                and part_type = #{partType,jdbcType=INTEGER}
+            </if>
+            <if test="point != null">
+                and point = #{point,jdbcType=INTEGER}
+            </if>
+            <if test="giftTotal != null">
+                and gift_total = #{giftTotal,jdbcType=INTEGER}
+            </if>
+            <if test="exchangeTotal != null">
+                and exchange_total = #{exchangeTotal,jdbcType=INTEGER}
+            </if>
+            <if test="grantType != null">
+                grant_type = #{grantType,jdbcType=INTEGER}
+            </if>
+            <if test="payPrice != null">
+                and pay_price = #{payPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="limitType != null">
+                and limit_type = #{limitType,jdbcType=VARCHAR}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="giftName != null">
+                and gift_name like CONCAT('%', #{giftName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                and server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <sql id="Base_Gift_List">
+        SELECT a.mark_id,a.gift_id,a.activity_id,a.part_type,a.point,
+        a.pay_price,a.gift_total,a.exchange_total,a.grant_type,a.limit_type,a.server_status,
+        a.sort,g.product_id,g.gift_type,g.gift_status,g.price,g.image_path,g.description,
+        (SELECT theme FROM t_activity_info WHERE mark_id = activity_id) as actName
+        FROM t_activity_gift a LEFT JOIN t_gift_info g 
+        ON g.mark_id = a.gift_id 
+    </sql>
+    <select id="selectGiftsByActId" parameterType="java.lang.String" resultMap="BaseResultMapVo">
+        <include refid="Base_Gift_List"/>
+        WHERE a.server_status = 1 and a.activity_id=#{activityId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectById" resultMap="BaseResultMapVo">
+        <include refid="Base_Gift_List"/>
+        WHERE a.server_status = 1
+        and a.gift_total <![CDATA[ > ]]> a.exchange_total
+        and a.mark_id=#{markId,jdbcType=VARCHAR}
+        and a.part_type = #{type,jdbcType=INTEGER}
+        order by a.sort
+    </select>
+    
+    <select id="selectGiftList" resultMap="BaseResultMapVo">
+        <include refid="Base_Gift_List"/>
+        WHERE a.server_status = 1 and a.grant_type = 1
+        and a.gift_total <![CDATA[ > ]]> a.exchange_total
+        and a.activity_id = #{activityId,jdbcType=VARCHAR}
+        and a.part_type = #{type,jdbcType=INTEGER}
+        order by a.sort
+    </select>
+</mapper>

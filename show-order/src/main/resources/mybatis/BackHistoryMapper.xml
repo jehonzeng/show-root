@@ -5,11 +5,12 @@
         <id column="mark_id" jdbcType="VARCHAR" property="markId" />
         <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
         <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-        <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+        <result column="pay_type" jdbcType="INTEGER" property="payType" />
         <result column="cid" jdbcType="VARCHAR" property="cid" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, order_no, add_time, pay_status, cid
+        mark_id, order_no, add_time, pay_type, cid, order_type
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -22,8 +23,8 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.order.BackHistory">
-        insert into t_back_history (mark_id, order_no, add_time, pay_status, cid)
-        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{payStatus,jdbcType=INTEGER}, #{cid,jdbcType=VARCHAR})
+        insert into t_back_history (mark_id, order_no, add_time, pay_type, cid, order_type)
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{payType,jdbcType=INTEGER}, #{cid,jdbcType=VARCHAR}, #{orderType,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.BackHistory">
         insert into t_back_history
@@ -37,11 +38,14 @@
             <if test="addTime != null">
                 add_time,
             </if>
-            <if test="payStatus != null">
-                pay_status,
+            <if test="payType != null">
+                pay_type,
             </if>
             <if test="cid != null">
                 cid,
+            </if>
+            <if test="orderType != null">
+                order_type,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -54,11 +58,14 @@
             <if test="addTime != null">
                 #{addTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="payStatus != null">
-                #{payStatus,jdbcType=INTEGER},
+            <if test="payType != null">
+                #{payType,jdbcType=INTEGER},
             </if>
             <if test="cid != null">
                 #{cid,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -71,11 +78,14 @@
             <if test="addTime != null">
                 add_time = #{addTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="payStatus != null">
-                pay_status = #{payStatus,jdbcType=INTEGER},
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=INTEGER},
             </if>
             <if test="cid != null">
                 cid = #{cid,jdbcType=VARCHAR},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
             </if>
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
@@ -83,9 +93,32 @@
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.BackHistory">
         update t_back_history
         set order_no = #{orderNo,jdbcType=VARCHAR},
-            add_time = #{addTime,jdbcType=TIMESTAMP},
-            pay_status = #{payStatus,jdbcType=INTEGER},
-            cid = #{cid,jdbcType=VARCHAR}
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        pay_type = #{payType,jdbcType=INTEGER},
+        cid = #{cid,jdbcType=VARCHAR},
+        order_type = #{orderType,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.RefundBack" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_back_history
+        <where>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR}
+            </if>
+            <if test="addTime != null">
+                AND add_time = #{addTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="payType != null">
+                AND pay_type = #{payType,jdbcType=INTEGER}
+            </if>
+            <if test="cid != null">
+                AND cid = #{cid,jdbcType=VARCHAR}
+            </if>
+            <if test="orderType != null">
+                AND order_type = #{orderType,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
 </mapper>

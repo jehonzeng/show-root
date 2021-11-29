@@ -1,80 +1,144 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.szhengzhu.bean.user.UserInfo;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.szhengzhu.annotation.SystemLog;
 import com.szhengzhu.client.ShowUserClient;
-import com.szhengzhu.common.Commons;
+import com.szhengzhu.bean.user.UserInfo;
+import com.szhengzhu.bean.user.UserToken;
+import com.szhengzhu.config.WechatConfig;
+import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.LoginBase;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
-import com.szhengzhu.util.ShowUtils;
-
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.redis.Redis;
+import com.szhengzhu.util.SmsUtils;
+import com.szhengzhu.util.WechatUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import weixin.popular.api.SnsAPI;
+import weixin.popular.bean.BaseResult;
+import weixin.popular.bean.sns.SnsToken;
 
-@Api(tags = { "用户登录操作：LoginController" })
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Jehon Zeng
+ */
+@Slf4j
+@Api(tags = {"用户登录操作：LoginController"})
 @RestController
 @RequestMapping("")
 public class LoginController {
 
     @Resource
-    private ShowUserClient userClient;
+    private Redis redis;
+
+    @Resource
+    private ShowUserClient showUserClient;
+
+    @Resource
+    private WechatConfig config;
 
     @ApiOperation(value = "通过手机号获取短信", notes = "用户通过手机号获取短信")
-    @RequestMapping(value = "/code", method = RequestMethod.GET)
-    public Result<?> getCode(HttpSession session,
-            @ApiParam(name = "phone", value = "手机号", required = true) @RequestParam("phone") String phone) {
-        if (!ShowUtils.isPhone(phone))
-            return new Result<String>(StatusCode._4000);
+    @GetMapping(value = "/code")
+    public void getCode(HttpSession session, HttpServletRequest request) {
+        String phone = request.getParameter("phone");
+//        Validator.isMatchRegex("^(1)[\\d]{10}$", phone))
+        ShowAssert.checkTrue(!Validator.isMobile(phone), StatusCode._4000);
+        int sendTimes = 5;
         LoginBase login = (LoginBase) session.getAttribute("login_base");
-        login = login == null ? new LoginBase(phone, 6) : login;
+        login = ObjectUtil.isNull(login) ? new LoginBase(phone) : login;
         login.refresh(phone);
-//        if (login.isOften(5))
-//            return new Result<String>(StatusCode._4001);
-        Result<UserInfo> result = userClient.getManager(phone);
-        if (!result.isSuccess())
-            return new Result<>(StatusCode._4011);
+        ShowAssert.checkTrue(login.isOften(sendTimes), StatusCode._4001);
+        Result<UserInfo> result = showUserClient.getManager(phone);
+        ShowAssert.checkTrue(!result.isSuccess(), StatusCode._4017);
         login.setMarkId(result.getData().getMarkId());
         session.setAttribute("login_base", login);
-        System.out.println("===================================phone:" + phone + " code:"
-                + login.getCode() + "========================================");
-//        Result<String> sendResult = SmsUtils.send(result.getData().getPhone(), login.getCode());
-        Result<String> sendResult = new Result<>();
-        System.out.println(login.getPhone() + ": 验证码为" + login.getCode());
-        sendResult.setData(login.getCode());
-        return sendResult;
+
+//        String codeCacheKey = "manage:code:send:" + phone;
+//        Object obj = redis.get(codeCacheKey);
+//        LoginBase login = ObjectUtil.isNull(obj) ? new LoginBase(phone) : JSON.parseObject(JSON.toJSONString(obj), LoginBase.class);
+//        login.refresh(phone);
+//        ShowAssert.checkTrue(login.isOften(sendTimes), StatusCode._4001);
+//        Result<UserInfo> result = showUserClient.getManager(phone);
+//        ShowAssert.checkTrue(!result.isSuccess(), StatusCode._4017);
+//        login.setMarkId(result.getData().getMarkId());
+//        redis.set(codeCacheKey, login, 3 * 60);
+        BaseResult wechatResult = WechatUtils.sendSmg(config, result.getData().getWopenId(), login.getCode());
+        log.info(wechatResult.toString());
+        if (!wechatResult.isSuccess()) {
+            SmsUtils.send(result.getData().getPhone(), login.getCode());
+        }
+        log.info("{}: 验证码为 {}", login.getPhone(), login.getCode());
     }
 
+    @SystemLog(desc = "登录系统")
     @ApiOperation(value = "用户登录", notes = "用户登录后台系统")
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public Result<?> login(HttpSession session,
-            @ApiParam(name = "phone", value = "手机号", required = true) @RequestParam("phone") String phone,
-            @ApiParam(name = "code", value = "验证码", required = true) @RequestParam("code") String code) {
+    @GetMapping(value = "/login")
+    public void login(HttpSession session, HttpServletRequest request) {
+        String phone = request.getParameter("phone");
+        String code = request.getParameter("code");
+//        String codeCacheKey = "manage:code:send:" + phone;
+//        Object obj = redis.get(codeCacheKey);
+//        ShowAssert.checkNull(obj, StatusCode._4003);
+//        LoginBase loginBase = JSON.parseObject(JSON.toJSONString(obj), LoginBase.class);
+//        ShowAssert.checkTrue(!loginBase.equals(phone, code), StatusCode._4002);
+//        redis.del(codeCacheKey);
         LoginBase loginBase = (LoginBase) session.getAttribute("login_base");
-        if (loginBase == null)
-            return new Result<String>(StatusCode._4002);
-        if (loginBase.isOver())
-            return new Result<String>(StatusCode._4003);
-        if (!loginBase.equals(phone, code))
-            return new Result<String>(StatusCode._4002);
-        session.setAttribute(Commons.SESSION, loginBase.getMarkId());
+        ShowAssert.checkTrue(ObjectUtil.isNull(loginBase) || StrUtil.isEmpty(phone) || StrUtil.isEmpty(code)
+                || !loginBase.equals(phone, code), StatusCode._4002);
+        ShowAssert.checkTrue(loginBase.isOver(), StatusCode._4003);
+        session.setAttribute(Contacts.LJS_SESSION, loginBase.getMarkId());
         session.removeAttribute("login_base");
-        return new Result<>();
     }
-    
+
+    @SystemLog(desc = "安全退出系统")
     @ApiOperation(value = "后台主动退出登录", notes = "后台主动退出登录")
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public Result<?> logOut(HttpSession session) {
-        session.removeAttribute(Commons.SESSION);
+    @GetMapping(value = "/logout")
+    public Result logOut(HttpSession session) {
+        session.removeAttribute(Contacts.LJS_SESSION);
         return new Result<>();
     }
 
+    @ApiOperation(value = "获取管理员姓名与手机号", notes = "获取管理员姓名与手机号")
+    @GetMapping(value = "/manager/list")
+    public Result<List<Map<String, String>>> listManager() {
+        return showUserClient.listManager();
+    }
+
+    @ApiOperation(value = "内部人员微信登录", notes = "内部人员微信登录")
+    @GetMapping(value = "/wechat")
+    public Result wechat(HttpServletRequest request, HttpSession session) {
+        String code = request.getParameter("code");
+        SnsToken token = SnsAPI.oauth2AccessToken(config.getAppId(), config.getSecret(), code);
+        ShowAssert.checkTrue((ObjectUtil.isNull(token) || !token.isSuccess()), StatusCode._5004);
+        String openId = token.getOpenid();
+        Result<UserInfo> userResult = showUserClient.getUserByOpenId(openId);
+        ShowAssert.checkTrue(Contacts.SUCCESS_CODE.equals(userResult.getCode()) && userResult.getData() == null, StatusCode._4012);
+        ShowAssert.checkTrue(!userResult.isSuccess(), StatusCode._5000);
+        UserInfo user = userResult.getData();
+        // 验证内部人员
+        Result<Boolean> result = showUserClient.checkManage(user.getMarkId());
+        ShowAssert.checkResult(result);
+        ShowAssert.checkTrue(Boolean.FALSE.equals(result.getData()), StatusCode._5015);
+        // 后台微信登录用到session
+        session.setAttribute(Contacts.LJS_SESSION, user.getMarkId());
+        // 微信端采购返回token
+        Result<UserToken> tokenResult = showUserClient.addUserToken(user.getMarkId());
+        Map<String, String> resultMap = new HashMap<>(1);
+        resultMap.put("token", tokenResult.getData().getToken());
+        return new Result<>(resultMap);
+    }
 }

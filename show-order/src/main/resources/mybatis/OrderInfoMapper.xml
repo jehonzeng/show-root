@@ -19,14 +19,16 @@
         <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
         <result column="coupon_id" jdbcType="VARCHAR" property="couponId" />
         <result column="order_source" jdbcType="VARCHAR" property="orderSource" />
+        <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
         <result column="nickName" jdbcType="VARCHAR" property="nickName" />
         <result column="statusDesc" jdbcType="VARCHAR" property="statusDesc" />
+        <result column="managerName" jdbcType="VARCHAR" property="managerName" />
     </resultMap>
     <sql id="Base_Column_List">
         o.mark_id, o.order_no, o.user_id, o.order_amount,
         o.delivery_amount, o.pay_amount, o.order_time, pay_time, o.cancel_time,
         o.delivery_date, o.send_time, o.arrive_time, o.remark, o.order_type,
-        o.order_status, o.coupon_id, o.order_source
+        o.order_status, o.coupon_id, o.order_source, o.manager_id
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -43,6 +45,9 @@
             (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc
         from t_order_info o
         where o.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="userId != null">
+            and o.user_id=#{userId,jdbcType=VARCHAR}
+        </if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_order_info
@@ -51,7 +56,7 @@
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderInfo">
         insert into t_order_info (mark_id, order_no, user_id, order_amount, delivery_amount, pay_amount,
-            order_time, pay_time, cancel_time, delivery_date, send_time, arrive_time, remark, order_type, order_status, coupon_id, order_source)
+            order_time, pay_time, cancel_time, delivery_date, send_time, arrive_time, remark, order_type, order_status, coupon_id, order_source, manager_id)
         values (#{markId,jdbcType=VARCHAR},
             #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
             #{orderAmount,jdbcType=DECIMAL}, #{deliveryAmount,jdbcType=DECIMAL},
@@ -60,7 +65,7 @@
             #{deliveryDate,jdbcType=TIMESTAMP}, #{sendTime,jdbcType=TIMESTAMP},
             #{arriveTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR},
             #{orderType,jdbcType=INTEGER}, #{orderStatus,jdbcType=VARCHAR},
-            #{couponId,jdbcType=VARCHAR}, #{orderSource,jdbcType=VARCHAR})
+            #{couponId,jdbcType=VARCHAR}, #{orderSource,jdbcType=VARCHAR}, #{managerId,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderInfo">
         insert into t_order_info
@@ -116,6 +121,9 @@
             <if test="orderSource != null">
                 order_source,
             </if>
+            <if test="managerId != null">
+                manager_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
@@ -168,6 +176,9 @@
             </if>
             <if test="orderSource != null">
                 #{orderSource,jdbcType=VARCHAR},
+            </if>
+            <if test="managerId != null">
+                #{managerId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -222,6 +233,9 @@
             <if test="orderSource != null">
                 order_source = #{orderSource,jdbcType=VARCHAR},
             </if>
+            <if test="managerId != null">
+                manager_id = #{managerId,jdbcType=VARCHAR},
+            </if>
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
@@ -242,21 +256,19 @@
             order_type = #{orderType,jdbcType=INTEGER},
             order_status = #{orderStatus,jdbcType=VARCHAR},
             coupon_id = #{couponId,jdbcType=VARCHAR},
-            order_source = #{orderSource,jdbcType=VARCHAR}
+            order_source = #{orderSource,jdbcType=VARCHAR},
+            manager_id = #{managerId,jdbcType=VARCHAR}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.OrderInfo" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" /> ,
-            (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=user_id) AS nickName,
+            u.nick_name AS nickName,
             (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc
-        FROM t_order_info o
+        FROM t_order_info o LEFT JOIN db_user.t_user_info u ON u.mark_id=o.user_id
         <where>
-            <if test="markId != null">
-                o.mark_id = #{markId,jdbcType=VARCHAR}
-            </if>
             <if test="orderNo != null">
-                AND o.order_no LIKE CONCAT(CONCAT('%', #{orderNo,jdbcType=VARCHAR}), '%')
+                o.order_no LIKE CONCAT('%', #{orderNo,jdbcType=VARCHAR}, '%')
             </if>
             <if test="userId != null">
                 AND o.user_id = #{userId,jdbcType=VARCHAR}
@@ -271,13 +283,13 @@
                 AND o.pay_amount = #{payAmount,jdbcType=DECIMAL}
             </if>
             <if test="orderTime != null">
-                AND o.order_time = #{orderTime,jdbcType=TIMESTAMP}
+                AND TO_DAYS(o.order_time) = TO_DAYS(#{orderTime,jdbcType=TIMESTAMP})
             </if>
             <if test="payTime != null">
-                AND o.pay_time = #{payTime,jdbcType=TIMESTAMP}
+                AND TO_DAYS(o.pay_time) = TO_DAYS(#{payTime,jdbcType=TIMESTAMP})
             </if>
             <if test="cancelTime != null">
-                AND o.cancel_time = #{cancelTime,jdbcType=TIMESTAMP}
+                AND TO_DAYS(o.cancel_time) = TO_DAYS(#{cancelTime,jdbcType=TIMESTAMP})
             </if>
             <if test="deliveryDate != null">
                 AND TO_DAYS(o.delivery_date) = TO_DAYS(#{deliveryDate,jdbcType=TIMESTAMP})
@@ -303,100 +315,131 @@
             <if test="orderSource != null">
                 AND o.order_source = #{orderSource,jdbcType=VARCHAR}
             </if>
+            <if test="managerId != null">
+                AND manager_id = #{managerId,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null">
+                AND u.nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+            </if>
         </where>
-    </select>       
-    <select id="selectAll" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
-               o.quantity AS count, o.order_status AS orderStatus, o.type
-        FROM ((SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, 1 AS type,
-                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,
-                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS order_status
-               FROM t_order_info o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR})
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,3 AS type,
-                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS order_status
-               FROM t_seckill_order o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR})
-               UNION ALL 
-              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,2 AS type,
-                     (CASE WHEN g.server_status=1 THEN 
-                                                              '拼团中' 
-                           ELSE 
-                               (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) 
-               END) AS order_status
-            FROM t_teambuy_group g LEFT JOIN 
-                 t_teambuy_order o ON g.mark_id=o.group_id 
-            WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.server_status=2)) o
     </select>
-    <select id="selectUnpaid" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, '待支付' AS orderStatus, o.order_time AS orderTime, o.pay_amount AS payAmount, 
-               (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS count, 1 AS type
-        FROM t_order_info o
-        WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT01'
-    </select>
-    <select id="selectUngroup" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
-               o.quantity AS count, '待成团' AS orderStatus, 3 AS type
-        FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
-        WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.server_status=1 AND g.mark_id IS NOT NULL
-    </select>
-    <select id="selectUndelivery" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
-               o.quantity AS count, '待发货' AS orderStatus, o.type
-        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, 
-                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
-               FROM t_order_info o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND (o.order_status='OT03' OR o.order_status='OT02'))
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
-               FROM t_seckill_order o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND (o.order_status='OT03' OR o.order_status='OT02'))
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
-               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.server_status=2 AND (o.order_status='OT03' OR o.order_status='OT02'))) o
-    </select>
-    <select id="selectUnReceive" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
-               o.quantity AS count, '待收货' AS orderStatus, o.type
-        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount,  
-                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
-               FROM t_order_info o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT04')
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
-               FROM t_seckill_order o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT04')
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
-               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.server_status=2 AND o.order_status='OT04')) o
-    </select>
-    <select id="selectUnjudge" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
-        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
-               o.quantity AS count, '待评价' AS orderStatus, o.type
-        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount,  
-                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
-               FROM t_order_info o
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT05')
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
-               FROM t_seckill_order o 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT05')
-               UNION ALL
-              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
-               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
-               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.server_status=2 AND o.order_status='OT05')) o
-    </select>
-    <select id="selectOrderDetail" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderDetail">
+
+    <select id="selectOrderDetail" resultType="com.szhengzhu.bean.wechat.vo.OrderDetail">
         SELECT o.mark_id AS orderId,o.order_no AS orderNo,o.order_time AS orderTime,o.delivery_amount AS deliveryAmount,
-               o.pay_amount AS payAmount,o.delivery_date AS deliveryDate, a.`name` AS orderStatus,d.contact,d.phone, 
-               CONCAT(d.delivery_area, d.delivery_address) AS address,(SUM(i.sale_price - i.pay_amount) + (o.order_amount - o.pay_amount)) AS discount,o.remark
-        FROM t_order_info o LEFT JOIN 
-             db_base.t_attribute_info a ON o.order_status=a.`code` LEFT JOIN 
-             t_order_delivery d ON d.order_id=o.mark_id LEFT JOIN 
-             t_order_item i ON o.mark_id=i.order_id 
-        WHERE order_no=#{orderNo,jdbcType=VARCHAR}
+               o.pay_amount AS payAmount,o.delivery_date AS deliveryDate, a.`name` AS statusDesc,d.contact,d.phone, o.order_status AS orderStatus,
+               CONCAT(d.delivery_area, d.delivery_address) AS address,
+              (SUM(i.sale_price - i.pay_amount) + (o.order_amount - (o.pay_amount- o.delivery_amount))) AS discount,o.remark, 1 as type
+        FROM t_order_info o LEFT JOIN
+             db_base.t_attribute_info a ON o.order_status=a.`code` LEFT JOIN
+             t_order_delivery d ON d.order_id=o.mark_id LEFT JOIN
+             t_order_item i ON o.mark_id=i.order_id
+        WHERE o.order_no=#{orderNo,jdbcType=VARCHAR}
+        <if test="userId != null">
+            and o.user_id=#{userId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectStatusOrder" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_order_info o
+        where order_status=#{orderStatus,jdbcType=VARCHAR}
+    </select>
+    <select id="selectExpiredOrder" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_order_info o
+        WHERE order_status='OT01' AND UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(order_time) > 15 * 60
+    </select>
+    <select id="selectIndexStatusCount" resultType="com.szhengzhu.bean.rpt.IndexDisplay">
+        SELECT COUNT(*) AS quantity,'已支付订单' AS `name` FROM  t_order_info WHERE order_status = 'OT02'
+        UNION ALL
+        SELECT COUNT(*) AS quantity,'待发货订单' AS `name` FROM  t_order_info WHERE order_status = 'OT03'
+        UNION ALL
+        SELECT COUNT(*) AS quantity,'待退款订单' AS `name` FROM  t_order_info WHERE order_status = 'OT08'
+    </select>
+    <update id="batchUpdateStatus" parameterType="java.util.List">
+        update t_order_info
+        set
+        order_status = 'OT03'
+        where mark_id in
+         <foreach collection="list" item="item" index ="index" open="(" separator="," close=")">
+            #{item.markId}
+         </foreach>
+    </update>
+    <select id="selectChooseOrder" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+         <include refid="Base_Column_List" />
+         from t_order_info o
+          where o.mark_id in
+           <foreach collection="list" item="item" index ="index" open="(" separator="," close=")">
+                #{item}
+           </foreach>
+    </select>
+    <select id="selectShareOrderByExampleSelective" parameterType="com.szhengzhu.bean.order.OrderInfo" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" /> ,
+            u.nick_name AS nickName,
+            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
+            m.real_name as managerName
+        FROM t_order_info o LEFT JOIN db_user.t_user_info u ON u.mark_id=o.user_id LEFT JOIN
+             db_user.t_user_info m ON m.mark_id=o.manager_id
+        WHERE o.manager_id IS NOT NULL
+            <if test="orderNo != null">
+                AND o.order_no LIKE CONCAT('%', #{orderNo,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="userId != null">
+                AND o.user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderAmount != null">
+                AND o.order_amount = #{orderAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="deliveryAmount != null">
+                AND o.delivery_amount = #{deliveryAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="payAmount != null">
+                AND o.pay_amount = #{payAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="orderTime != null">
+                AND TO_DAYS(o.order_time) = TO_DAYS(#{orderTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="payTime != null">
+                AND TO_DAYS(o.pay_time) = TO_DAYS(#{payTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="cancelTime != null">
+                AND TO_DAYS(o.cancel_time) = TO_DAYS(#{cancelTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="deliveryDate != null">
+                AND TO_DAYS(o.delivery_date) = TO_DAYS(#{deliveryDate,jdbcType=TIMESTAMP})
+            </if>
+            <if test="sendTime != null">
+                AND TO_DAYS(o.send_time) = TO_DAYS(#{sendTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="arriveTime != null">
+                AND TO_DAYS(o.arrive_time) = TO_DAYS(#{arriveTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="remark != null">
+                AND o.remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="orderType != null">
+                AND o.order_type = #{orderType,jdbcType=INTEGER}
+            </if>
+            <if test="orderStatus != null">
+                AND o.order_status = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="couponId != null">
+                AND o.coupon_id = #{couponId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderSource != null">
+                AND o.order_source = #{orderSource,jdbcType=VARCHAR}
+            </if>
+            <if test="managerId != null">
+                AND manager_id = #{managerId,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null">
+                AND u.nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="managerName != null">
+                AND m.real_name LIKE CONCAT('%', #{managerName,jdbcType=VARCHAR}, '%')
+            </if>
     </select>
 </mapper>

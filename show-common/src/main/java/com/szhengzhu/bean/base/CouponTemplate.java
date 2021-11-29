@@ -1,10 +1,10 @@
 package com.szhengzhu.bean.base;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import lombok.Data;
 
 @Data
 public class CouponTemplate implements Serializable {
@@ -15,11 +15,14 @@ public class CouponTemplate implements Serializable {
 
     private String couponName;
 
-    private Integer couponTotal;//生成规则
+    /** 生成规则 */
+    private Integer couponTotal;
 
-    private Integer lineType;
-
+    /** 优惠券类型 */
     private Integer couponType;
+
+    /** 优惠形式 */
+    private Integer serverType;
 
     private BigDecimal couponPrice;
 
@@ -29,23 +32,32 @@ public class CouponTemplate implements Serializable {
 
     private Boolean serverStatus;
 
-    private Integer limitCount;//限领取次数
+    /** 限领取次数 */
+    private Integer limitCount;
 
-    private Integer validityType;//生成规则
+    /** 生成规则 */
+    private Integer validityType;
 
     private Date startTime;
 
     private Date stopTime;
 
-    private Integer validityDay;//有效天数
+    /** 有效天数 */
+    private Integer validityDay;
 
-    private Integer rangeType;//使用规则0全品1单品2部分
+    /** 使用规则0全品1单品2部分(暂不使用) */
+    private Integer rangeType;
 
-    private String rangeId;//关联商品或者类别
+    /** 关联商品或者类别(暂不使用) */
+    private String rangeId;
 
     private String description;
-    
-    private String rangeName;//指定商品或者名称
+
+    /** 指定商品或者名称(暂不使用) */
+    private String rangeName;
     
     private String limitRegion;
+
+    /** 指定使用时间（date1,date2） */
+    private String limitTime;
 }

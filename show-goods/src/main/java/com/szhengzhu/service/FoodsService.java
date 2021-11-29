@@ -1,14 +1,13 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.FoodsInfo;
 import com.szhengzhu.bean.goods.FoodsItem;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsFoodVo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface FoodsService {
 
@@ -17,25 +16,23 @@ public interface FoodsService {
      * @param base
      * @return
      */
-    Result<?> addFoodsInfo(FoodsInfo base);
+    FoodsInfo addFoodsInfo(FoodsInfo base);
 
     /**
      * 修改食材
-     * 
      * @date 2019年3月25日 下午5:13:44
      * @param base
      * @return
      */
-    Result<?> modifyFoodsInfo(FoodsInfo base);
+    FoodsInfo modifyFoodsInfo(FoodsInfo base);
 
     /**
      * 添加食材
-     * 
      * @date 2019年3月25日 下午5:13:48
      * @param base
      * @return
      */
-    Result<PageGrid<FoodsInfo>> getPage(PageParam<FoodsInfo> base);
+    PageGrid<FoodsInfo> getPage(PageParam<FoodsInfo> base);
 
     /**
      * 根据id获取食材信息
@@ -44,7 +41,7 @@ public interface FoodsService {
      * @param markId
      * @return
      */
-    Result<?> getFoodsInfo(String markId);
+    FoodsInfo getFoodsInfo(String markId);
 
     /**
      * 下拉列表
@@ -52,7 +49,7 @@ public interface FoodsService {
      * @date 2019年4月24日 下午12:26:03
      * @return
      */
-    Result<List<Combobox>> listFoodWithoutGoods(String goodsId);
+    List<Combobox> listFoodWithoutGoods(String goodsId);
 
     /**
      * 批量添加
@@ -61,7 +58,7 @@ public interface FoodsService {
      * @param base
      * @return
      */
-    Result<?> addBatchItem(FoodsItem base);
+    void addBatchItem(FoodsItem base);
 
     /**
      * 获取商品食材列表
@@ -70,7 +67,7 @@ public interface FoodsService {
      * @param base
      * @return
      */
-    Result<PageGrid<GoodsFoodVo>> getItemPage(PageParam<FoodsItem> base);
+    PageGrid<GoodsFoodVo> getItemPage(PageParam<FoodsItem> base);
 
     /**
      * 删除食材
@@ -79,7 +76,7 @@ public interface FoodsService {
      * @param markId
      * @return
      */
-    Result<?> deleteItem(String markId);
+    void deleteItem(String markId);
 
     /**
      * 修改商品食材信息
@@ -88,7 +85,7 @@ public interface FoodsService {
      * @param base
      * @return
      */
-    Result<?> updateFoodsItem(FoodsItem base);
+    FoodsItem updateFoodsItem(FoodsItem base);
 
     /**
      * 获取启用的食材列表
@@ -96,5 +93,5 @@ public interface FoodsService {
      * @date 2019年5月13日 下午2:02:15
      * @return
      */
-    Result<List<Combobox>> getFoodCombobox();
+    List<Combobox> getFoodCombobox();
 }

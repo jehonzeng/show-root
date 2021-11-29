@@ -4,13 +4,13 @@ import com.szhengzhu.bean.user.XwechatInfo;
 
 public interface XwechatInfoMapper {
     
-    int deleteByPrimaryKey(Long markId);
+    int deleteByPrimaryKey(String openId);
 
-    int insert(XwechatInfo record);
+    int replaceInsert(XwechatInfo record);
 
     int insertSelective(XwechatInfo record);
 
-    XwechatInfo selectByPrimaryKey(Long markId);
+    XwechatInfo selectByPrimaryKey(String openId);
 
     int updateByPrimaryKeySelective(XwechatInfo record);
 

@@ -17,13 +17,14 @@
         <result column="link_name" jdbcType="VARCHAR" property="linkName" />
         <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
         <result column="limit_region" jdbcType="VARCHAR" property="limitRegion" />
+        <result column="limit_time" jdbcType="VARCHAR" property="limitTime" />
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, user_id, template_id, server_status,
         start_time, stop_time, use_time, limit_price,
         coupon_price,
         coupon_discount, coupon_name, link_id, link_name,
-        coupon_type,limit_region
+        coupon_type,limit_region,limit_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -53,7 +54,7 @@
         #{couponDiscount,jdbcType=DECIMAL},
         #{couponName,jdbcType=VARCHAR}, #{linkId,jdbcType=VARCHAR},
         #{linkName,jdbcType=VARCHAR},
-        #{couponType,jdbcType=INTEGER},#{limitRegion,jdbcType=VARCHAR})
+        #{couponType,jdbcType=INTEGER},#{limitRegion,jdbcType=VARCHAR}, #{limitTime,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.UserCoupon">
         insert into t_user_coupon
@@ -103,6 +104,9 @@
             <if test="limitRegion != null">
                 limit_region,
             </if>
+            <if test="limitTime != null">
+                limit_time,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
@@ -149,6 +153,9 @@
             </if>
             <if test="limitRegion != null">
                 #{limitRegion,jdbcType=VARCHAR},
+            </if>
+             <if test="limitTime != null">
+                 #{limitTime,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -199,6 +206,9 @@
             <if test="limitRegion != null">
                 limit_region = #{limitRegion,jdbcType=VARCHAR},
             </if>
+             <if test="limitTime != null">
+                limit_time =  #{limitTime,jdbcType=VARCHAR},
+            </if>
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
@@ -218,8 +228,8 @@
         link_id = #{linkId,jdbcType=VARCHAR},
         link_name = #{linkName,jdbcType=VARCHAR},
         coupon_type = #{couponType,jdbcType=INTEGER},
-        limit_region
-        = #{limitRegion,jdbcType=VARCHAR}
+        limit_region = #{limitRegion,jdbcType=VARCHAR},
+        limit_time =  #{limitTime,jdbcType=VARCHAR}
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </update>
@@ -279,6 +289,10 @@
                 AND limit_region =
                 #{limitRegion,jdbcType=VARCHAR}
             </if>
+             <if test="limitTime != null">
+                AND limit_time =
+                #{limitTime,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
     <select id="selectByUser" resultType="com.szhengzhu.bean.wechat.vo.CouponBase">
@@ -288,24 +302,23 @@
         c.coupon_name AS couponName, c.server_status AS serverStatus
         FROM t_user_coupon c
         WHERE c.user_id=#{userId,jdbcType=VARCHAR} AND coupon_type = #{type,jdbcType=INTEGER} AND server_status = 0 AND
-              (CASE WHEN c.start_time IS NOT NULL THEN 
+              <!-- (CASE WHEN c.start_time IS NOT NULL THEN 
                          c.start_time <![CDATA[ < ]]> NOW() 
                      ELSE 
                          1=1 
-                END) AND 
+                END) AND  -->
                 (CASE WHEN c.stop_time IS NOT NULL THEN 
                           c.stop_time <![CDATA[ > ]]> NOW() 
                       ELSE 
                           1=1 
                  END)
-        ORDER BY c.stop_time
-        DESC
+        ORDER BY c.coupon_price DESC, c.start_time ASC
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
         insert into t_user_coupon (mark_id, user_id, template_id,
         server_status, start_time, stop_time, use_time,limit_price,
         coupon_price, coupon_discount, coupon_name, link_id, link_name,
-        coupon_type,limit_region)
+        coupon_type,limit_region,limit_time)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.markId,jdbcType=VARCHAR},
@@ -322,7 +335,9 @@
             #{item.linkId,jdbcType=VARCHAR},
             #{item.linkName,jdbcType=VARCHAR},
             #{item.couponType,jdbcType=INTEGER},
-            #{item.limitRegion,jdbcType=VARCHAR})
+            #{item.limitRegion,jdbcType=VARCHAR},
+            #{item.limitTime,jdbcType=VARCHAR}
+            )
         </foreach>
     </insert>
 </mapper>

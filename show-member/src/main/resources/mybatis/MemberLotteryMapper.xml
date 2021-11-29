@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MemberLotteryMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MemberLottery">
+        <!--@Table t_member_lottery-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="consumeIntegral" column="consume_integral" jdbcType="INTEGER"/>
+        <result property="multiple" column="multiple" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="BIT"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="giveChance" column="give_chance" jdbcType="BIT"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mark_id, name, consume_integral, multiple, create_time, modify_time, creator, status,
+        start_time, end_time, give_chance, type
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_lottery
+        where mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_lottery
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="consumeIntegral != null">
+                and consume_integral = #{consumeIntegral}
+            </if>
+            <if test="multiple != null">
+                and multiple = #{multiple}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="giveChance != null">
+                and give_chance = #{giveChance}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_member_lottery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
+            <if test="consumeIntegral != null">
+                consume_integral,
+            </if>
+            <if test="multiple != null">
+                multiple,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="creator != null and creator != ''">
+                creator,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="giveChance != null">
+                give_chance,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="consumeIntegral != null">
+                #{consumeIntegral},
+            </if>
+            <if test="multiple != null">
+                #{multiple},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+            <if test="creator != null and creator != ''">
+                #{creator},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="startTime != null">
+                #{startTime},
+            </if>
+            <if test="endTime != null">
+                #{endTime},
+            </if>
+            <if test="giveChance != null">
+                #{giveChance},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_member_lottery
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="consumeIntegral != null">
+                consume_integral = #{consumeIntegral},
+            </if>
+            <if test="multiple != null">
+                multiple = #{multiple},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+            <if test="creator != null and creator != ''">
+                creator = #{creator},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="giveChance != null">
+                give_chance = #{giveChance},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_member_lottery
+        where mark_id = #{markId}
+    </delete>
+    <select id="selectLotteryByType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_member_lottery
+        <where>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="type != null and type != ''">
+                AND type = #{type}
+            </if>
+            <if test="type == 2">
+                AND start_time <![CDATA[ < ]]> NOW()
+                AND end_time > NOW()
+            </if>
+        </where>
+    </select>
+</mapper>

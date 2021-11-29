@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ScanWinnerMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ScanWinner">
+        <result column="win_id" jdbcType="VARCHAR" property="winId" />
+        <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    </resultMap>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ScanWinner">
+        insert into t_scan_winner (win_id, open_id)
+        values (#{winId,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ScanWinner">
+        insert into t_scan_winner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="winId != null">
+                win_id,
+            </if>
+            <if test="openId != null">
+                open_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="winId != null">
+                #{winId,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

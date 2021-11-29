@@ -1,22 +1,19 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.base.CouponTemplate;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.CouponTemplateService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+@Validated
 @RestController
 @RequestMapping("/coupontemplate")
 public class CouponTemplateController {
@@ -24,29 +21,34 @@ public class CouponTemplateController {
     @Resource
     private CouponTemplateService couponTemplateService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<CouponTemplate> addTemplate(@RequestBody CouponTemplate couponTemplate) {
+    @PostMapping(value = "/add")
+    public CouponTemplate addTemplate(@RequestBody @Validated CouponTemplate couponTemplate) {
         return couponTemplateService.saveTemplate(couponTemplate);
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<CouponTemplate> modfiyTemplate(@RequestBody CouponTemplate couponTemplate) {
+    @PatchMapping(value = "/modify")
+    public CouponTemplate modfiyTemplate(@RequestBody @Validated CouponTemplate couponTemplate) {
         return couponTemplateService.updateTemplate(couponTemplate);
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<CouponTemplate>> pageTemplate(
+    @PostMapping(value = "/page")
+    public PageGrid<CouponTemplate> pageTemplate(
             @RequestBody PageParam<CouponTemplate> templatePage) {
         return couponTemplateService.pageTemplate(templatePage);
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public CouponTemplate getCouponTmplate(@RequestParam("templateId") String templateId) {
+    @GetMapping(value = "/info")
+    public CouponTemplate getCouponTemplate(@RequestParam("templateId") @NotBlank String templateId) {
         return couponTemplateService.getCouponTemplate(templateId);
     }
-    
-    @RequestMapping(value= "/list", method = RequestMethod.GET)
-    public Result<List<Combobox>> listCouponTempalte(@RequestParam("couponType") Integer couponType){
+
+    @GetMapping(value = "/{markId}")
+    public CouponTemplate getCouponTemplateInfo(@PathVariable("markId") @NotBlank String markId) {
+        return couponTemplateService.getCouponTemplate(markId);
+    }
+
+    @GetMapping(value = "/list")
+    public List<Combobox> listCouponTempalte(@RequestParam("couponType") @NotNull Integer couponType) {
         return couponTemplateService.getTemplateCombobox(couponType);
     }
 }

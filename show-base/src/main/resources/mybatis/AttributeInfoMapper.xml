@@ -8,10 +8,11 @@
         <result column="type" jdbcType="VARCHAR" property="type" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="father" jdbcType="VARCHAR" property="father" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
         <result column="sort" jdbcType="INTEGER" property="sort" />
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, code, server_status, type, name, father, sort
+        mark_id, code, server_status, type, name, father, description, sort
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -24,13 +25,10 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.base.AttributeInfo">
-        insert into t_attribute_info (mark_id, code, server_status,
-        type, name, father,
-        sort)
-        values (#{markId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
-        #{serverStatus,jdbcType=BIT},
+        insert into t_attribute_info (mark_id, code, server_status, type, name, father, description, sort)
+        values (#{markId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{serverStatus,jdbcType=BIT},
         #{type,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{father,jdbcType=VARCHAR},
-        #{sort,jdbcType=INTEGER})
+        #{description,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.AttributeInfo">
         insert into t_attribute_info
@@ -52,6 +50,9 @@
             </if>
             <if test="father != null">
                 father,
+            </if>
+            <if test="description != null">
+                description,
             </if>
             <if test="sort != null">
                 sort,
@@ -76,6 +77,9 @@
             <if test="father != null">
                 #{father,jdbcType=VARCHAR},
             </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
             <if test="sort != null">
                 #{sort,jdbcType=INTEGER},
             </if>
@@ -99,6 +103,9 @@
             <if test="father != null">
                 father = #{father,jdbcType=VARCHAR},
             </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
             <if test="sort != null">
                 sort = #{sort,jdbcType=INTEGER},
             </if>
@@ -112,6 +119,7 @@
         type = #{type,jdbcType=VARCHAR},
         name = #{name,jdbcType=VARCHAR},
         father = #{father,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
         sort = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
@@ -124,7 +132,7 @@
                 mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="code != null">
-                AND code = #{code,jdbcType=VARCHAR}
+                AND code like CONCAT('%', CONCAT(#{code,jdbcType=VARCHAR},'%')) 
             </if>
             <if test="serverStatus != null">
                 AND server_status = #{serverStatus,jdbcType=BIT}
@@ -137,6 +145,9 @@
             </if>
             <if test="father != null">
                 AND father = #{father,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                AND description = #{description,jdbcType=VARCHAR}
             </if>
             <if test="sort != null">
                 AND sort = #{sort,jdbcType=INTEGER}

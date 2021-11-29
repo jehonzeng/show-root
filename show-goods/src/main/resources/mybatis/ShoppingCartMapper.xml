@@ -9,19 +9,19 @@
         <result column="product_name" jdbcType="VARCHAR" property="productName" />
         <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
         <result column="quantity" jdbcType="INTEGER" property="quantity" />
-        <result column="base_price" jdbcType="DECIMAL" property="basePrice" />
         <result column="add_price" jdbcType="DECIMAL" property="addPrice" />
         <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="checked" jdbcType="BIT" property="checked" />
         <result column="product_no" jdbcType="VARCHAR" property="productNo" />
+        <result column="basePrice" jdbcType="DECIMAL" property="basePrice" />
         <result column="salePrice" jdbcType="DECIMAL" property="salePrice" />
         <result column="currentStock" jdbcType="INTEGER" property="currentStock" />
         <result column="status" jdbcType="INTEGER" property="status" />
     </resultMap>
     <sql id="Base_Column_List">
         c.mark_id, c.product_id, c.user_id, c.product_type, c.product_name, c.specification_ids, c.quantity,
-        c.base_price, c.add_price, c.add_time, c.update_time, c.checked,c.product_no
+        c.add_price, c.add_time, c.update_time, c.checked,c.product_no
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -35,11 +35,11 @@
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.ShoppingCart">
         insert into t_shopping_cart (mark_id, product_id, user_id,
-        product_type, product_name, specification_ids,quantity, base_price, add_price,
+        product_type, product_name, specification_ids,quantity, add_price,
         add_time, update_time, checked, product_no)
         values (#{markId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
         #{productType,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR},
-        #{quantity,jdbcType=INTEGER}, #{basePrice,jdbcType=DECIMAL}, #{addPrice,jdbcType=DECIMAL},
+        #{quantity,jdbcType=INTEGER}, #{addPrice,jdbcType=DECIMAL},
         #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
         #{checked,jdbcType=BIT},#{productNo,jdbcType=VARCHAR})
     </insert>
@@ -66,9 +66,6 @@
             </if>
             <if test="quantity != null">
                 quantity,
-            </if>
-            <if test="basePrice != null">
-                base_price,
             </if>
             <if test="addPrice != null">
                 add_price,
@@ -108,9 +105,6 @@
             <if test="quantity != null">
                 #{quantity,jdbcType=INTEGER},
             </if>
-            <if test="basePrice != null">
-                #{basePrice,jdbcType=DECIMAL},
-            </if>
             <if test="addPrice != null">
                 #{addPrice,jdbcType=DECIMAL},
             </if>
@@ -149,9 +143,6 @@
             <if test="quantity != null">
                 quantity = #{quantity,jdbcType=INTEGER},
             </if>
-            <if test="basePrice != null">
-                base_price = #{basePrice,jdbcType=DECIMAL},
-            </if>
             <if test="addPrice != null">
                 add_price = #{addPrice,jdbcType=DECIMAL},
             </if>
@@ -178,7 +169,6 @@
             product_name = #{productName,jdbcType=VARCHAR},
             specification_ids = #{specificationIds,jdbcType=VARCHAR},
             quantity = #{quantity,jdbcType=INTEGER},
-            base_price = #{basePrice,jdbcType=DECIMAL},
             add_price = #{addPrice,jdbcType=DECIMAL},
             add_time = #{addTime,jdbcType=TIMESTAMP},
             update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -186,31 +176,58 @@
             product_no = #{productNo,jdbcType=VARCHAR}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select id="selectSingleCart" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List" />
-        ,IF(s.promotion_mode IS NULL,c.base_price,
-            (CASE WHEN s.promotion_mode=0 THEN
-                       c.base_price-s.price
-                  WHEN s.promotion_mode=1 THEN
-                       c.base_price * s.discount
-            END)) AS salePrice,
-        IF(c.product_type=0,
-           (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
-            FROM db_goods.t_specification_info 
-            WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs,
-        IFNULL((CASE WHEN c.product_type=0 THEN 
-                   (SELECT gs.current_stock 
-                    FROM t_goods_stock gs 
-                    WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock desc limit 1)
-               WHEN c.product_type=1 THEN 
-                    (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
-               WHEN c.product_type=2 THEN 
-                        (SELECT m.stock_size FROM t_meal_info m WHERE m.server_status=1 AND m.mark_id=c.product_id)
-          END), 0) as currentStock,
-          IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) AS status
-        FROM t_shopping_cart c LEFT JOIN 
-             t_goods_info g ON c.product_id=g.mark_id LEFT JOIN
+    <select id="selectSingleCart" resultMap="BaseResultMap">     
+        SELECT 
+           <include refid="Base_Column_List" />, 
+           IF(c.product_type=0, (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') FROM t_specification_info WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs, 
+           IFNULL(c.basePrice,c.salePrice) AS basePrice,
+           IF(s.promotion_mode IS NULL,
+              IFNULL(c.basePrice,c.salePrice),
+              (CASE WHEN s.promotion_mode=0 THEN
+                        IFNULL(c.basePrice,c.salePrice)-s.price
+                    WHEN s.promotion_mode=1 THEN
+                        IFNULL(c.basePrice,c.salePrice) * s.discount
+               END)) AS salePrice,
+           IF(c.basePrice IS NULL,2, c.status) AS status,
+           IF(c.basePrice IS NULL, 0,
+              IFNULL((CASE WHEN c.product_type=0 THEN 
+                               (SELECT gs.current_stock FROM t_goods_stock gs WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock DESC limit 1)
+                           WHEN c.product_type=1 THEN 
+                               (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
+                           WHEN c.product_type=2 THEN 
+                               (SELECT m.current_stock FROM t_meal_stock m WHERE m.server_status=1 AND m.meal_id=c.product_id)
+                      END), 0)) as currentStock
+        FROM (SELECT 
+                 <include refid="Base_Column_List" />, 
+                 (CASE WHEN c.product_type=0 THEN 
+                           (SELECT g.sale_price FROM t_goods_specification g WHERE g.goods_id=c.product_id AND g.specification_ids=c.specification_ids)
+                       WHEN c.product_type=1 THEN 
+                           v.price
+                       WHEN c.product_type=2 THEN 
+                           m.sale_price
+                  END) AS basePrice,
+                  (CASE WHEN c.product_type=0 THEN 
+                           g.sale_price
+                       WHEN c.product_type=1 THEN 
+                           v.price
+                       WHEN c.product_type=2 THEN 
+                           m.sale_price
+                  END) AS salePrice,
+                 (CASE WHEN c.product_type=0 THEN 
+                           (SELECT IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) FROM t_goods_info g WHERE g.mark_id=c.product_id)
+                       WHEN c.product_type=1 THEN
+                           (SELECT IF(g.server_status, 0, 3) FROM t_goods_voucher g WHERE g.mark_id=c.product_id)
+                       WHEN c.product_type=2 THEN
+                           (SELECT IF(m.server_status, 0, 3) FROM t_meal_info m WHERE m.mark_id=c.product_id)
+                  END) AS status
+              FROM t_shopping_cart c LEFT JOIN 
+                   t_goods_info g ON c.product_id=g.mark_id LEFT JOIN 
+                   t_goods_voucher v ON c.product_id=v.mark_id LEFT JOIN 
+                   t_meal_info m ON m.mark_id=c.product_id
+              WHERE c.user_id=#{userId,jdbcType=VARCHAR} AND c.product_id=#{productId,jdbcType=VARCHAR} 
+              <if test="specIds != null">
+                AND c.specification_ids=#{specIds,jdbcType=VARCHAR}
+              </if>) c LEFT JOIN 
              (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
               FROM t_special_info s LEFT JOIN
                    t_special_item i ON s.mark_id=i.special_id
@@ -224,37 +241,57 @@
                              s.end_time <![CDATA[ > ]]> NOW()
                          ELSE
                              1=1
-                    END)) s ON c.product_id=s.goods_id
-        WHERE c.user_id=#{userId,jdbcType=VARCHAR} AND c.product_id=#{productId,jdbcType=VARCHAR}
-        <if test="specIds != null">
-            AND c.specification_ids=#{specIds,jdbcType=VARCHAR}
-        </if>
+                    END)) s ON c.product_id=s.goods_id 
     </select>
-    <select id="selectByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List" />,
-        IF(s.promotion_mode IS NULL,c.base_price,
-            (CASE WHEN s.promotion_mode=0 THEN
-                       c.base_price-s.price
-                  WHEN s.promotion_mode=1 THEN
-                       c.base_price * s.discount
-            END)) AS salePrice,
-         IF(c.product_type=0,
-           (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
-            FROM db_goods.t_specification_info 
-            WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs,
-         IFNULL((CASE WHEN c.product_type=0 THEN 
-                   (SELECT gs.current_stock 
-                    FROM t_goods_stock gs 
-                    WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock desc limit 1)
-               WHEN c.product_type=1 THEN 
-                    (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
-               WHEN c.product_type=2 THEN 
-                        (SELECT m.stock_size FROM t_meal_info m WHERE m.server_status=1 AND m.mark_id=c.product_id)
-          END), 0) AS currentStock,
-          IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) AS status
-        FROM t_shopping_cart c LEFT JOIN 
-             t_goods_info g ON c.product_id=g.mark_id LEFT JOIN
+    <select id="selectByUser" parameterType="java.lang.String" resultMap="BaseResultMap">                    
+        SELECT 
+           <include refid="Base_Column_List" />, 
+           IF(c.product_type=0, (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') FROM t_specification_info WHERE FIND_IN_SET(mark_id, c.specification_ids)),NULL) AS specs, 
+           IFNULL(c.basePrice,c.salePrice) AS basePrice,
+           IF(s.promotion_mode IS NULL,
+              IFNULL(c.basePrice,c.salePrice),
+              (CASE WHEN s.promotion_mode=0 THEN
+                        IFNULL(c.basePrice,c.salePrice)-s.price
+                    WHEN s.promotion_mode=1 THEN
+                        IFNULL(c.basePrice,c.salePrice) * s.discount
+               END)) AS salePrice,
+           IF(c.basePrice IS NULL,2, c.status) AS status,
+           IF(c.basePrice IS NULL, 0,
+              IFNULL((CASE WHEN c.product_type=0 THEN 
+                               (SELECT gs.current_stock FROM t_goods_stock gs WHERE gs.goods_id=c.product_id AND gs.specification_ids=c.specification_ids AND gs.server_status=1 ORDER BY gs.current_stock DESC limit 1)
+                           WHEN c.product_type=1 THEN 
+                               (SELECT v.current_stock FROM t_goods_voucher v WHERE v.server_status=1 AND v.mark_id=c.product_id)
+                           WHEN c.product_type=2 THEN 
+                               (SELECT m.current_stock FROM t_meal_stock m WHERE m.server_status=1 AND m.meal_id=c.product_id)
+                      END), 0)) as currentStock
+        FROM (SELECT 
+                 <include refid="Base_Column_List" />, 
+                 (CASE WHEN c.product_type=0 THEN 
+                           (SELECT g.sale_price FROM t_goods_specification g WHERE g.goods_id=c.product_id AND g.specification_ids=c.specification_ids)
+                       WHEN c.product_type=1 THEN 
+                           v.price
+                       WHEN c.product_type=2 THEN 
+                           m.sale_price
+                  END) AS basePrice,
+                  (CASE WHEN c.product_type=0 THEN 
+                           g.sale_price
+                       WHEN c.product_type=1 THEN 
+                           v.price
+                       WHEN c.product_type=2 THEN 
+                           m.sale_price
+                  END) AS salePrice,
+                 (CASE WHEN c.product_type=0 THEN 
+                           (SELECT IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 3, 0) FROM t_goods_info g WHERE g.mark_id=c.product_id)
+                       WHEN c.product_type=1 THEN
+                           (SELECT IF(g.server_status, 0, 3) FROM t_goods_voucher g WHERE g.mark_id=c.product_id)
+                       WHEN c.product_type=2 THEN
+                           (SELECT IF(m.server_status, 0, 3) FROM t_meal_info m WHERE m.mark_id=c.product_id)
+                  END) AS status
+              FROM t_shopping_cart c LEFT JOIN 
+                   t_goods_info g ON c.product_id=g.mark_id LEFT JOIN 
+                   t_goods_voucher v ON c.product_id=v.mark_id LEFT JOIN 
+                   t_meal_info m ON m.mark_id=c.product_id
+              WHERE c.user_id=#{userId,jdbcType=VARCHAR}) c LEFT JOIN 
              (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
               FROM t_special_info s LEFT JOIN
                    t_special_item i ON s.mark_id=i.special_id
@@ -268,8 +305,20 @@
                              s.end_time <![CDATA[ > ]]> NOW()
                          ELSE
                              1=1
-                    END)) s ON c.product_id=s.goods_id
-        WHERE c.user_id=#{userId,jdbcType=VARCHAR}
-        ORDER BY c.product_id, c.add_time DESC
+                    END)) s ON c.product_id=s.goods_id 
     </select>
+    
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_shopping_cart
+        (mark_id, product_id, user_id, product_type, product_name, specification_ids, quantity,
+        add_price, add_time,product_no)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.productId,jdbcType=VARCHAR},
+            #{item.userId,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER},
+            #{item.productName,jdbcType=VARCHAR}, #{item.specificationIds,jdbcType=VARCHAR},
+            #{item.quantity,jdbcType=INTEGER},#{item.addPrice,jdbcType=DECIMAL}, 
+            #{item.addTime, jdbcType=TIMESTAMP}, #{item.productNo,jdbcType=DECIMAL})
+        </foreach>
+    </insert>
 </mapper>

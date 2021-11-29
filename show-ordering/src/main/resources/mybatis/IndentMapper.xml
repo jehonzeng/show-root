@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IndentMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.Indent">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="indent_no" jdbcType="VARCHAR" property="indentNo"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="table_id" jdbcType="VARCHAR" property="tableId"/>
+        <result column="man_num" jdbcType="INTEGER" property="manNum"/>
+        <result column="indent_user" jdbcType="VARCHAR" property="indentUser"/>
+        <result column="indent_time" jdbcType="TIMESTAMP" property="indentTime"/>
+        <result column="bill_time" jdbcType="TIMESTAMP" property="billTime"/>
+        <result column="member_id" jdbcType="VARCHAR" property="memberId"/>
+        <result column="base_total" jdbcType="DECIMAL" property="baseTotal"/>
+        <result column="indent_total" jdbcType="DECIMAL" property="indentTotal"/>
+        <result column="market_discount" jdbcType="DECIMAL" property="marketDiscount"/>
+        <result column="market_ids" jdbcType="VARCHAR" property="marketIds"/>
+        <result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+        <result column="temp_num" jdbcType="VARCHAR" property="tempNum"/>
+        <result column="bill_by" jdbcType="VARCHAR" property="billBy"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="indent_status" jdbcType="VARCHAR" property="indentStatus"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    <resultMap id="selectIndentInfo" type="com.szhengzhu.bean.ordering.IndentInfo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="member_id" jdbcType="VARCHAR" property="memberId"/>
+        <result column="indent_user" jdbcType="VARCHAR" property="userId"/>
+        <result column="storeName" jdbcType="VARCHAR" property="storeName"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="bill_time" jdbcType="VARCHAR" property="time"/>
+        <result column="indent_total" jdbcType="DECIMAL" property="total"/>
+        <result column="indent_status" jdbcType="VARCHAR" property="indentStatus"/>
+        <collection property="userList" ofType="java.lang.String">
+            <result column="user_id" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, indent_no, store_id, table_id, man_num, indent_user, indent_time, bill_time,
+        member_id, ifnull(base_total, 0) as base_total, ifnull(indent_total, 0) as indent_total, ifnull(market_discount, 0) as market_discount,market_ids,
+        employee_id, temp_num, bill_by, modifier, modify_time, indent_status, remark
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_indent_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.Indent">
+        insert into t_indent_info (mark_id, indent_no, store_id,
+                                   table_id, man_num, indent_user,
+                                   indent_time, bill_time, member_id,
+                                   base_total, indent_total, market_discount, market_ids,
+                                   employee_id, temp_num, bill_by, modifier, modify_time, indent_status, remark)
+        values (#{markId,jdbcType=VARCHAR}, #{indentNo,jdbcType=VARCHAR}, #{storeId,jdbcType=VARCHAR},
+                #{tableId,jdbcType=VARCHAR}, #{manNum,jdbcType=INTEGER}, #{indentUser,jdbcType=VARCHAR},
+                #{indentTime,jdbcType=TIMESTAMP}, #{billTime,jdbcType=TIMESTAMP}, #{memberId,jdbcType=VARCHAR},
+                #{baseTotal,jdbcType=DECIMAL}, #{indentTotal,jdbcType=DECIMAL}, #{marketDiscount,jdbcType=DECIMAL},
+                #{marketIds,jdbcType=VARCHAR},
+                #{employeeId,jdbcType=VARCHAR}, #{tempNum,jdbcType=VARCHAR},
+                #{billBy,jdbcType=VARCHAR}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+                #{indentStatus,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.Indent">
+        replace into t_indent_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="indentNo != null">
+                indent_no,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="tableId != null">
+                table_id,
+            </if>
+            <if test="manNum != null">
+                man_num,
+            </if>
+            <if test="indentUser != null">
+                indent_user,
+            </if>
+            <if test="indentTime != null">
+                indent_time,
+            </if>
+            <if test="billTime != null">
+                bill_time,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="baseTotal != null">
+                base_total,
+            </if>
+            <if test="indentTotal != null">
+                indent_total,
+            </if>
+            <if test="marketDiscount != null">
+                market_discount,
+            </if>
+            <if test="marketIds != null">
+                market_ids,
+            </if>
+            <if test="employeeId != null">
+                employee_id,
+            </if>
+            <if test="tempNum != null">
+                temp_num,
+            </if>
+            <if test="billBy != null">
+                bill_by,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="indentStatus != null">
+                indent_status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="indentNo != null">
+                #{indentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="manNum != null">
+                #{manNum,jdbcType=INTEGER},
+            </if>
+            <if test="indentUser != null">
+                #{indentUser,jdbcType=VARCHAR},
+            </if>
+            <if test="indentTime != null">
+                #{indentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billTime != null">
+                #{billTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=VARCHAR},
+            </if>
+            <if test="baseTotal != null">
+                #{baseTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="indentTotal != null">
+                #{indentTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="marketDiscount != null">
+                #{marketDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="marketIds != null">
+                #{marketIds,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null">
+                #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="tempNum != null">
+                #{tempNum,jdbcType=VARCHAR},
+            </if>
+            <if test="billBy != null">
+                #{billBy,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="indentStatus != null">
+                #{indentStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.Indent">
+        update t_indent_info
+        <set>
+            <if test="indentNo != null">
+                indent_no = #{indentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                table_id = #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="manNum != null">
+                man_num = #{manNum,jdbcType=INTEGER},
+            </if>
+            <if test="indentUser != null">
+                indent_user = #{indentUser,jdbcType=VARCHAR},
+            </if>
+            <if test="indentTime != null">
+                indent_time = #{indentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="billTime != null">
+                bill_time = #{billTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=VARCHAR},
+            </if>
+            <if test="baseTotal != null">
+                base_total = #{baseTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="indentTotal != null">
+                indent_total = #{indentTotal,jdbcType=DECIMAL},
+            </if>
+            <if test="marketDiscount != null">
+                market_discount = #{marketDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="marketIds != null">
+                market_ids = #{marketIds,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="tempNum != null">
+                temp_num = #{tempNum,jdbcType=VARCHAR},
+            </if>
+            <if test="billBy != null">
+                bill_by = #{billBy,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="indentStatus != null">
+                indent_status = #{indentStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.Indent">
+        update t_indent_info
+        set indent_no       = #{indentNo,jdbcType=VARCHAR},
+            store_id        = #{storeId,jdbcType=VARCHAR},
+            table_id        = #{tableId,jdbcType=VARCHAR},
+            man_num         = #{manNum,jdbcType=INTEGER},
+            indent_user     = #{indentUser,jdbcType=VARCHAR},
+            indent_time     = #{indentTime,jdbcType=TIMESTAMP},
+            bill_time       = #{billTime,jdbcType=TIMESTAMP},
+            member_id       = #{memberId,jdbcType=VARCHAR},
+            base_total      = #{baseTotal,jdbcType=DECIMAL},
+            indent_total    = #{indentTotal,jdbcType=DECIMAL},
+            market_discount = #{marketDiscount,jdbcType=DECIMAL},
+            market_ids      = #{marketIds,jdbcType=VARCHAR},
+            employee_id     = #{employeeId,jdbcType=VARCHAR},
+            temp_num        = #{tempNum,jdbcType=VARCHAR},
+            bill_by         = #{billBy,jdbcType=VARCHAR},
+            modifier        = #{modifier,jdbcType=VARCHAR},
+            modify_time     = #{modifyTime,jdbcType=TIMESTAMP},
+            indent_status   = #{indentStatus,jdbcType=VARCHAR},
+            remark          = #{remark,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_info
+        where indent_no = #{indentNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByTable" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_info
+        where table_id = #{tableId,jdbcType=VARCHAR} and temp_num = #{tempNum,jdbcType=VARCHAR}
+    </select>
+    <select id="selectBaseDetailById" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.ordering.vo.IndentBaseVo">
+        SELECT mark_id                                                          AS indentId,
+               indent_no                                                        AS indentNo,
+               IFNULL(indent_total, 0)                                          AS indentTotal,
+               indent_status                                                    AS indentStatus,
+               (SELECT `name` FROM t_employee_info WHERE employee_id = mark_id) AS employee
+        FROM t_indent_info i
+        WHERE i.mark_id = #{indentId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectManageList" parameterType="com.szhengzhu.bean.ordering.param.IndentPageParam"
+            resultType="com.szhengzhu.bean.ordering.vo.IndentVo">
+        SELECT i.mark_id AS indentId, t.`code` AS tableCode, i.indent_total AS indentTotal, i.indent_no AS indentNo,
+        i.indent_status AS indentStatus,
+        i.indent_time AS indentTime, e.`name` AS indentUser, i.bill_time AS billTime, c.`name` as billBy
+        FROM t_indent_info i LEFT JOIN t_table_info t ON i.table_id=t.mark_id LEFT JOIN t_employee_info e ON
+        e.mark_id=i.employee_id LEFT JOIN t_employee_info c ON c.mark_id=i.bill_by
+        where i.store_id=#{storeId,jdbcType=VARCHAR}
+        <if test="code != null">
+            and (i.indent_no like concat('%', #{code,jdbcType=VARCHAR}, '%') or t.`code`=#{code,jdbcType=VARCHAR})
+        </if>
+        <if test="indentTime != null">
+            and TO_DAYS(i.indent_time)=TO_DAYS(#{indentTime,jdbcType=TIMESTAMP})
+        </if>
+        <if test="indentStatus !=null and indentStatus">
+            and i.indent_status=#{indentStatus,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectXModelByUser" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.xwechat.vo.IndentModel">
+        SELECT i.mark_id                                                          AS indentId,
+               i.indent_no                                                        AS indentNo,
+               (select s.`name` from t_store_info s where i.store_id = s.mark_id) as storeName,
+               i.indent_time                                                      AS indentTime,
+               indent_total                                                       AS indentTotal,
+               i.indent_status                                                    AS indentStatus,
+               (SELECT commodity_name
+                FROM t_indent_detail
+                WHERE indent_id = i.mark_id
+                ORDER BY sale_price desc
+                limit 1)                                                          AS commdityName,
+               (SELECT ii.image_path
+                FROM t_indent_detail d
+                             LEFT JOIN t_commodity_img ci ON d.commodity_id = ci.commodity_id
+                             LEFT JOIN
+                             db_base.t_image_info ii ON ci.img_id = ii.mark_id
+                WHERE d.indent_id = i.mark_id
+                ORDER BY d.sale_price DESC, ii.image_path DESC
+                LIMIT 1)                                                          AS imgPath
+        FROM t_indent_info i
+                     LEFT JOIN t_store_info s ON i.store_id = s.mark_id
+        WHERE indent_user = #{userId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectXModelById" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.xwechat.vo.IndentModel">
+        SELECT i.mark_id                                                          AS indentId,
+               i.indent_no                                                        AS indentNo,
+               i.temp_num                                                         AS tempNum,
+               (select s.`name` from t_store_info s where i.store_id = s.mark_id) as storeName,
+               (select t.name from t_table_info t where t.mark_id = i.table_id)   as tableName,
+               i.indent_time                                                      AS indentTime,
+               i.bill_time                                                        as billTime,
+               i.man_num                                                          as manNum,
+               (SELECT IFNULL(SUM(d.cost_price * d.quantity), 0)
+                FROM t_indent_detail d
+                WHERE d.`status`<![CDATA[ <>]]> -1
+                  AND d.indent_id = i.mark_id)                                    as costTotal,
+               indent_total                                                       AS indentTotal,
+               i.indent_status                                                    AS indentStatus,
+               (i.indent_total -
+                ifnull((SELECT SUM(pay_amount) FROM t_indent_pay p WHERE p.indent_id = i.mark_id AND p.status = 1),
+                       0))                                                        AS lastTotal
+        FROM t_indent_info i
+        WHERE i.mark_id = #{indentId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectIncome" resultType="com.szhengzhu.bean.ordering.print.PrintIncome">
+        SELECT COUNT(a.quantity)            AS quantity,
+               IFNULL(SUM(a.paidIncome), 0) AS
+                                               paidIncome,
+               IFNULL(SUM(a.total), 0)
+                                            AS income
+        FROM (
+                     SELECT SUM(quantity) AS quantity, SUM(p.amount) AS paidIncome, indent_total AS total
+                     FROM t_indent_pay p
+                                  LEFT JOIN t_indent_info i ON p.indent_id = i.mark_id
+                                  LEFT JOIN t_pay_info pi ON p.pay_id = pi.mark_id
+                     WHERE indent_status = 'IS04'
+                       AND p.`status` = 1
+                       AND i.store_id = #{storeId}
+                       AND TO_DAYS(bill_time) BETWEEN TO_DAYS(#{startDate}) AND TO_DAYS(#{endDate})
+                     GROUP BY i.mark_id) a
+    </select>
+
+    <select id="selectById" resultMap="selectIndentInfo">
+        SELECT i.mark_id,
+               indent_user,
+               store_id,
+               indent_total,
+               bill_time,
+               indent_status,
+               member_id,
+               user_id,
+               (select `name` from t_store_info where i.store_id = mark_id) as storeName
+        FROM t_indent_info i
+                     LEFT JOIN t_indent_pay p ON i.mark_id = p.indent_id AND p.status = 1
+        where i.mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <select id="userIndent" resultType="com.szhengzhu.bean.ordering.UserIndent">
+        SELECT i.mark_id                                                         AS indentId,
+               (SELECT `name` FROM t_store_info WHERE i.store_id = mark_id)      AS storeName,
+               table_id                                                          AS tableId,
+               t.name                                                            AS tableNum,
+               (SELECT `name` FROM t_table_status WHERE `code` = t.table_status) AS tableStatus,
+               indent_time                                                       AS time
+        FROM t_table_info t
+                     INNER JOIN t_indent_info i ON i.table_id = t.mark_id
+        WHERE indent_status NOT IN ('IS04', 'IS05', 'IS06', 'IS07')
+          AND table_status NOT IN ('TS01', 'TS06')
+          AND ((i.mark_id in (SELECT indent_id
+                              FROM t_indent_detail
+                              WHERE i.mark_id = indent_id
+                                AND user_id = #{userId,jdbcType=VARCHAR}))
+            <if test="memberId != null and memberId != ''">
+                OR member_id = #{memberId,jdbcType=VARCHAR}
+            </if>
+        )
+    </select>
+</mapper>
+

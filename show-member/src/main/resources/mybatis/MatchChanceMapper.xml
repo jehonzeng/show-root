@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchChanceMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchChance">
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="match_id" jdbcType="VARCHAR" property="matchId"/>
+        <result column="total_count" jdbcType="INTEGER" property="totalCount"/>
+        <result column="used_count" jdbcType="INTEGER" property="usedCount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        user_id, total_count, used_count, create_time, modify_time, match_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_chance
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_chance
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchChance">
+        insert into t_match_chance (user_id, total_count, used_count,
+                                    create_time, modify_time, match_id)
+        values (#{userId,jdbcType=VARCHAR}, #{totalCount,jdbcType=INTEGER}, #{usedCount,jdbcType=INTEGER},
+                #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{matchId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchChance">
+        insert into t_match_chance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="matchId != null">
+                match_id,
+            </if>
+            <if test="totalCount != null">
+                total_count,
+            </if>
+            <if test="usedCount != null">
+                used_count,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="matchId != null">
+                #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="totalCount != null">
+                #{totalCount,jdbcType=INTEGER},
+            </if>
+            <if test="usedCount != null">
+                #{usedCount,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchChance">
+        update t_match_chance
+        <set>
+            <if test="totalCount != null">
+                total_count = #{totalCount,jdbcType=INTEGER},
+            </if>
+            <if test="matchId != null">
+                match_id = #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="usedCount != null">
+                used_count = #{usedCount,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchChance">
+        update t_match_chance
+        set total_count = #{totalCount,jdbcType=INTEGER},
+            match_id    = #{matchId,jdbcType=VARCHAR},
+            used_count  = #{usedCount,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+<!--    <select id="selectMatchChance" resultMap="BaseResultMap">-->
+<!--        select-->
+<!--        <include refid="Base_Column_List"/>-->
+<!--        from t_match_chance-->
+<!--        <where>-->
+<!--            <if test="userId != null and userId != ''">-->
+<!--                user_id = #{userId,jdbcType=VARCHAR}-->
+<!--            </if>-->
+<!--            <if test="matchId != null and matchId != ''">-->
+<!--                match_id = #{matchId,jdbcType=VARCHAR}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+</mapper>

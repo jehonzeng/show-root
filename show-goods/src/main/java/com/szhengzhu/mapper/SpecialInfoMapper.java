@@ -1,14 +1,18 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
 import com.szhengzhu.bean.goods.SpecialInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.wechat.vo.IncreaseBase;
+import com.szhengzhu.bean.wechat.vo.SpecialBase;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface SpecialInfoMapper {
     
     int deleteByPrimaryKey(String markId);
@@ -36,5 +40,7 @@ public interface SpecialInfoMapper {
     @Select("SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, #{specIds})")
     String selectBySpecIds(@Param("specIds") String specIds);
     
+    SpecialInfo selectByTotal(@Param("total") BigDecimal total);
     
+    List<SpecialBase> selectFullPiece();
 }

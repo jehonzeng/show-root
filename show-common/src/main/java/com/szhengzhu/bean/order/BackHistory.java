@@ -16,7 +16,9 @@ public class BackHistory implements Serializable {
 
     private Date addTime;
 
-    private Integer payStatus;
+    private Integer payType;
 
     private String cid;
+    
+    private Integer orderType;
 }

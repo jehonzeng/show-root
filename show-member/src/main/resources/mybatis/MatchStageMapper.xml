@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchStageMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchStage">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="match_id" jdbcType="VARCHAR" property="matchId"/>
+        <result column="stage_name" jdbcType="VARCHAR" property="stageName"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="matchName" jdbcType="VARCHAR" property="matchName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, match_id, stage_name, start_time, end_time, create_time, modify_time, status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_stage
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_stage
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchStage">
+        insert into t_match_stage (mark_id, match_id, stage_name,
+                                   start_time, end_time, create_time,
+                                   modify_time, status)
+        values (#{markId,jdbcType=VARCHAR}, #{matchId,jdbcType=VARCHAR}, #{stageName,jdbcType=VARCHAR},
+                #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchStage">
+        insert into t_match_stage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="matchId != null">
+                match_id,
+            </if>
+            <if test="stageName != null">
+                stage_name,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="matchId != null">
+                #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageName != null">
+                #{stageName,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchStage">
+        update t_match_stage
+        <set>
+            <if test="matchId != null">
+                match_id = #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageName != null">
+                stage_name = #{stageName,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchStage">
+        update t_match_stage
+        set match_id    = #{matchId,jdbcType=VARCHAR},
+            stage_name  = #{stageName,jdbcType=VARCHAR},
+            start_time  = #{startTime,jdbcType=TIMESTAMP},
+            end_time    = #{endTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            status      = #{status,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByMatch" parameterType="com.szhengzhu.bean.member.MatchStage"
+            resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from t_match_stage s
+        where match_id=#{matchId,jdbcType=VARCHAR} and status=1
+        order by start_time asc
+    </select>
+</mapper>

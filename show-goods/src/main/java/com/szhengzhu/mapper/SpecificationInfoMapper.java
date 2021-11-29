@@ -1,19 +1,16 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-
 import com.szhengzhu.bean.goods.SpecificationInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.SpecChooseBox;
 import com.szhengzhu.provider.GoodsProvider;
+import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface SpecificationInfoMapper {
 
     int deleteByPrimaryKey(String markId);
@@ -40,7 +37,7 @@ public interface SpecificationInfoMapper {
     int repeatRecords(@Param("attrValue") String attrValue, @Param("attrName") String attrName,
             @Param("markId") String markId);
 
-    @Select("SELECT mark_id AS code,attr_value AS name FROM t_specification_info WHERE attr_name = #{attrName} ORDER BY sort")
+    @Select("SELECT i.mark_id AS code,i.attr_value AS name FROM t_specification_info i LEFT JOIN t_type_specification s ON s.specification_id=i.mark_id WHERE i.attr_name = #{attrName} AND i.server_status = 1 ORDER BY s.sort")
     List<Combobox> selectByName(@Param("attrName") String attrName);
 
     @SelectProvider(type = GoodsProvider.class, method = "selectNameByGoodsId")

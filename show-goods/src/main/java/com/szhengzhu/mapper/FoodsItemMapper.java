@@ -1,11 +1,15 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.FoodsItem;
 import com.szhengzhu.bean.vo.GoodsFoodVo;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface FoodsItemMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(FoodsItem record);

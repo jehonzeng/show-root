@@ -1,9 +1,12 @@
 package com.szhengzhu.bean.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * 用户信息
@@ -11,6 +14,9 @@ import lombok.Data;
  * @author Administrator
  * @date 2019年2月19日
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserInfo implements Serializable {
     

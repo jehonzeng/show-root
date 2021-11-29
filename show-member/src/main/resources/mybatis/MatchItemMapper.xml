@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchItem">
+        <id column="match_id" jdbcType="VARCHAR" property="matchId"/>
+        <id column="team_id" jdbcType="VARCHAR" property="teamId"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchItem">
+        delete
+        from t_match_item
+        where match_id = #{matchId,jdbcType=VARCHAR} and team_id = #{teamId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchItem">
+        insert into t_match_item (match_id, team_id)
+        values (#{matchId,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchItem">
+        insert into t_match_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="matchId != null">
+                match_id,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="matchId != null">
+                #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_match_item (match_id, team_id)
+        values
+        <foreach collection="list" item="teamId" index="index" separator=",">
+            (#{matchId,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

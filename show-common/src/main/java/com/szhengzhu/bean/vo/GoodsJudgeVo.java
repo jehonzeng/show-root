@@ -1,7 +1,6 @@
 package com.szhengzhu.bean.vo;
 
 import com.szhengzhu.bean.goods.GoodsJudge;
-import com.szhengzhu.bean.order.OrderDelivery;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +13,14 @@ public class GoodsJudgeVo extends GoodsJudge {
 
     private static final long serialVersionUID = 1945277499780755531L;
     
-    private String goodsName;//商品名称
+    private String specList;
     
-    private OrderDelivery delivery;
+    private String contact;//联系人
+    
+    private String phone;
+    
+    private String deliveryArea;
+    
+    private String deliveryAddress;
 
 }

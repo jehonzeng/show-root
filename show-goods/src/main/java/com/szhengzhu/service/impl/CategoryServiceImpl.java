@@ -1,78 +1,68 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.goods.CategoryInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.CategoryInfoMapper;
 import com.szhengzhu.service.CategoryService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("categoryService")
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
+    @Resource
     private CategoryInfoMapper categoryInfoMapper;
 
     @Override
-    public Result<?> addCategory(CategoryInfo categoryInfo) {
-        if (categoryInfo == null || StringUtils.isEmpty(categoryInfo.getName())) 
-            return new Result<>(StatusCode._4004);
+    public CategoryInfo addCategory(CategoryInfo categoryInfo) {
         int count = categoryInfoMapper.repeatRecords(categoryInfo.getName(), "");
-        if (count > 0) 
-            return new Result<String>(StatusCode._4007);
-        categoryInfo.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        categoryInfo.setMarkId(snowflake.nextIdStr());
         categoryInfo.setServerStatus(false);
         categoryInfoMapper.insertSelective(categoryInfo);
-        return new Result<>(categoryInfo);
+        return categoryInfo;
     }
 
     @Override
-    public Result<?> editCategory(CategoryInfo categoryInfo) {
-        if (categoryInfo == null || categoryInfo.getMarkId() == null) 
-            return new Result<>(StatusCode._4004);
-        String name = categoryInfo.getName() == null ? "" : categoryInfo.getName();
+    public CategoryInfo editCategory(CategoryInfo categoryInfo) {
+        String name = StrUtil.isEmpty(categoryInfo.getName()) ? "" : categoryInfo.getName();
         int count = categoryInfoMapper.repeatRecords(name, categoryInfo.getMarkId());
-        if (count > 0) 
-            return new Result<String>(StatusCode._4007);
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         categoryInfoMapper.updateByPrimaryKeySelective(categoryInfo);
-        return new Result<>(categoryInfo);
+        return categoryInfo;
     }
 
     @Override
-    public Result<PageGrid<CategoryInfo>> getPage(PageParam<CategoryInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<CategoryInfo> getPage(PageParam<CategoryInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<CategoryInfo> page = new PageInfo<>(
                 categoryInfoMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> getCategoryInfo(String markId) {
-        CategoryInfo categoryInfo = categoryInfoMapper.selectByMark(markId);
-        return new Result<>(categoryInfo);
+    public CategoryInfo getCategoryInfo(String markId) {
+        return categoryInfoMapper.selectByPrimaryKey(markId);
     }
 
     @Override
-    public Result<?> getDownList(String serverStatus) {
-        List<Combobox> infos = categoryInfoMapper.selectDownList(serverStatus);
-        return new Result<>(infos);
-    }
-
-    @Override
-    public Result<?> getSuperList() {
-        List<Combobox> list = categoryInfoMapper.selectSuperList();
-        return new Result<>(list);
+    public List<Combobox> getDownList(String serverStatus) {
+        return categoryInfoMapper.selectDownList(serverStatus);
     }
 }

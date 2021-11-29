@@ -1,9 +1,15 @@
 package com.szhengzhu.bean.wechat.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
-import lombok.Data;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Judge implements Serializable {
 
@@ -17,7 +23,7 @@ public class Judge implements Serializable {
     
     private String productName;
     
-    private String orderId;
+    private String orderNo;
     
     private Integer star;
     

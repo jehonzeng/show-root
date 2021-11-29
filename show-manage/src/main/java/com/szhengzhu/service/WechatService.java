@@ -2,6 +2,9 @@ package com.szhengzhu.service;
 
 import com.szhengzhu.core.Result;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface WechatService {
 
     /**

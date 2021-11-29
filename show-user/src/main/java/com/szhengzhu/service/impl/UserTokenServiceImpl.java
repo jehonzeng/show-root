@@ -1,49 +1,57 @@
 package com.szhengzhu.service.impl;
 
-import javax.annotation.Resource;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.szhengzhu.bean.user.UserToken;
+import com.szhengzhu.mapper.UserTokenMapper;
+import com.szhengzhu.redis.Redis;
+import com.szhengzhu.service.UserTokenService;
 import org.springframework.stereotype.Service;
 
-import com.szhengzhu.bean.user.UserToken;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.mapper.UserTokenMapper;
-import com.szhengzhu.service.UserTokenService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
-import com.szhengzhu.util.TimeUtils;
+import javax.annotation.Resource;
 
+/**
+ * @author Jehon Zeng
+ */
 @Service("userTokenService")
 public class UserTokenServiceImpl implements UserTokenService {
-    
+
     @Resource
     private UserTokenMapper userTokenMapper;
-    
+
+    @Resource
+    private Redis redis;
+
     @Override
-    public Result<UserToken> addUserToken(String userId) {
+    public UserToken addUserToken(String userId) {
         UserToken token = userTokenMapper.selectByUser(userId);
-        if (token != null) {
-            token.setRefreshTime(TimeUtils.today());
+        if (ObjectUtil.isNotNull(token)) {
+            redis.del("user:user:token:" + token.getToken());
+            token.setRefreshTime(DateUtil.date());
             userTokenMapper.updateByPrimaryKeySelective(token);
-            return new Result<>(token);
+            return token;
         }
-        UserToken userToken = new UserToken();
-        userToken.setMarkId(IdGenerator.getInstance().nexId());
-        userToken.setUserId(userId);
-        userToken.setRefreshTime(TimeUtils.today());
-        userToken.setToken(StringUtils.getRandomId());
-        userTokenMapper.insert(userToken);
-        return new Result<>(userToken);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        token = UserToken.builder().markId(snowflake.nextIdStr()).userId(userId)
+                .refreshTime(DateUtil.date()).token(IdUtil.simpleUUID())
+                .build();
+        userTokenMapper.insert(token);
+        return token;
     }
 
     @Override
-    public Result<UserToken> getByToken(String token) {
+    public UserToken getByToken(String token) {
+        String cacheKey = "user:user:token:" + token;
+        Object obj = redis.get(cacheKey);
+        if (ObjectUtil.isNotNull(obj)) {
+            UserToken userToken = JSON.parseObject(JSON.toJSONString(obj), UserToken.class);
+            return userToken;
+        }
         UserToken userToken = userTokenMapper.selectByToken(token);
-        return new Result<>(userToken);
-    }
-
-    @Override
-    public Result<?> refreshToken(String token) {
-        userTokenMapper.refreshByToken(token);
-        return new Result<>();
+        redis.set(cacheKey, userToken, 2L * 60 * 60);
+        return userToken;
     }
 }

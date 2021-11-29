@@ -1,10 +1,16 @@
 package com.szhengzhu.bean.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import lombok.Data;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class PurchaseBaseVo implements Serializable{
   
@@ -16,12 +22,14 @@ public class PurchaseBaseVo implements Serializable{
     
     private String productName;
     
-    private Integer productType; 
-    
-    private Integer quantity;//每种商品数量
+    private Integer productType;
+
+    /** 每种商品数量 */
+    private Integer quantity;
     
     private String foodId;
-    
-    private BigDecimal count;//每种食材总量
+
+    /** 每种食材总量 */
+    private BigDecimal count;
 
 }

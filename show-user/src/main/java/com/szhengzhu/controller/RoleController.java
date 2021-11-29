@@ -1,72 +1,72 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.user.RoleInfo;
+import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.UserBase;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.RoleService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
+
+/**
+ * @author Jehon Zeng
+ */
+@Validated
 @RestController
 @RequestMapping("/roles")
 public class RoleController {
 
     @Resource
     private RoleService roleService;
-    
-    @RequestMapping(value ="/add", method = RequestMethod.POST)
-    public Result<RoleInfo> addRole(@RequestBody RoleInfo roleInfo) {
+
+    @PostMapping(value = "/add")
+    public RoleInfo addRole(@RequestBody @Validated RoleInfo roleInfo) {
         return roleService.saveRole(roleInfo);
     }
-    
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<RoleInfo> modifyRole(@RequestBody RoleInfo roleInfo) {
+
+    @PatchMapping(value = "/modify")
+    public RoleInfo modifyRole(@RequestBody @Validated RoleInfo roleInfo) {
         return roleService.updateRole(roleInfo);
     }
-    
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<RoleInfo> getRoleInfo(@PathVariable(value = "markId") String markId) {
+
+    @GetMapping(value = "/{markId}")
+    public RoleInfo getRoleInfo(@PathVariable("markId") @NotBlank String markId) {
         return roleService.getRoleById(markId);
     }
-    
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<RoleInfo>> pageRole(@RequestBody PageParam<RoleInfo> rolePage) {
+
+    @PostMapping(value = "/page")
+    public PageGrid<RoleInfo> pageRole(@RequestBody PageParam<RoleInfo> rolePage) {
         return roleService.pageRole(rolePage);
     }
-    
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public Result<List<RoleInfo>> listRole(@RequestBody RoleInfo roleInfo) {
+
+    @PostMapping(value = "/list")
+    public List<RoleInfo> listRole(@RequestBody RoleInfo roleInfo) {
         return roleService.listRole(roleInfo);
     }
-    
-    @RequestMapping(value = "/roleuser", method = RequestMethod.DELETE)
-    public Result<?> removeRoleUsers(@RequestParam("roleId") String roleId, @RequestParam("userIds") String[] userIds) {
-        return roleService.deleteRoleUsers(roleId, userIds);
+
+    @DeleteMapping(value = "/roleuser")
+    public void removeRoleUsers(@RequestParam("roleId") @NotBlank String roleId, @RequestParam("userIds") @NotEmpty String[] userIds) {
+        roleService.deleteRoleUsers(roleId, userIds);
     }
-    
-    @RequestMapping(value = "/roleuser", method = RequestMethod.POST)
-    public Result<?> addRoleUsers(@RequestParam("roleId") String roleId, @RequestParam("userIds") String[] userIds) {
-        return roleService.saveRoleUsers(roleId, userIds);
+
+    @PostMapping(value = "/roleuser")
+    public void addRoleUsers(@RequestParam("roleId") @NotBlank String roleId, @RequestParam("userIds") @NotEmpty String[] userIds) {
+        roleService.saveRoleUsers(roleId, userIds);
     }
-    
-    @RequestMapping(value = "/combobox", method = RequestMethod.GET)
-    public Result<?> downList(@RequestParam("roleCode") String roleCode) {
+
+    @GetMapping(value = "/combobox")
+    public List<Combobox> downList(@RequestParam("roleCode") @NotBlank String roleCode) {
         return roleService.getListByCode(roleCode);
     }
-    
-    @RequestMapping(value = "/usersByRole", method = RequestMethod.GET)
-    public List<UserBase> getUsersByRole(@RequestParam("roleId") String roleId) {
+
+    @GetMapping(value = "/usersByRole")
+    public List<UserBase> getUsersByRole(@RequestParam("roleId") @NotBlank String roleId) {
         return roleService.getListByRole(roleId);
     }
 }

@@ -1,91 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.PurchaseHistoryMapper">
-    <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.goods.PurchaseHistory">
-        <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
-        <result
-            column="food_id"
-            property="foodId"
-            jdbcType="VARCHAR" />
-        <result
-            column="purchase_volume"
-            property="purchaseVolume"
-            jdbcType="DECIMAL" />
-        <result
-            column="buy_time"
-            property="buyTime"
-            jdbcType="TIMESTAMP" />
-        <result
-            column="user_id"
-            property="userId"
-            jdbcType="VARCHAR" />
-        <result
-            column="purchaser"
-            property="purchaser"
-            jdbcType="VARCHAR" />
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.PurchaseHistory">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="food_id" property="foodId" jdbcType="VARCHAR" />
+        <result column="purchase_volume" property="purchaseVolume" jdbcType="DECIMAL" />
+        <result column="buy_time" property="buyTime" jdbcType="TIMESTAMP" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="purchaser" property="purchaser" jdbcType="VARCHAR" />
     </resultMap>
-    <resultMap
-        type="com.szhengzhu.bean.vo.PurchaseHistoryVo"
-        id="BaseResultMapVo"
-        extends="BaseResultMap">
-        <association
-            property="food"
-            javaType="com.szhengzhu.bean.goods.FoodsInfo"
-            column="food_id">
-            <id
-                column="mark_id"
-                jdbcType="VARCHAR"
-                property="markId" />
-            <result
-                column="food_name"
-                jdbcType="VARCHAR"
-                property="foodName" />
-            <result
-                column="server_status"
-                jdbcType="BIT"
-                property="serverStatus" />
-            <result
-                column="purchase_rate"
-                jdbcType="DECIMAL"
-                property="purchaseRate" />
-            <result
-                column="image_path"
-                jdbcType="VARCHAR"
-                property="imagePath" />
-            <result
-                column="unit"
-                jdbcType="VARCHAR"
-                property="unit" />
+    <resultMap type="com.szhengzhu.bean.vo.PurchaseHistoryVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <association property="food" javaType="com.szhengzhu.bean.goods.FoodsInfo" column="food_id">
+            <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+            <result column="food_name" jdbcType="VARCHAR" property="foodName" />
+            <result column="server_status" jdbcType="BIT" property="serverStatus" />
+            <result column="purchase_rate" jdbcType="DECIMAL" property="purchaseRate" />
+            <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+            <result column="unit" jdbcType="VARCHAR" property="unit" />
         </association>
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, food_id, purchase_volume, buy_time, user_id
     </sql>
-    <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List" />
         from t_purchase_history
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </select>
-    <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_purchase_history
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </delete>
-    <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
         insert into t_purchase_history (mark_id, food_id,
         purchase_volume, buy_time, user_id)
         values
@@ -93,14 +42,9 @@
         #{purchaseVolume,jdbcType=DECIMAL},
         #{buyTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR})
     </insert>
-    <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
         insert into t_purchase_history
-        <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
@@ -117,10 +61,7 @@
                 user_id,
             </if>
         </trim>
-        <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
@@ -138,9 +79,7 @@
             </if>
         </trim>
     </insert>
-    <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
         update t_purchase_history
         <set>
             <if test="foodId != null">
@@ -159,9 +98,7 @@
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.PurchaseHistory">
         update t_purchase_history
         set food_id =
         #{foodId,jdbcType=VARCHAR},
@@ -174,10 +111,7 @@
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </update>
-    <select
-        id="selectByExampleSelective"
-        parameterType="com.szhengzhu.bean.goods.PurchaseHistory"
-        resultMap="BaseResultMapVo">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.PurchaseHistory" resultMap="BaseResultMapVo">
         select
         h.mark_id, h.food_id, h.purchase_volume, h.buy_time,
         h.user_id, f.food_name,

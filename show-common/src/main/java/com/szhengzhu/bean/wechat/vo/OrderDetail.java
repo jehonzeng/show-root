@@ -5,8 +5,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class OrderDetail implements Serializable {
 
@@ -28,6 +34,8 @@ public class OrderDetail implements Serializable {
     
     private String orderStatus;
     
+    private String statusDesc;
+    
     private String contact;
     
     private String phone;
@@ -37,6 +45,8 @@ public class OrderDetail implements Serializable {
     private BigDecimal discount;
     
     private String remark;
+    
+    private String type; // 1:普通订单 2：团购订单 3：秒杀订单
     
     private List<OrderItemDetail> items;
 }

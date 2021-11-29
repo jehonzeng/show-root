@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.RptMapper">
+    <select id="rptSaleStatistics" parameterType="java.lang.String" resultType="com.szhengzhu.bean.rpt.SaleStatistics">
+        SELECT o.product_id as productId, o.product_name as productName,SUM(o.quantity) AS count, o.base_price * SUM(o.quantity) AS baseAmount, SUM(o.pay_amount) AS amount,
+               SUM(o.pay_amount) - o.base_price * SUM(o.quantity) AS profit
+        FROM
+            (select i.product_id, i.product_name, i.quantity,i.base_price, i.pay_amount, o.order_time
+             from t_order_item i LEFT JOIN t_order_info o ON i.order_id=o.mark_id
+             WHERE order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="month != null and month != ''">
+                AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}
+            </if>
+            <if test="partner != null and partner != ''">
+                AND o.order_source=#{partner,jdbcType=VARCHAR}
+            </if>
+             UNION ALL
+             SELECT o.goods_id AS product_id, o.goods_name AS product_name, o.quantity, s.base_price, o.pay_amount, o.order_time
+             from t_seckill_order o LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             where order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="month != null and month != ''">
+                AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}
+            </if>
+            <if test="partner != null and partner != ''">
+                AND o.order_source=#{partner,jdbcType=VARCHAR}
+            </if>
+             UNION ALL
+             SELECT o.goods_id AS product_id, o.goods_name AS product_name, o.quantity,s.base_price, o.pay_amount,o.order_time
+             from t_teambuy_order o LEFT JOIN t_teambuy_group g ON o.group_id=g.mark_id LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             WHERE g.group_status='GT02' and order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="month != null and month != ''">
+                AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}
+            </if>
+            <if test="partner != null and partner != ''">
+                AND o.order_source=#{partner,jdbcType=VARCHAR}
+            </if>
+             ) o
+        GROUP BY o.product_id, o.product_name
+        ORDER BY SUM(o.quantity) DESC
+    </select>
+    <select id="rptYearSale" parameterType="java.lang.String" resultType="com.szhengzhu.bean.rpt.SaleInfo">
+        SELECT IFNULL(SUM(o.baseAmount), 0) AS baseAmount, IFNULL(SUM(o.amount), 0) as amount, IFNULL((SUM(o.amount) - SUM(o.baseAmount)), 0) AS profit
+        FROM
+            (select SUM(i.base_price) AS baseAmount, SUM(i.pay_amount) AS amount, (SUM(i.pay_amount) - SUM(i.base_price)) AS profit
+             from t_order_item i LEFT JOIN t_order_info o ON i.order_id=o.mark_id
+             WHERE order_status in ('OT02','OT03','OT04','OT05','OT06') AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}
+             UNION ALL
+             SELECT SUM(s.base_price) AS baseAmount, SUM(o.pay_amount) AS amount, (SUM(o.pay_amount) - SUM(s.base_price)) AS profit
+             from t_seckill_order o LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             where order_status in ('OT02','OT03','OT04','OT05','OT06') AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}
+             UNION ALL
+             SELECT SUM(s.base_price) AS baseAmount, SUM(o.pay_amount) AS amount, (SUM(o.pay_amount) - SUM(s.base_price)) AS profit
+             from t_teambuy_order o LEFT JOIN t_teambuy_group g ON o.group_id=g.mark_id LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             WHERE g.group_status='GT02' and order_status in ('OT02','OT03','OT04','OT05','OT06') AND DATE_FORMAT(order_time,'%Y-%m')=#{month,jdbcType=VARCHAR}) o
+
+    </select>
+    <select id="rptSaleVolume" parameterType="com.szhengzhu.bean.rpt.SaleParam" resultType="Map">
+        SELECT o.product_id as productId, o.product_name as productName,SUM(o.quantity) AS count
+        FROM
+            (select i.product_id, i.product_name, i.quantity
+             from t_order_item i LEFT JOIN t_order_info o ON i.order_id=o.mark_id
+             where order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="partner != null and partner != ''">
+                AND order_source=#{partner,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate != null">
+                AND order_time >= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate != null">
+                AND order_time <![CDATA[<=]]> #{endDate,jdbcType=DATE}
+            </if>
+             UNION ALL
+             SELECT o.goods_id AS product_id, o.goods_name AS product_name, o.quantity
+             from t_seckill_order o LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             where order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="partner != null and partner != ''">
+                AND order_source=#{partner,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate != null">
+                AND order_time >= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate != null">
+                AND order_time <![CDATA[<=]]> #{endDate,jdbcType=DATE}
+            </if>
+             UNION ALL
+             SELECT o.goods_id AS product_id, o.goods_name AS product_name, o.quantity
+             from t_teambuy_order o LEFT JOIN t_teambuy_group g ON o.group_id=g.mark_id LEFT JOIN db_goods.t_goods_specification s ON (s.goods_id=o.goods_id AND s.specification_ids=o.specification_ids)
+             where order_status in ('OT02','OT03','OT04','OT05','OT06')
+            <if test="partner != null and partner != ''">
+                AND order_source = #{partner,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate != null">
+                AND order_time >= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate != null">
+                AND order_time <![CDATA[<=]]> #{endDate,jdbcType=DATE}
+            </if>
+             ) o
+        GROUP BY o.product_id, o.product_name
+        ORDER BY SUM(o.quantity) DESC
+    </select>
+    <select id="rptCityDeliveryCount" resultType="Map">
+        SELECT (SELECT `name` FROM db_base.t_area_info WHERE num=city) AS name, COUNT(1) AS value
+        from t_order_delivery d LEFT JOIN t_order_info o ON d.order_id=o.mark_id
+        WHERE o.order_status in ('OT02','OT03','OT04','OT05','OT06')
+        GROUP BY province, city
+    </select>
+</mapper>

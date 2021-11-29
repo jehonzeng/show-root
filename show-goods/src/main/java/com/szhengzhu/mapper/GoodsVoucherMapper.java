@@ -1,17 +1,19 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
 import com.szhengzhu.bean.goods.GoodsVoucher;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsVoucherVo;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface GoodsVoucherMapper {
 
     int deleteByPrimaryKey(String markId);
@@ -49,4 +51,13 @@ public interface GoodsVoucherMapper {
 
     @Update("update t_goods_voucher set server_status = 0 where product_id = #{goodsId} ")
     int updateStatusByGoods(@Param("goodsId") String goodsId);
+    
+    @Update("UPDATE t_goods_voucher SET stock=stock-#{quantity} WHERE mark_id=#{voucherId}")
+    void subStock(@Param("voucherId") String voucherId, @Param("quantity") int quantity);
+    
+    @Update("UPDATE t_goods_voucher SET stock=stock+#{quantity} WHERE mark_id=#{voucherId}")
+    void addStock(@Param("voucherId") String voucherId, @Param("quantity") int quantity);
+    
+    @Select("SELECT mark_id FROM t_goods_voucher")
+    List<String> selectIds();
 }

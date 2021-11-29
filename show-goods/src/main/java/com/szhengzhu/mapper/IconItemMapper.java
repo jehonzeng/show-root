@@ -1,16 +1,18 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.IconItem;
+import com.szhengzhu.bean.vo.IconGoodsVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.szhengzhu.bean.goods.IconItem;
-import com.szhengzhu.bean.vo.IconGoodsVo;
-
+import java.util.List;
+/**
+ * @author Administrator
+ */
 public interface IconItemMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(IconItem record);

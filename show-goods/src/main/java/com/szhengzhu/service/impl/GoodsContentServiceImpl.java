@@ -1,44 +1,44 @@
 package com.szhengzhu.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.szhengzhu.annotation.CheckGoodsChange;
 import com.szhengzhu.bean.goods.GoodsContent;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
 import com.szhengzhu.mapper.GoodsContentMapper;
 import com.szhengzhu.service.GoodsContentService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
+/**
+ * @author Administrator
+ */
 @Service("goodsContentService")
 public class GoodsContentServiceImpl implements GoodsContentService {
 
-    @Autowired
+    @Resource
     private GoodsContentMapper goodsContentMapper;
 
     @Override
-    public Result<?> showContentByGoodsId(String goodsId) {
-        if(StringUtils.isEmpty(goodsId))
-            return new Result<>(StatusCode._4008);
+    public GoodsContent showContentByGoodsId(String goodsId) {
         GoodsContent base = goodsContentMapper.selectByGoodsId(goodsId);
-        if (base == null) {
-            base = new GoodsContent();
-            base.setMarkId(IdGenerator.getInstance().nexId());
-            base.setContent("");
-            base.setGoodsId(goodsId);
+        if (ObjectUtil.isNull(base)) {
+            Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+            base = GoodsContent.builder().markId(snowflake.nextIdStr()).content("").goodsId(goodsId).build();
             goodsContentMapper.insertSelective(base);
         }
-        return new Result<>(base);
+        return base;
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> editGoodsContent(GoodsContent base) {
-        if(base == null || StringUtils.isEmpty(base.getGoodsId()))
-            return new Result<>(StatusCode._4004);
+    public GoodsContent editGoodsContent(GoodsContent base) {
         GoodsContent oldContent = goodsContentMapper.selectByGoodsId(base.getGoodsId());
         base.setMarkId(oldContent.getMarkId());
-        goodsContentMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        base.setContent(StrUtil.isEmpty(base.getContent()) ? "" : base.getContent());
+        goodsContentMapper.updateByPrimaryKeyWithBLOBs(base);
+        return base;
     }
 }

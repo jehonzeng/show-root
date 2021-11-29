@@ -3,7 +3,6 @@ package com.szhengzhu.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import com.szhengzhu.bean.base.CouponTemplate;
@@ -29,6 +28,9 @@ public interface CouponTemplateMapper {
     @SelectProvider(type = TemplateProvider.class, method = "selectByMark")
     CouponTemplate selectByMark(@Param("templateId") String templateId);
 
-    @Select("SELECT mark_id AS code,coupon_name AS name FROM t_coupon_template WHERE server_status = 1 AND coupon_type = #{couponType}")
+    @SelectProvider(type = TemplateProvider.class, method = "selectComboboxList")
     List<Combobox> selectComboboxList(@Param("couponType") Integer couponType);
+    
+    List<CouponTemplate> selectCouponTemplates(@Param("templates") List<String> templates);
+    
 }

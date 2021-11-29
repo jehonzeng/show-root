@@ -1,9 +1,12 @@
 package com.szhengzhu.provider;
 
-import java.util.Map;
-
 import com.szhengzhu.util.StringUtils;
 
+import java.util.Map;
+
+/**
+ * @author Administrator
+ */
 public class CategoryProvider {
 
     public String selectDownList(Map<String, String> map) {

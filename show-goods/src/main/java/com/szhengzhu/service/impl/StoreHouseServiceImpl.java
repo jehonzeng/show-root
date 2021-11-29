@@ -1,76 +1,65 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.goods.StoreHouseInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.StoreHouseInfoMapper;
 import com.szhengzhu.service.StoreHouseService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Service("storeHouseService")
 public class StoreHouseServiceImpl implements StoreHouseService {
 
-    @Autowired
+    @Resource
     private StoreHouseInfoMapper storeHouseInfoMapper;
 
     @Override
-    public Result<?> addStoreHouse(StoreHouseInfo info) {
-        if (info == null || StringUtils.isEmpty(info.getName())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public StoreHouseInfo addStoreHouse(StoreHouseInfo info) {
         int count = storeHouseInfoMapper.repeatRecords(info.getName(), "");
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
-        info.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        info.setMarkId(snowflake.nextIdStr());
         info.setServerStatus(false);
         storeHouseInfoMapper.insertSelective(info);
-        return new Result<>(info);
+        return info;
     }
 
     @Override
-    public Result<?> modifyStoreHouse(StoreHouseInfo info) {
-        if (info == null || info.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
-        String name = info.getName() == null ? "" : info.getName();
+    public StoreHouseInfo modifyStoreHouse(StoreHouseInfo info) {
+        String name = StrUtil.isEmpty(info.getName()) ? "" : info.getName();
         int count = storeHouseInfoMapper.repeatRecords(name, info.getMarkId());
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         storeHouseInfoMapper.updateByPrimaryKeySelective(info);
-        return new Result<>(info);
+        return info;
     }
 
     @Override
-    public Result<PageGrid<StoreHouseInfo>> getPage(PageParam<StoreHouseInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<StoreHouseInfo> getPage(PageParam<StoreHouseInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<StoreHouseInfo> page = new PageInfo<>(
                 storeHouseInfoMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<List<Combobox>> listCombobox() {
-        List<Combobox> comboboxs = storeHouseInfoMapper.selectCombobox();
-        return new Result<>(comboboxs);
+    public List<Combobox> listCombobox() {
+        return storeHouseInfoMapper.selectCombobox();
     }
 
     @Override
-    public Result<?> getHouseInfo(String markId) {
-        return new Result<>(storeHouseInfoMapper.selectByPrimaryKey(markId));
+    public StoreHouseInfo getHouseInfo(String markId) {
+        return storeHouseInfoMapper.selectByPrimaryKey(markId);
     }
-
 }

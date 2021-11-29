@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.TicketExchangeMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.TicketExchange">
+        <!--@Table t_ticket_exchange-->
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="exchangeId" column="exchange_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <association property="integralExchange" javaType="com.szhengzhu.bean.member.IntegralExchange">
+            <!--@Table t_integral_exchange-->
+            <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="commodityId" column="commodity_id" jdbcType="VARCHAR"/>
+            <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+            <result property="templateName" column="templateName" jdbcType="VARCHAR"/>
+            <result property="imgId" column="img_id" jdbcType="VARCHAR"/>
+            <result property="imgPath" column="imgPath" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="consumeIntegral" column="consume_integral" jdbcType="INTEGER"/>
+            <result property="exchangeQuantity" column="exchange_quantity" jdbcType="INTEGER"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="BIT"/>
+            <result property="creator" column="creator" jdbcType="VARCHAR"/>
+            <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t.mark_id, t.user_id, t.exchange_id, t.create_time
+    </sql>
+
+    <sql id="Integral_Exchange">
+        i.mark_id, i.name, i.commodity_id, i.template_id, i.img_id, i.type, i.consume_integral, i.exchange_quantity,
+        i.start_time, i.end_time, i.create_time, i.modify_time, i.status, i.creator, i.modifier
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select <include refid="Integral_Exchange"/>,
+        <include refid="Base_Column_List"/>
+        from t_ticket_exchange t inner join t_integral_exchange i on t.exchange_id = i.mark_id
+        where t.mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select <include refid="Integral_Exchange"/>,
+        <include refid="Base_Column_List"/>
+        from t_ticket_exchange t inner join t_integral_exchange i on t.exchange_id = i.mark_id
+        <where>
+            <if test="markId != null and markId != ''">
+                and t.mark_id = #{markId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and t.user_id = #{userId}
+            </if>
+            <if test="exchangeId != null and exchangeId != ''">
+                and t.exchange_id = #{exchangeId}
+            </if>
+            <if test="createTime != null">
+                and t.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_ticket_exchange
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id,
+            </if>
+            <if test="exchangeId != null and exchangeId != ''">
+                exchange_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="exchangeId != null and exchangeId != ''">
+                #{exchangeId},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_ticket_exchange
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="exchangeId != null and exchangeId != ''">
+                exchange_id = #{exchangeId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_ticket_exchange
+        where mark_id = #{markId}
+    </delete>
+</mapper>

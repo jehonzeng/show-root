@@ -1,172 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.ColumnGoodsMapper">
-    <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.goods.ColumnGoods">
-        <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
-        <result
-            column="column_id"
-            property="columnId"
-            jdbcType="VARCHAR" />
-        <result
-            column="goods_id"
-            property="goodsId"
-            jdbcType="VARCHAR" />
-        <result
-            column="goods_type"
-            property="goodsType"
-            jdbcType="INTEGER" />
-        <result
-            column="server_status"
-            property="serverStatus"
-            jdbcType="BIT" />
-        <result
-            column="sort"
-            property="sort"
-            jdbcType="INTEGER" />
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.ColumnGoods">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="column_id" property="columnId" jdbcType="VARCHAR" />
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
+        <result column="goods_type" property="goodsType" jdbcType="INTEGER" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
     </resultMap>
-    <resultMap
-        type="com.szhengzhu.bean.vo.ColumnGoodsVo"
-        id="BaseResultMapVo"
-        extends="BaseResultMap">
-        <association
-            property="goods"
-            javaType="com.szhengzhu.bean.goods.GoodsInfo"
-            column="goods_id">
-            <id
-                column="mark_id"
-                property="markId"
-                jdbcType="VARCHAR" />
-            <result
-                column="goods_name"
-                property="goodsName"
-                jdbcType="VARCHAR" />
-            <result
-                column="description"
-                property="description"
-                jdbcType="VARCHAR" />
-            <result
-                column="serverStatus"
-                property="serverStatus"
-                jdbcType="VARCHAR" />
-            <result
-                column="cookStyle"
-                property="cookStyle"
-                jdbcType="VARCHAR" />
-            <result
-                column="server_type"
-                property="serverType"
-                jdbcType="INTEGER" />
-            <result
-                column="base_price"
-                property="basePrice"
-                jdbcType="DECIMAL" />
-            <result
-                column="sale_price"
-                property="salePrice"
-                jdbcType="DECIMAL" />
-            <result
-                column="unit"
-                property="unit"
-                jdbcType="VARCHAR" />
-            <result
-                column="upper_time"
-                property="upperTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="down_time"
-                property="downTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="pre_upper_time"
-                property="preUpperTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="pre_down_time"
-                property="preDownTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="create_time"
-                property="createTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="creator"
-                property="creator"
-                jdbcType="VARCHAR" />
-            <result
-                column="modify_time"
-                property="modifyTime"
-                jdbcType="TIMESTAMP" />
-            <result
-                column="modifier"
-                property="modifier"
-                jdbcType="VARCHAR" />
-            <result
-                column="categoryName"
-                property="categoryId"
-                jdbcType="VARCHAR" />
-            <result
-                column="typeName"
-                property="typeId"
-                jdbcType="VARCHAR" />
-            <result
-                column="brandName"
-                property="brandId"
-                jdbcType="VARCHAR" />
-            <result
-                column="cooker"
-                property="cooker"
-                jdbcType="VARCHAR" />
-            <result
-                column="sort"
-                property="sort"
-                jdbcType="INTEGER" />
+    <resultMap type="com.szhengzhu.bean.vo.ColumnGoodsVo" id="BaseResultMapVo" extends="BaseResultMap">
+        <association property="goods" javaType="com.szhengzhu.bean.goods.GoodsInfo" column="goods_id">
+            <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+            <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="serverStatus" property="serverStatus" jdbcType="VARCHAR" />
+            <result column="cookStyle" property="cookStyle" jdbcType="VARCHAR" />
+            <result column="server_type" property="serverType" jdbcType="INTEGER" />
+            <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+            <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+            <result column="unit" property="unit" jdbcType="VARCHAR" />
+            <result column="upper_time" property="upperTime" jdbcType="TIMESTAMP" />
+            <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
+            <result column="pre_upper_time" property="preUpperTime" jdbcType="TIMESTAMP" />
+            <result column="pre_down_time" property="preDownTime" jdbcType="TIMESTAMP" />
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+            <result column="creator" property="creator" jdbcType="VARCHAR" />
+            <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+            <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+            <result column="categoryName" property="categoryId" jdbcType="VARCHAR" />
+            <result column="typeName" property="typeId" jdbcType="VARCHAR" />
+            <result column="brandName" property="brandId" jdbcType="VARCHAR" />
+            <result column="cooker" property="cooker" jdbcType="VARCHAR" />
+            <result column="sort" property="sort" jdbcType="INTEGER" />
         </association>
     </resultMap>
-    <resultMap
-        type="com.szhengzhu.bean.vo.ColumnMealVo"
-        id="MealResultMapVo"
-        extends="BaseResultMap">
-        <association
-            property="meal"
-            javaType="com.szhengzhu.bean.goods.MealInfo"
-            column="goods_id">
-            <id
-                column="mealId"
-                property="markId"
-                jdbcType="VARCHAR" />
-            <result
-                column="theme"
-                property="theme"
-                jdbcType="VARCHAR" />
-            <result
-                column="base_price"
-                property="basePrice"
-                jdbcType="DECIMAL" />
-            <result
-                column="sale_price"
-                property="salePrice"
-                jdbcType="DECIMAL" />
-            <result
-                column="stock_size"
-                property="stockSize"
-                jdbcType="INTEGER" />
-            <result
-                column="server_status"
-                property="serverStatus"
-                jdbcType="BIT" />
-            <result
-                column="description"
-                property="description"
-                jdbcType="VARCHAR" />
-            <result
-                column="sort"
-                property="sort"
-                jdbcType="INTEGER" />
+    <resultMap type="com.szhengzhu.bean.vo.ColumnMealVo" id="MealResultMapVo" extends="BaseResultMap">
+        <association property="meal" javaType="com.szhengzhu.bean.goods.MealInfo" column="goods_id">
+            <id column="mealId" property="markId" jdbcType="VARCHAR" />
+            <result column="theme" property="theme" jdbcType="VARCHAR" />
+            <result column="meal_no" property="mealNo" jdbcType="VARCHAR" />
+            <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+            <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+            <result column="server_status" property="serverStatus" jdbcType="BIT" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="sort" property="sort" jdbcType="INTEGER" />
         </association>
     </resultMap>
     <sql id="Base_Column_List">
@@ -197,30 +76,21 @@
         g.brand_id) as brandName
     </sql>
     <sql id="Base_Meal_List">
-        m.mark_id as mealId, m.theme, m.base_price,
-        m.sale_price,m.stock_size,
-        m.server_status,
-        m.description, m.sort
+        m.mark_id as mealId, m.theme,m.meal_no, m.base_price,
+        m.sale_price,m.create_time,m.server_status,m.description, m.sort
     </sql>
-    <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List" />
         from t_column_goods
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
-    <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_column_goods
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </delete>
-    <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods">
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.ColumnGoods">
         insert into t_column_goods (mark_id, column_id,
         goods_id,goods_type,
         server_status, sort)
@@ -230,14 +100,9 @@
         #{goodsId,jdbcType=VARCHAR}, #{goodsType,jdbcType=INTEGER},
         #{serverStatus,jdbcType=BIT}, #{sort,jdbcType=INTEGER})
     </insert>
-    <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods">
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.ColumnGoods">
         insert into t_column_goods
-        <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
@@ -257,10 +122,7 @@
                 sort,
             </if>
         </trim>
-        <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
@@ -281,9 +143,7 @@
             </if>
         </trim>
     </insert>
-    <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods">
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.ColumnGoods">
         update t_column_goods
         <set>
             <if test="columnId != null">
@@ -304,9 +164,7 @@
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods">
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.ColumnGoods">
         update t_column_goods
         set column_id =
         #{columnId,jdbcType=VARCHAR},
@@ -319,10 +177,7 @@
         sort = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select
-        id="selectByExampleSelective"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods"
-        resultMap="BaseResultMapVo">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.ColumnGoods" resultMap="BaseResultMapVo">
         SELECT
         <include refid="Base_Column_List" />
         ,
@@ -353,10 +208,7 @@
             </if>
         </where>
     </select>
-    <select
-        id="selectMealByExampleSelective"
-        parameterType="com.szhengzhu.bean.goods.ColumnGoods"
-        resultMap="MealResultMapVo">
+    <select id="selectMealByExampleSelective" parameterType="com.szhengzhu.bean.goods.ColumnGoods" resultMap="MealResultMapVo">
         SELECT
         <include refid="Base_Column_List" />
         ,
@@ -387,17 +239,11 @@
             </if>
         </where>
     </select>
-    <insert
-        id="insertBatch"
-        parameterType="java.util.List">
+    <insert id="insertBatch" parameterType="java.util.List">
         insert into t_column_goods (mark_id, column_id,
         goods_id,goods_type)
         values
-        <foreach
-            collection="list"
-            item="item"
-            index="index"
-            separator=",">
+        <foreach collection="list" item="item" index="index" separator=",">
             (#{item.markId,jdbcType=VARCHAR},
             #{item.columnId,jdbcType=VARCHAR},
             #{item.goodsId,jdbcType=VARCHAR},

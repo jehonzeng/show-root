@@ -1,77 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.PartnerInfoMapper">
-    <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.user.PartnerInfo">
-        <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
-        <result
-            column="identification_code"
-            property="identificationCode"
-            jdbcType="VARCHAR" />
-        <result
-            column="name"
-            property="name"
-            jdbcType="VARCHAR" />
-        <result
-            column="add_time"
-            property="addTime"
-            jdbcType="TIMESTAMP" />
-        <result
-            column="phone"
-            property="phone"
-            jdbcType="VARCHAR" />
-        <result
-            column="address"
-            property="address"
-            jdbcType="VARCHAR" />
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.PartnerInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="identification_code" property="identificationCode" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, identification_code, name, add_time, phone,
         address
     </sql>
-    <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List" />
         from t_partner_info
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
-    <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_partner_info
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </delete>
-    <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.user.PartnerInfo">
-        insert into t_partner_info (mark_id,
-        identification_code, name,
-        add_time, phone, address
-        )
+    <insert id="insert" parameterType="com.szhengzhu.bean.user.PartnerInfo">
+        insert into t_partner_info (mark_id, identification_code, name, add_time, phone, address)
         values
         (#{markId,jdbcType=VARCHAR},
         #{identificationCode,jdbcType=VARCHAR},
         #{name,jdbcType=VARCHAR},
         #{addTime,jdbcType=TIMESTAMP},
-        #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}
-        )
+        #{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
     </insert>
-    <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.user.PartnerInfo">
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.PartnerInfo">
         insert into t_partner_info
-        <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
@@ -91,10 +55,7 @@
                 address,
             </if>
         </trim>
-        <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
@@ -115,9 +76,7 @@
             </if>
         </trim>
     </insert>
-    <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.user.PartnerInfo">
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.user.PartnerInfo">
         update t_partner_info
         <set>
             <if test="identificationCode != null">
@@ -139,25 +98,16 @@
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.user.PartnerInfo">
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.user.PartnerInfo">
         update t_partner_info
-        set identification_code =
-        #{identificationCode,jdbcType=VARCHAR},
-        name =
-        #{name,jdbcType=VARCHAR},
-        add_time =
-        #{addTime,jdbcType=TIMESTAMP},
+        set identification_code = #{identificationCode,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
         phone = #{phone,jdbcType=VARCHAR},
         address = #{address,jdbcType=VARCHAR}
-        where mark_id =
-        #{markId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select
-        id="selectByExampleSelective"
-        parameterType="com.szhengzhu.bean.user.PartnerInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.user.PartnerInfo" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from t_partner_info
@@ -166,12 +116,10 @@
                 AND mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="identificationCode != null">
-                AND identification_code =
-                #{identificationCode,jdbcType=VARCHAR}
+                AND identification_code = #{identificationCode,jdbcType=VARCHAR}
             </if>
             <if test="name != null">
-                AND name LIKE CONCAT('%',
-                #{name,jdbcType=VARCHAR},'%')
+                AND name LIKE CONCAT('%', #{name,jdbcType=VARCHAR},'%')
             </if>
             <if test="addTime != null">
                 AND add_time = #{addTime,jdbcType=TIMESTAMP}

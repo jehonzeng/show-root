@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.PrizeInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.PrizeInfo">
+        <!--@Table t_prize_info-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="imgId" column="img_id" jdbcType="VARCHAR"/>
+        <result property="lotteryId" column="lottery_id" jdbcType="VARCHAR"/>
+        <result property="imgUrl" column="imgUrl" jdbcType="VARCHAR"/>
+        <result property="prizeName" column="prize_name" jdbcType="VARCHAR"/>
+        <result property="prizeType" column="prize_type" jdbcType="INTEGER"/>
+        <result property="integral" column="integral" jdbcType="INTEGER"/>
+        <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+        <result property="templateName" column="templateName" jdbcType="VARCHAR"/>
+        <result property="probability" column="probability" jdbcType="DECIMAL"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        p.mark_id, p.img_id, p.lottery_id, p.prize_name, p.prize_type, p.integral, p.template_id, p.probability,
+        ifnull(p.quantity,0) as quantity, p.status, p.create_time, p.modify_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,(select image_path from db_base.t_image_info i where p.img_id=i.mark_id) as
+        imgUrl, (select t.name from db_ordering.t_ticket_template t where t.mark_id=template_id) as templateName
+        from t_prize_info p
+        where mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,(select image_path from db_base.t_image_info i where p.img_id=i.mark_id) as
+        imgUrl, (select t.name from db_ordering.t_ticket_template t where t.mark_id=template_id) as templateName
+        from t_prize_info p
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="imgId != null and imgId != ''">
+                and img_id = #{imgId}
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                and lottery_id = #{lotteryId}
+            </if>
+            <if test="integral != null ">
+                and integral = #{integral}
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and template_id = #{templateId}
+            </if>
+            <if test="prizeName != null and prizeName != ''">
+                and prize_name = #{prizeName}
+            </if>
+            <if test="prizeType != null">
+                and prize_type = #{prizeType}
+            </if>
+            <if test="probability != null and probability != ''">
+                and probability = #{probability}
+            </if>
+            <if test="quantity == 0">
+                and quantity <![CDATA[<>]]> #{quantity}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime}
+            </if>
+        </where>
+        <if test="limitNum != null">
+            LIMIT #{limitNum}
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_prize_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="imgId != null and imgId != ''">
+                img_id,
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                lottery_id ,
+            </if>
+            <if test="integral != null ">
+                integral ,
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id ,
+            </if>
+            <if test="prizeName != null and prizeName != ''">
+                prize_name,
+            </if>
+            <if test="prizeType != null ">
+                prize_type,
+            </if>
+            <if test="probability != null and probability != ''">
+                probability,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                #{imgId},
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                #{lotteryId},
+            </if>
+            <if test="integral != null">
+                #{integral},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                #{templateId},
+            </if>
+            <if test="prizeName != null and prizeName != ''">
+                #{prizeName},
+            </if>
+            <if test="prizeType != null ">
+                #{prizeType},
+            </if>
+            <if test="probability != null and probability != ''">
+                #{probability},
+            </if>
+            <if test="quantity != null">
+                #{quantity},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_prize_info
+        <set>
+            <if test="prizeName != null and prizeName != ''">
+                prize_name = #{prizeName},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                img_id = #{imgId},
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                lottery_id = #{lotteryId},
+            </if>
+            <if test="integral != null">
+                integral = #{integral},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id = #{templateId},
+            </if>
+            <if test="prizeType != null ">
+                prize_type = #{prizeType},
+            </if>
+            <if test="probability != null and probability != ''">
+                probability = #{probability},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_prize_info
+        where mark_id = #{markId}
+    </delete>
+
+    <select id="selectUserReceive" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_prize_info p INNER JOIN t_prize_receive r ON p.mark_id=r.prize_id
+        WHERE r.user_id=#{userId,jdbcType=VARCHAR} AND p.lottery_id=#{lotteryId,jdbcType=VARCHAR}
+        AND TO_DAYS(r.create_time) BETWEEN TO_DAYS(#{startTime})  AND TO_DAYS(#{endTime})
+    </select>
+</mapper>

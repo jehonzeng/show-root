@@ -1,13 +1,15 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.BrandInfo;
+import com.szhengzhu.bean.vo.Combobox;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.BrandInfo;
-import com.szhengzhu.bean.vo.Combobox;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface BrandInfoMapper {
     
     int deleteByPrimaryKey(String markId);
@@ -27,6 +29,6 @@ public interface BrandInfoMapper {
     
     List<BrandInfo> selectByExampleSelective(BrandInfo record);
     
-    @Select("SELECT mark_id AS code, CONCAT(en_name,'-',cn_name) AS name FROM t_brand_info WHERE brand_status=1 ORDER BY sort")
+    @Select("SELECT mark_id AS code, CONCAT(cn_name,'-',IFNULL(en_name,'')) AS name FROM t_brand_info WHERE brand_status = 1 ORDER BY sort")
     List<Combobox> selectCombobx();
 }

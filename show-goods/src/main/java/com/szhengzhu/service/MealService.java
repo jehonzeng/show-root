@@ -1,17 +1,15 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.MealInfo;
 import com.szhengzhu.bean.goods.MealItem;
 import com.szhengzhu.bean.vo.BatchVo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.MealVo;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
-import com.szhengzhu.bean.wechat.vo.StockBase;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface MealService {
 
@@ -22,7 +20,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> addMeal(MealInfo base);
+    MealInfo addMeal(MealInfo base);
 
     /**
      * 添加套餐单品
@@ -31,7 +29,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> addItem(MealItem base);
+    MealItem addItem(MealItem base);
 
     /**
      * 获取套餐分页列表
@@ -40,7 +38,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealInfo>> getPage(PageParam<MealInfo> base);
+    PageGrid<MealInfo> getPage(PageParam<MealInfo> base);
 
     /**
      * 获取套餐单品分页列表
@@ -49,7 +47,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealVo>> getItemPage(PageParam<MealItem> base);
+    PageGrid<MealVo> getItemPage(PageParam<MealItem> base);
 
     /**
      * 修改套餐信息
@@ -58,7 +56,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> editMeal(MealInfo base);
+    MealInfo editMeal(MealInfo base);
     
     /**
      * 获取套餐下拉列表
@@ -66,7 +64,7 @@ public interface MealService {
      * @date 2019年5月20日 下午3:08:29
      * @return
      */
-    Result<List<Combobox>> listCombobox();
+    List<Combobox> listCombobox();
 
     /**
      * 修改套餐单品信息
@@ -75,7 +73,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> editMealItem(MealItem base);
+    MealItem editMealItem(MealItem base);
 
     /**
      * 根据id获取套餐信息
@@ -84,7 +82,7 @@ public interface MealService {
      * @param markId
      * @return
      */
-    Result<?> getMealById(String markId);
+    MealInfo getMealById(String markId);
 
     /**
      * 根据id获取套餐单品信息
@@ -93,7 +91,7 @@ public interface MealService {
      * @param markId
      * @return
      */
-    Result<?> getMealItemById(String markId);
+    MealItem getMealItemById(String markId);
 
     /**
      * 下拉列表
@@ -101,7 +99,7 @@ public interface MealService {
      * @date 2019年5月21日 下午6:11:59
      * @return
      */
-    Result<List<Combobox>> getMealList();
+    List<Combobox> getMealList();
 
     /**
      * 不在栏目中的套餐分页列表
@@ -110,7 +108,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealInfo>> getPageByColumn(PageParam<MealInfo> base);
+    PageGrid<MealInfo> getPageByColumn(PageParam<MealInfo> base);
 
     /**
      * 不在标签分类中的套餐分页列表
@@ -119,7 +117,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealInfo>> getPageByLabel(PageParam<MealInfo> base);
+    PageGrid<MealInfo> getPageByLabel(PageParam<MealInfo> base);
 
     /**
      * 不在特价中的套餐分页列表
@@ -128,7 +126,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealInfo>> getPageBySpecial(PageParam<MealInfo> base);
+    PageGrid<MealInfo> getPageBySpecial(PageParam<MealInfo> base);
 
     /**
      * 不在图标中的套餐分页列表
@@ -137,7 +135,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<PageGrid<MealInfo>> getPageByIcon(PageParam<MealInfo> base);
+    PageGrid<MealInfo> getPageByIcon(PageParam<MealInfo> base);
     
     /**
      * 前端获取套餐详细信息
@@ -146,7 +144,7 @@ public interface MealService {
      * @param mealId
      * @return
      */
-    Result<GoodsInfoVo> getMealDetail(String mealId, String userId);
+    GoodsDetail getMealDetail(String mealId, String userId);
 
     /**
      * 获取已存在的服务列表
@@ -155,7 +153,7 @@ public interface MealService {
      * @param mealId
      * @return
      */
-    Result<List<String>> getServerListInMeal(String mealId);
+    List<String> getServerListInMeal(String mealId);
 
     /**
      * 批量添加服务
@@ -164,7 +162,7 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> addBatchMealServe(BatchVo base);
+    void addBatchMealServe(BatchVo base);
 
     /**
      * 批量刪除服务
@@ -173,15 +171,5 @@ public interface MealService {
      * @param base
      * @return
      */
-    Result<?> deleteBatchMealServe(BatchVo base);
-    
-    /**
-     * 获取套餐库存信息
-     * 
-     * @date 2019年7月8日 下午4:53:51
-     * @param mealId
-     * @param addressId
-     * @return
-     */
-    Result<StockBase> getStockInfo(String mealId, String addressId);
+    void deleteBatchMealServe(BatchVo base);
 }

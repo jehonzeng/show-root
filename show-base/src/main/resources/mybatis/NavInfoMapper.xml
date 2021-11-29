@@ -123,24 +123,25 @@
                 AND remark = #{remark,jdbcType=VARCHAR}
             </if>
             <if test="serverStatus != null">
-                AND server_status = #{serverStatus,jdbcType=BIT},
+                AND server_status = #{serverStatus,jdbcType=BIT}
             </if>
         </where>
     </select>
-    <resultMap id="ForeBaseResultMap" type="com.szhengzhu.bean.wechat.vo.NavVo">
+    <resultMap id="ForeBaseResultMap" type="com.szhengzhu.bean.wechat.vo.NavBase">
         <id column="mark_id" property="markId" jdbcType="VARCHAR" />
         <result column="nav_code" property="navCode" jdbcType="VARCHAR" />
         <result column="remark" property="remark" jdbcType="VARCHAR" />
-        <collection property="items" ofType="com.szhengzhu.bean.wechat.vo.NavItemVo" column="mark_id">
+        <collection property="items" ofType="com.szhengzhu.bean.wechat.vo.NavItemBase" column="mark_id">
             <result column="theme" property="theme" jdbcType="VARCHAR" />
             <result column="server_type" property="serverType" jdbcType="INTEGER" />
             <result column="link_url" property="linkUrl" jdbcType="VARCHAR" />
             <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
             <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="show_type" property="showType" jdbcType="INTEGER" />
         </collection>
     </resultMap>
     <select id="selectForeNav" resultMap="ForeBaseResultMap">
-        SELECT i.mark_id,i.nav_code,i.remark,v.theme,v.server_type,v.link_url,v.image_path,v.description
+        SELECT i.mark_id,i.nav_code,i.remark,v.theme,v.server_type,v.link_url,v.image_path,v.description,v.show_type
         FROM t_nav_info i LEFT JOIN t_nav_item v ON i.mark_id=v.nav_id 
         WHERE i.server_status=1 AND v.server_status=1 AND
             (CASE WHEN v.start_time IS NOT NULL THEN  v.start_time <![CDATA[ < ]]> NOW() ELSE 1=1 END) AND 

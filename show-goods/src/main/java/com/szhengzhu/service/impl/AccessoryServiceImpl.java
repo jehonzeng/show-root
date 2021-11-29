@@ -1,66 +1,62 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.goods.AccessoryInfo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.AccessoryInfoMapper;
 import com.szhengzhu.service.AccessoryService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("accessoryService")
 public class AccessoryServiceImpl implements AccessoryService {
 
-    @Autowired
+    @Resource
     private AccessoryInfoMapper accessoryInfoMapper;
 
     @Override
-    public Result<?> addAccessory(AccessoryInfo base) {
-        if (base == null || StringUtils.isEmpty(base.getTheme()))
-            return new Result<>(StatusCode._4004);
-
+    public AccessoryInfo addAccessory(AccessoryInfo base) {
         int count = accessoryInfoMapper.repeatRecords(base.getTheme(), "");
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
-        base.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        base.setMarkId(snowflake.nextIdStr());
         base.setServerStatus(false);
+        base.setCreateTime(DateUtil.date());
         accessoryInfoMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<PageGrid<AccessoryInfo>> getAccessoryPage(PageParam<AccessoryInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<AccessoryInfo> getAccessoryPage(PageParam<AccessoryInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("create_time desc,"+base.getSidx() + " " + base.getSort());
         List<AccessoryInfo> list = accessoryInfoMapper.selectByExampleSelective(base.getData());
         PageInfo<AccessoryInfo> page = new PageInfo<>(list);
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> editAccessory(AccessoryInfo base) {
-        if (base == null || base.getMarkId() == null)
-            return new Result<>(StatusCode._4004);
+    public AccessoryInfo editAccessory(AccessoryInfo base) {
         int count = accessoryInfoMapper.repeatRecords(base.getTheme(), base.getMarkId());
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         accessoryInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<?> selectAccessoryById(String markId) {
-        AccessoryInfo data = accessoryInfoMapper.selectByPrimaryKey(markId);
-        return new Result<>(data);
+    public AccessoryInfo selectAccessoryById(String markId) {
+        return accessoryInfoMapper.selectByPrimaryKey(markId);
     }
-
 }

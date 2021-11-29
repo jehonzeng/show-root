@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ExchangeDetailMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.ExchangeDetail">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="exchange_id" jdbcType="VARCHAR" property="exchangeId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, exchange_id, quantity, create_time, employee_id, remark
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_exchange_detail
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_exchange_detail
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.ExchangeDetail">
+        insert into t_exchange_detail (mark_id, exchange_id, quantity,
+                                       create_time, employee_id, remark)
+        values (#{markId,jdbcType=VARCHAR}, #{exchangeId,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},
+                #{createTime,jdbcType=TIMESTAMP}, #{employeeId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.ExchangeDetail">
+        insert into t_exchange_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="exchangeId != null">
+                exchange_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="employeeId != null">
+                employee_id,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="exchangeId != null">
+                #{exchangeId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="employeeId != null">
+                #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.ExchangeDetail">
+        update t_exchange_detail
+        <set>
+            <if test="exchangeId != null">
+                exchange_id = #{exchangeId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.ExchangeDetail">
+        update t_exchange_detail
+        set exchange_id = #{exchangeId,jdbcType=VARCHAR},
+            quantity    = #{quantity,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            remark      = #{remark,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

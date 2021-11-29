@@ -1,40 +1,41 @@
 package com.szhengzhu.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import cn.hutool.core.util.StrUtil;
+import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.bean.excel.LogisticsModel;
+import com.szhengzhu.bean.excel.OrderSendModel;
+import com.szhengzhu.bean.excel.ProductModel;
 import com.szhengzhu.bean.order.OrderDelivery;
 import com.szhengzhu.bean.order.OrderInfo;
 import com.szhengzhu.bean.order.OrderItem;
-import com.szhengzhu.bean.vo.CalcData;
-import com.szhengzhu.bean.vo.StockVo;
-import com.szhengzhu.bean.wechat.vo.Judge;
-import com.szhengzhu.bean.wechat.vo.OrderBase;
-import com.szhengzhu.bean.wechat.vo.OrderModel;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.bean.rpt.IndexDisplay;
+import com.szhengzhu.bean.vo.OrderBatch;
+import com.szhengzhu.bean.vo.OrderExportVo;
+import com.szhengzhu.bean.vo.TodayProductVo;
+import com.szhengzhu.bean.wechat.vo.*;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
-import com.szhengzhu.service.HolidayService;
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.service.OrderAllService;
 import com.szhengzhu.service.OrderDeliveryService;
 import com.szhengzhu.service.OrderService;
-import com.szhengzhu.service.UserAddressService;
-import com.szhengzhu.service.UserCouponService;
-import com.szhengzhu.service.UserVoucherService;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 订单操作
+ *
+ * @author Jehon Zeng
+ */
+@Validated
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -43,218 +44,214 @@ public class OrderController {
     private OrderService orderService;
 
     @Resource
+    private OrderAllService orderAllService;
+
+    @Resource
     private OrderDeliveryService orderDeliveryService;
 
     @Resource
-    private UserVoucherService userVoucherService;
-
-    @Resource
-    private UserCouponService userCouponService;
-
-    @Resource
-    private UserAddressService userAddressService;
-
-    @Resource
     private ShowGoodsClient showGoodsClient;
-    
-    @Resource
-    private HolidayService holidayService;
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<OrderInfo>> pageOrder(@RequestBody PageParam<OrderInfo> orderPage) {
-        if (orderPage == null)
-            return new Result<>(StatusCode._4004);
+    @PostMapping(value = "/page")
+    public PageGrid<OrderInfo> pageOrder(@RequestBody PageParam<OrderInfo> orderPage) {
         return orderService.pageOrder(orderPage);
     }
 
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<OrderInfo> getOrderInfo(@PathVariable("markId") String markId) {
-        if (StringUtils.isEmpty(markId))
-            return new Result<>(StatusCode._4004);
-        return orderService.getOrderInfo(markId);
+    @PostMapping(value = "/share/page")
+    public PageGrid<OrderInfo> pageShareOrder(@RequestBody PageParam<OrderInfo> orderPage) {
+        return orderService.pageShareOrder(orderPage);
     }
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public Result<OrderInfo> getOrderByNo(@RequestParam("orderNo") String orderNo) {
-        if (StringUtils.isEmpty(orderNo))
-            return new Result<>(StatusCode._4004);
+    @GetMapping(value = "/{markId}")
+    public OrderInfo getOrderDeliveryItem(@PathVariable("markId") @NotBlank String markId) {
+        return orderService.getOrderDeliveryItem(markId);
+    }
+
+    @GetMapping(value = "/info/{orderId}")
+    public OrderInfo getOrderById(@PathVariable("orderId") @NotBlank String orderId) {
+        return orderService.getOrderById(orderId);
+    }
+
+    @GetMapping(value = "/info")
+    public OrderInfo getOrderByNo(@RequestParam("orderNo") @NotBlank String orderNo) {
         return orderService.getOrderByNo(orderNo);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> addOrder(@RequestBody OrderInfo order) {
-        if (order == null || order.getItems().size() == 0 || order.getOrderDelivery() == null)
-            return new Result<>(StatusCode._4004);
-        List<Map<String, Object>> goodsList = new ArrayList<>();
-        List<Map<String, Object>> mealList = new ArrayList<>();
-        for (int index = 0, size = order.getItems().size(); index < size; index++) {
-            OrderItem item = order.getItems().get(index);
-            if (item.getProductType().equals(0)) {
-                Map<String, Object> goods = new HashMap<>();
-                goods.put("goodsId", item.getProductId());
-                goods.put("specIds", item.getSpecificationIds());
-                goods.put("quantity", item.getQuantity());
-                goodsList.add(goods);
-            } else if (item.getProductType().equals(2)) {
-                Map<String, Object> meal = new HashMap<>();
-                meal.put("mealId", item.getProductId());
-                meal.put("quantity", item.getQuantity());
-                mealList.add(meal);
-            }
+    @PostMapping(value = "/add")
+    public Result<String> addOrder(@RequestBody @Validated OrderInfo order) throws Exception {
+        OrderDelivery orderDelivery = order.getOrderDelivery();
+
+        List<OrderItem> itemList = order.getItems();
+        List<OrderItemModel> itemModelList = new ArrayList<>();
+        OrderItemModel itemModel;
+        for (int index = 0, size = itemList.size(); index < size; index++) {
+            itemModel = OrderItemModel.builder().productId(itemList.get(index).getProductId())
+                    .productType(itemList.get(index).getProductType())
+                    .specificationIds(itemList.get(index).getSpecificationIds())
+                    .quantity(itemList.get(index).getQuantity()).build();
+            itemModelList.add(itemModel);
         }
-        if (goodsList.size() > 0)
-            return null;
-
-        if (mealList.size() > 0)
-            return null;
-
-        List<String> markIds = new ArrayList<>();
-        for (OrderItem item : order.getItems())
-            markIds.add(item.getProductId());
-        List<StockVo> stocks = new ArrayList<>();
-        if (markIds.size() > 0)
-            stocks = showGoodsClient.listGoodsStocks(markIds).getData();
-        if (stocks.size() > 0 && (stocks.size() == markIds.size()))
-            return orderService.addBackendOrder(order, stocks);
-        else
-            return new Result<>(StatusCode._5003);
+        OrderModel orderModel = OrderModel.builder().item(itemModelList).userId(order.getUserId())
+                .deliveryDate(order.getDeliveryDate()).remark(order.getRemark()).build();
+        ShowAssert.checkNull(orderModel, StatusCode._4004);
+        ShowAssert.checkTrue(orderModel.getItem().isEmpty() || StrUtil.isEmpty(orderModel.getUserId()), StatusCode._4004);
+        Result<CalcData> calcResult = showGoodsClient.calcTotal(orderModel);
+        ShowAssert.checkResult(calcResult);
+        String orderId = orderService.addBackendOrder(calcResult.getData(), orderDelivery, order.getOrderType(),
+                order.getDeliveryAmount());
+        return new Result<>(orderId);
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<?> modifyOrder(@RequestBody OrderInfo order) {
-        if (order == null || order.getItems().size() == 0 || order.getOrderDelivery() == null
-                || StringUtils.isEmpty(order.getMarkId()))
-            return new Result<>(StatusCode._4004);
-        List<String> markIds = new ArrayList<>();
-        for (OrderItem item : order.getItems())
-            markIds.add(item.getProductId());
-        List<StockVo> stocks = new ArrayList<>();
-        if (markIds.size() > 0)
-            stocks = showGoodsClient.listGoodsStocks(markIds).getData();
-        if (stocks.size() > 0 && stocks.size() == markIds.size())
-            return orderService.modifyBackendOrder(order, stocks);
-        else
-            return new Result<>(StatusCode._5003);
+    @PatchMapping(value = "/modify")
+    public void modifyOrder(@RequestBody @Validated OrderInfo order) {
+        orderService.modifyBackendOrder(order);
     }
 
-    @RequestMapping(value = "/delivery/page", method = RequestMethod.POST)
-    public Result<PageGrid<OrderDelivery>> pageDelivery(@RequestBody PageParam<OrderDelivery> deliveryPage) {
-        if (deliveryPage == null)
-            return new Result<>(StatusCode._4004);
+    @PostMapping(value = "/delivery/page")
+    public PageGrid<OrderDelivery> pageDelivery(@RequestBody PageParam<OrderDelivery> deliveryPage) {
         return orderDeliveryService.pageDelivery(deliveryPage);
     }
 
-    @RequestMapping(value = "/delivery", method = RequestMethod.GET)
-    public Result<OrderDelivery> getDeliveryByOrder(@RequestParam("orderId") String orderId) {
-        if (StringUtils.isEmpty(orderId))
-            return new Result<>(StatusCode._4004);
+    @GetMapping(value = "/delivery")
+    public OrderDelivery getDeliveryByOrder(@RequestParam("orderId") @NotBlank String orderId) {
         return orderDeliveryService.getDeliveryByOrderId(orderId);
     }
 
-    @RequestMapping(value = "/delivery/modify", method = RequestMethod.PATCH)
-    public Result<?> modifyDelivery(@RequestBody OrderDelivery orderDelivery) {
-        if (orderDelivery == null || StringUtils.isEmpty(orderDelivery.getMarkId()))
-            return new Result<>(StatusCode._4004);
-        return orderDeliveryService.modifyDelivery(orderDelivery);
+    @PatchMapping(value = "/delivery/modify")
+    public void modifyDelivery(@RequestBody OrderDelivery orderDelivery) {
+        orderDeliveryService.modifyDelivery(orderDelivery);
     }
 
-    @RequestMapping(value = "/item/list/{orderId}", method = RequestMethod.GET)
-    public Result<List<OrderItem>> listItemByOrderId(@PathVariable("orderId") String orderId) {
-        if (StringUtils.isEmpty(orderId))
-            return new Result<>(StatusCode._4004);
+    @GetMapping(value = "/item/list/{orderId}")
+    public List<OrderItem> listItemByOrderId(@PathVariable("orderId") @NotBlank String orderId) {
         return orderService.listItemByOrderId(orderId);
     }
 
-    @RequestMapping(value = "/item/page", method = RequestMethod.POST)
-    public Result<PageGrid<OrderItem>> pageItem(@RequestBody PageParam<OrderItem> itemPage) {
-        if (itemPage == null)
-            return new Result<>(StatusCode._4004);
+    @PostMapping(value = "/item/page")
+    public PageGrid<OrderItem> pageItem(@RequestBody PageParam<OrderItem> itemPage) {
         return orderService.pageItem(itemPage);
     }
 
-    @RequestMapping(value = "/status", method = RequestMethod.GET)
-    public Result<?> modfiyStatus(@RequestParam("markId") String markId,
-            @RequestParam("orderStatus") String orderStatus) {
-        if (StringUtils.isEmpty(markId) || StringUtils.isEmpty(orderStatus))
-            return new Result<>(StatusCode._4004);
-        return orderService.updateStatus(markId, orderStatus);
+    @GetMapping(value = "/backend/index")
+    public List<IndexDisplay> getIndexStatusCount() {
+        return orderService.getIndexStatusCount();
     }
 
-    @RequestMapping(value = "/fore/all/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listAll(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listAll(orderPage);
+    @GetMapping(value = "/status")
+    public OrderInfo modfiyStatus(@RequestParam("orderId") @NotBlank String orderId,
+                                  @RequestParam("orderStatus") @NotBlank String orderStatus) {
+        return orderService.modifyStatus(orderId, orderStatus);
     }
 
-    @RequestMapping(value = "/fore/unpaid/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listUnpaid(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listUnpaid(orderPage);
+    @GetMapping(value = "/fore/status")
+    public void modifyStatusByNo(@RequestParam("orderNo") @NotBlank String orderNo,
+                                 @RequestParam("orderStatus") @NotBlank String orderStatus,
+                                 @RequestParam(value = "userId", required = false) String userId) {
+        orderService.modifyStatusByNo(orderNo, orderStatus, userId);
     }
 
-    @RequestMapping(value = "/fore/ungroup/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listUngroup(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listUngroup(orderPage);
+    @PostMapping(value = "/fore/all/list")
+    public PageGrid<OrderBase> listAll(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listAll(orderPage);
     }
 
-    @RequestMapping(value = "/fore/undelivery/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listUndelivery(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listUndelivery(orderPage);
+    @PostMapping(value = "/fore/unpaid/list")
+    public PageGrid<OrderBase> listUnpaid(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listUnpaid(orderPage);
     }
 
-    @RequestMapping(value = "/fore/unreceive/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listUnReceive(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listUnReceive(orderPage);
+    @PostMapping(value = "/fore/ungroup/list")
+    public PageGrid<OrderBase> listUngroup(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listUngroup(orderPage);
     }
 
-    @RequestMapping(value = "/fore/unjudge/list", method = RequestMethod.POST)
-    public Result<PageGrid<OrderBase>> listUnjudge(@RequestBody PageParam<String> orderPage) {
-        if (orderPage == null || StringUtils.isEmpty(orderPage.getData()))
-            return new Result<>(StatusCode._4004);
-        return orderService.listUnjudge(orderPage);
+    @PostMapping(value = "/fore/undelivery/list")
+    public PageGrid<OrderBase> listUndelivery(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listUndelivery(orderPage);
     }
 
-    @RequestMapping(value = "/fore/detial", method = RequestMethod.GET)
-    public Result<?> orderDetail(@RequestParam("orderNo") String orderNo) {
-        if (StringUtils.isEmpty(orderNo))
-            return new Result<>(StatusCode._4004);
-        return orderService.getOrderDetail(orderNo);
+    @PostMapping(value = "/fore/unreceive/list")
+    public PageGrid<OrderBase> listUnReceive(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listUnReceive(orderPage);
     }
 
-    @RequestMapping(value = "/item/fore/judge/{orderId}", method = RequestMethod.GET)
-    public Result<List<Judge>> listItemJudge(@PathVariable("orderId") String orderId) {
-        if (StringUtils.isEmpty(orderId))
-            return new Result<>(StatusCode._4004);
-        return orderService.listItemJudge(orderId);
+    @PostMapping(value = "/fore/unjudge/list")
+    public PageGrid<OrderBase> listUnjudge(@RequestBody PageParam<String> orderPage) {
+        ShowAssert.checkStrEmpty(orderPage.getData(), StatusCode._4004);
+        return orderAllService.listUnjudge(orderPage);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<?> createOrder(@RequestBody OrderModel orderModel) throws CloneNotSupportedException {
-        if (orderModel == null || orderModel.getItem().size() == 0 || StringUtils.isEmpty(orderModel.getAddressId())
-                || StringUtils.isEmpty(orderModel.getUserId()))
-            return new Result<>(StatusCode._4004);
+    @GetMapping(value = "/fore/detial")
+    public OrderDetail orderDetail(@RequestParam("orderNo") @NotBlank String orderNo,
+                                   @RequestParam(value = "userId", required = false) String userId) {
+        return orderService.getOrderDetail(orderNo, userId);
+    }
+
+    @GetMapping(value = "/item/fore/judge")
+    public List<Judge> listItemJudge(@RequestParam("orderNo") @NotBlank String orderNo,
+                                     @RequestParam("userId") @NotBlank String userId) {
+        return orderService.listItemJudge(orderNo, userId);
+    }
+
+    @PostMapping(value = "/create")
+    public Map<String, Object> create(@RequestBody OrderModel orderModel) throws Exception {
         Result<CalcData> calcResult = showGoodsClient.calcTotal(orderModel);
-        if (!calcResult.isSuccess())
-            return calcResult;
-        return orderService.createOrder(calcResult.getData());
+        ShowAssert.checkResult(calcResult);
+        return orderService.create(calcResult.getData());
     }
-    
-    @RequestMapping(value = "/error/back", method = RequestMethod.PATCH)
-    public void orderErrorBack(@RequestParam("orderNo") String orderNo, @RequestParam("userId") String userId) {
-        orderService.orderErrorBack(orderNo, userId);
+
+    @GetMapping(value = "/list/status")
+    public List<OrderInfo> listStatuaOrder(@RequestParam("orderStatus") @NotBlank String orderStatus) {
+        return orderService.listStatusOrder(orderStatus);
     }
-    
-    @RequestMapping(value = "/info/back", method = RequestMethod.PATCH)
-    public void orderInfoBack(@RequestParam("orderNo") String orderNo) {
-        List<OrderItem> items = orderService.orderInfoBack(orderNo);
-        // 修改库存
+
+    @GetMapping(value = "/print/{markId}")
+    public OrderExportVo getExportOrderInfo(@PathVariable("markId") @NotBlank String markId) {
+        return orderService.getExportOrdersById(markId);
+    }
+
+    @GetMapping(value = "/item/todayList")
+    public List<TodayProductVo> getTodayItemList() {
+        return orderAllService.getTodayList();
+    }
+
+    @PostMapping(value = "/delivery/batch")
+    public Map<String, Object> batchModifyDeliveryOrder(@RequestBody List<LogisticsModel> deliveryList) {
+        return orderDeliveryService.batchModifyDeliveryOrder(deliveryList);
+    }
+
+    @GetMapping(value = "/fore/status/count")
+    public List<Map<String, Object>> getStatusCount(@RequestParam("userId") @NotBlank String userId) {
+        return orderAllService.getStatusCount(userId);
+    }
+
+    @PostMapping(value = "/batchStatus")
+    public List<OrderInfo> batchOrderStatus(@RequestBody OrderBatch base) {
+        return orderService.batchUpdateStatus(base);
+    }
+
+    @PostMapping(value = "/send/page")
+    public PageGrid<OrderSendModel> pageSendInfo(@RequestBody PageParam<String> page) {
+        return orderAllService.pageSendInfo(page);
+    }
+
+    @GetMapping(value = "/send/list")
+    public List<OrderSendModel> listSendInfo() {
+        return orderAllService.listSendInfo();
+    }
+
+    @PostMapping(value = "/today/product/quantity/page")
+    public PageGrid<ProductModel> pageTodayProductQuantity(@RequestBody PageParam<?> pageParam) {
+        return orderAllService.pageTodayProductQuantity(pageParam);
+    }
+
+    @GetMapping(value = "/today/product/quantity/list")
+    public List<ProductModel> listTodayProductQuantity() {
+        return orderAllService.listTodayProductQuantity();
     }
 }

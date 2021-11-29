@@ -1,10 +1,17 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import lombok.Data;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class FoodsItem implements Serializable{
   
@@ -12,8 +19,10 @@ public class FoodsItem implements Serializable{
 
     private String markId;
 
+    @NotBlank
     private String foodId;
 
+    @NotBlank
     private String goodsId;
     
     private String specificationIds;

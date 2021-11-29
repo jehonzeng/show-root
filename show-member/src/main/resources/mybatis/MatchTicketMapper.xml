@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchTicketMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchTicket">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="match_id" jdbcType="VARCHAR" property="matchId"/>
+        <result column="template_id" jdbcType="VARCHAR" property="templateId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, match_id, template_id, quantity, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_ticket
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_ticket
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchTicket">
+        insert into t_match_ticket (mark_id, match_id, template_id,
+                                    quantity, create_time)
+        values (#{markId,jdbcType=VARCHAR}, #{matchId,jdbcType=VARCHAR}, #{templateId,jdbcType=VARCHAR},
+                #{quantity,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchTicket">
+        insert into t_match_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="matchId != null">
+                match_id,
+            </if>
+            <if test="templateId != null">
+                template_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="matchId != null">
+                #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchTicket">
+        update t_match_ticket
+        <set>
+            <if test="matchId != null">
+                match_id = #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                template_id = #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchTicket">
+        update t_match_ticket
+        set match_id    = #{matchId,jdbcType=VARCHAR},
+            template_id = #{templateId,jdbcType=VARCHAR},
+            quantity    = #{quantity,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

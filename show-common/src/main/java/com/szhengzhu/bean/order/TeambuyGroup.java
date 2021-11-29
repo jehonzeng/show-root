@@ -4,8 +4,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class TeambuyGroup implements Serializable {
     
@@ -17,9 +23,7 @@ public class TeambuyGroup implements Serializable {
 
     private String theme;
 
-    private String productId;
-
-    private Integer productType;
+    private String goodsId;
 
     private String superNo;
 
@@ -41,7 +45,9 @@ public class TeambuyGroup implements Serializable {
 
     private Integer type;
 
-    private Integer serverStatus;
+    private String groupStatus;
+    
+    private String statusDesc;
     
     private List<TeambuyOrder> items;
 }

@@ -1,27 +1,52 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.bean.goods.GoodsVoucher;
+import com.szhengzhu.bean.order.UserVoucher;
 import com.szhengzhu.bean.wechat.vo.VoucherBase;
 import com.szhengzhu.core.Result;
+import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.service.UserVoucherService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 用户菜品券类
+ *
+ * @author Jehon Zeng
+ */
+@Validated
 @RestController
 @RequestMapping(value = "/vouchers")
 public class UserVoucherController {
 
     @Resource
     private UserVoucherService userVoucherService;
-    
-    @RequestMapping(value = "/list/{userId}", method = RequestMethod.GET)
-    public Result<List<VoucherBase>> listByUser(@PathVariable("userId") String userId) {
+
+    @Resource
+    private ShowGoodsClient showGoodsClient;
+
+    @GetMapping(value = "/list/{userId}")
+    public List<VoucherBase> listByUser(@PathVariable("userId") @NotBlank String userId) {
         return userVoucherService.listByUser(userId);
+    }
+
+    @GetMapping(value = "/map")
+    public Map<String, UserVoucher> mapByIds(@RequestParam(value = "vouchers") List<String> vouchers) {
+        return userVoucherService.mapByIds(vouchers);
+    }
+
+    @GetMapping(value = "/send")
+    public void sendGoodsVoucher(@RequestParam("userId") @NotBlank String userId,
+                                      @RequestParam("voucherId") @NotBlank String voucherId) {
+        Result<GoodsVoucher> voucherResult = showGoodsClient.getGoodsVoucherInfo(voucherId);
+        ShowAssert.checkTrue(!voucherResult.isSuccess(), StatusCode._5009);
+        userVoucherService.addGoodsVoucher(userId, voucherResult.getData());
     }
 }

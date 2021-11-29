@@ -1,10 +1,13 @@
 package com.szhengzhu.provider;
 
+import com.szhengzhu.bean.vo.FoodCount;
+
 import java.util.List;
 import java.util.Map;
 
-import com.szhengzhu.bean.vo.FoodCount;
-
+/**
+ * @author Administrator
+ */
 public class PurchaseProvider {
 
     public String selectCountInGoods() {

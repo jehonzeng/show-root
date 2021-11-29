@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.UserTicketMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.UserTicket">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="template_id" property="templateId" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="limit_price" property="limitPrice" jdbcType="DECIMAL"/>
+        <result column="discount" property="discount" jdbcType="DECIMAL"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP"/>
+        <result column="use_time" property="useTime" jdbcType="TIMESTAMP"/>
+        <result column="overlay_use" property="overlayUse" jdbcType="INTEGER"/>
+        <result column="special_date" property="specialDate" jdbcType="VARCHAR"/>
+        <result column="rank_ids" property="rankIds" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="issue_type" jdbcType="BIT" property="issueType"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="limit_store" property="limitStore" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_id, template_id, name, type, description, limit_price, discount, start_time, stop_time,
+        use_time, overlay_use, special_date, rank_ids, create_time, issue_type, status, limit_store
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_ticket
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_user_ticket
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.UserTicket">
+        insert into t_user_ticket (mark_id, user_id, template_id,
+                                   name, type, description, limit_price,
+                                   discount, start_time, stop_time,
+                                   use_time, overlay_use, special_date,
+                                   rank_ids, create_time, issue_type, status, limit_store)
+        values (#{markId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{templateId,jdbcType=VARCHAR},
+                #{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR},
+                #{limitPrice,jdbcType=DECIMAL},
+                #{discount,jdbcType=DECIMAL}, #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP},
+                #{useTime,jdbcType=TIMESTAMP}, #{overlayUse,jdbcType=INTEGER}, #{specialDate,jdbcType=VARCHAR},
+                #{rankIds,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{issueType,jdbcType=BIT},
+                #{status,jdbcType=INTEGER}, #{limitStore,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.UserTicket">
+        insert into t_user_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="templateId != null">
+                template_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="limitPrice != null">
+                limit_price,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="useTime != null">
+                use_time,
+            </if>
+            <if test="overlayUse != null">
+                overlay_use,
+            </if>
+            <if test="specialDate != null">
+                special_date,
+            </if>
+            <if test="rankIds != null">
+                rank_ids,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="issueType != null">
+                issue_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="limitStore != null">
+                limit_store,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="limitPrice != null">
+                #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="useTime != null">
+                #{useTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="overlayUse != null">
+                #{overlayUse,jdbcType=INTEGER},
+            </if>
+            <if test="specialDate != null">
+                #{specialDate,jdbcType=VARCHAR},
+            </if>
+            <if test="rankIds != null">
+                #{rankIds,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="issueType != null">
+                #{issueType,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="limitStore != null">
+                #{limitStore,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.UserTicket">
+        update t_user_ticket
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                template_id = #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="limitPrice != null">
+                limit_price = #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="useTime != null">
+                use_time = #{useTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="overlayUse != null">
+                overlay_use = #{overlayUse,jdbcType=INTEGER},
+            </if>
+            <if test="specialDate != null">
+                special_date = #{specialDate,jdbcType=VARCHAR},
+            </if>
+            <if test="rankIds != null">
+                rank_ids = #{rankIds,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="issueType != null">
+                issue_type = #{issueType,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="limitStore != null">
+                limit_store = #{limitStore,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.UserTicket">
+        update t_user_ticket
+        set user_id      = #{userId,jdbcType=VARCHAR},
+            template_id  = #{templateId,jdbcType=VARCHAR},
+            name         = #{name,jdbcType=VARCHAR},
+            type         = #{type,jdbcType=INTEGER},
+            description  = #{description,jdbcType=VARCHAR},
+            limit_price  = #{limitPrice,jdbcType=DECIMAL},
+            discount     = #{discount,jdbcType=DECIMAL},
+            start_time   = #{startTime,jdbcType=TIMESTAMP},
+            stop_time    = #{stopTime,jdbcType=TIMESTAMP},
+            use_time     = #{useTime,jdbcType=TIMESTAMP},
+            overlay_use  = #{overlayUse,jdbcType=INTEGER},
+            special_date = #{specialDate,jdbcType=VARCHAR},
+            rank_ids     = #{rankIds,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            issue_type   = #{issueType,jdbcType=BIT},
+            status       = #{status,jdbcType=INTEGER},
+            limit_store  = #{limitStore,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="listUserTicket" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.ordering.vo.UserTicketVo">
+        SELECT mark_id AS markId, name, type, description, limit_price AS limitPrice, discount, start_time AS startTime,
+        stop_time AS stopTime,status
+        FROM t_user_ticket
+        WHERE user_id=#{userId,jdbcType=VARCHAR}
+        <if test="status != null">
+            AND `status`=#{status,jdbcType=INTEGER}
+        </if>
+        ORDER BY status desc, start_time
+    </select>
+    <select id="selectRes" parameterType="java.lang.String" resultType="com.szhengzhu.bean.ordering.vo.UserTicketVo">
+        SELECT mark_id     AS markId,
+               name,
+               type,
+               description,
+               limit_price AS limitPrice,
+               discount,
+               start_time  AS startTime,
+               start_time  AS stopTime,
+               status
+        FROM t_user_ticket
+        WHERE `status` = 1
+          AND user_id = #{userId,jdbcType=VARCHAR}
+          AND IF(start_time IS NULL, TRUE, start_time <![CDATA[<]]> NOW())
+          AND IF(stop_time IS NULL, TRUE, stop_time > NOW())
+    </select>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_user_ticket
+        (mark_id, user_id, template_id,
+        name, type, description, limit_price,
+        discount, start_time, stop_time,
+        use_time, overlay_use, special_date,
+        rank_ids, create_time, issue_type, status, limit_store)
+        values
+        <foreach collection="tickets" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR}, #{item.templateId,jdbcType=VARCHAR},
+            #{item.name,jdbcType=VARCHAR}, #{item.type,jdbcType=INTEGER}, #{item.description,jdbcType=VARCHAR},
+            #{item.limitPrice,jdbcType=DECIMAL},
+            #{item.discount,jdbcType=DECIMAL}, #{item.startTime,jdbcType=TIMESTAMP},
+            #{item.stopTime,jdbcType=TIMESTAMP},
+            #{item.useTime,jdbcType=TIMESTAMP}, #{item.overlayUse,jdbcType=INTEGER},
+            #{item.specialDate,jdbcType=VARCHAR},
+            #{item.rankIds,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.issueType,jdbcType=BIT},
+            #{item.status,jdbcType=INTEGER}, #{item.limitStore,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="xlistUserTicketByIndent" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.ordering.vo.UserTicketVo">
+        SELECT mark_id     AS markId,
+               name,
+               type,
+               description,
+               limit_price AS limitPrice,
+               discount,
+               start_time  AS startTime,
+               stop_time   AS stopTime,
+               status
+        FROM t_user_ticket ut
+        WHERE `status` = 1
+          AND user_id = #{userId,jdbcType=VARCHAR}
+          AND IF(limit_price IS NULL, TRUE, limit_price <![CDATA[<=]]>
+                                            (select indent_total - (SELECT IFNULL(SUM(p.pay_amount), 0)
+                                                                    FROM t_indent_pay p
+                                                                    WHERE p.indent_id = i.mark_id
+                                                                      and (user_id is null or user_id = #{userId,jdbcType=VARCHAR})
+                                                                      and status <![CDATA[ <> ]]> -1)
+                                             from t_indent_info i
+                                             where mark_id = #{indentId,jdbcType=VARCHAR}))
+          AND IF((SELECT 1 FROM t_template_commodity tc WHERE tc.template_id = ut.template_id LIMIT 1) IS NULL, TRUE,
+                 (SELECT 1
+                  FROM t_ticket_template tt
+                               INNER JOIN t_template_commodity tc ON tt.mark_id = tc.template_id
+                               INNER JOIN
+                               t_indent_detail id ON tc.commodity_id = id.commodity_id
+                  WHERE tt.mark_id = ut.template_id
+                    AND id.indent_id = #{indentId,jdbcType=VARCHAR}
+                    AND id.status = 1
+                  LIMIT 1) IS NOT NULL)
+          AND IF(start_time IS NULL, TRUE, start_time <![CDATA[<]]> NOW())
+          AND IF(stop_time IS NULL, TRUE, stop_time > NOW())
+        ORDER BY start_time
+    </select>
+    <select id="selectUserTicket" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_ticket
+        WHERE mark_id=#{ticketId,jdbcType=VARCHAR} AND `status`=1
+        AND IF(start_time IS NULL, TRUE, start_time <![CDATA[<]]> NOW())
+        AND IF(stop_time IS NULL,TRUE,stop_time > NOW())
+    </select>
+    <select id="selectUserTicketBySelected" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_ticket
+        WHERE `status`=1 AND user_id=#{userId,jdbcType=VARCHAR}
+        AND IF(start_time IS NULL, TRUE, start_time <![CDATA[<]]> NOW())
+        AND IF(stop_time IS NULL,TRUE,stop_time > NOW())
+        AND mark_id in
+        <foreach collection="ticketIds" index="index" item="ticketId" open="(" separator="," close=")">
+            #{ticketId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+    <select id="memberTicket" resultType="com.szhengzhu.bean.member.MemberTicket">
+        SELECT ut.mark_id,ut.name,ut.type,ut.stop_time,ut.start_time,ut.status,ut.issue_type,ut.use_time,
+        CASE ut.type WHEN 0 THEN '代金' WHEN 1 THEN '折扣' END AS typeName,
+        CASE ut.issue_type WHEN 0 THEN '自动发送' WHEN 1 THEN '手动发送' END AS issueName,
+        CASE ut.status WHEN -1 THEN '已过期' WHEN 0 THEN '已使用' WHEN 1 THEN '未使用' END AS statusName
+        FROM t_user_ticket ut INNER JOIN db_member.t_member_account m ON m.user_id=ut.user_id
+        INNER JOIN t_ticket_template t ON ut.template_id=t.mark_id
+        WHERE t.`status` <![CDATA[<>]]> -1
+        <if test="markId != null and markId != ''">
+            AND m.mark_id=#{markId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <delete id="deleteMemberTicket" parameterType="java.lang.String">
+        delete
+        from t_user_ticket
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <select id="ticketExpire" resultType="com.szhengzhu.bean.ordering.TicketExpire">
+        SELECT any_value(user_id) as userId, any_value(u.stop_time) as expireTime, SUM(u.discount) as total,
+        COUNT(u.mark_id) as num, t.name as name
+        FROM t_user_ticket u INNER JOIN t_ticket_template t ON t.mark_id = template_id
+        WHERE u.`status` = 1
+        and DATEDIFF(u.stop_time, DATE_FORMAT(NOW(), '%Y-%m-%d')) = 4
+        GROUP BY u.template_id
+    </select>
+    <select id="selectUserGradeTicket" resultType="java.lang.String">
+        select mark_id
+        from t_user_ticket
+        where `status` = 1
+          and user_id = #{userId,jdbcType=VARCHAR}
+          and template_id = #{templateId,jdbcType=VARCHAR}
+        ORDER BY create_time
+    </select>
+</mapper>

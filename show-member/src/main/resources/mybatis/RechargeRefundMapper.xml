@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.RechargeRefundMapper">
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.RechargeRefund">
+    <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+    <result column="detail_id" jdbcType="VARCHAR" property="detailId" />
+    <result column="refund_no" jdbcType="VARCHAR" property="refundNo" />
+    <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+    <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="refund_info" jdbcType="VARCHAR" property="refundInfo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mark_id, detail_id, refund_no, refund_status, total_fee, create_time, refund_info
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_recharge_refund
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_recharge_refund
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.member.RechargeRefund">
+    insert into t_recharge_refund (mark_id, detail_id, refund_no,
+      refund_status, total_fee, create_time,
+      refund_info)
+    values (#{markId,jdbcType=VARCHAR}, #{detailId,jdbcType=VARCHAR}, #{refundNo,jdbcType=VARCHAR},
+      #{refundStatus,jdbcType=INTEGER}, #{totalFee,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
+      #{refundInfo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.RechargeRefund">
+    insert into t_recharge_refund
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="markId != null">
+        mark_id,
+      </if>
+      <if test="detailId != null">
+        detail_id,
+      </if>
+      <if test="refundNo != null">
+        refund_no,
+      </if>
+      <if test="refundStatus != null">
+        refund_status,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="refundInfo != null">
+        refund_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="markId != null">
+        #{markId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null">
+        #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="refundNo != null">
+        #{refundNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundStatus != null">
+        #{refundStatus,jdbcType=INTEGER},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundInfo != null">
+        #{refundInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.RechargeRefund">
+    update t_recharge_refund
+    <set>
+      <if test="detailId != null">
+        detail_id = #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="refundNo != null">
+        refund_no = #{refundNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundStatus != null">
+        refund_status = #{refundStatus,jdbcType=INTEGER},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundInfo != null">
+        refund_info = #{refundInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.RechargeRefund">
+    update t_recharge_refund
+    set detail_id = #{detailId,jdbcType=VARCHAR},
+      refund_no = #{refundNo,jdbcType=VARCHAR},
+      refund_status = #{refundStatus,jdbcType=INTEGER},
+      total_fee = #{totalFee,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      refund_info = #{refundInfo,jdbcType=VARCHAR}
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+</mapper>

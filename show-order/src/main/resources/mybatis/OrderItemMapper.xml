@@ -197,7 +197,18 @@
             (#{item.markId,jdbcType=VARCHAR}, #{item.orderId,jdbcType=VARCHAR},
             #{item.productId,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER},#{item.increaseId,jdbcType=VARCHAR},
             #{item.productName,jdbcType=VARCHAR}, #{item.specificationIds,jdbcType=VARCHAR},
-            #{item.quantity,jdbcType=INTEGER}, #{item.basePrice,jdbcType=DECIMAL},
+            #{item.quantity,jdbcType=INTEGER}, <!-- #{item.basePrice,jdbcType=DECIMAL}, -->
+            (CASE WHEN #{item.productType,jdbcType=INTEGER}=0 THEN 
+                      (SELECT IFNULL(s.base_price, g.base_price) 
+                       FROM db_goods.t_goods_info g LEFT JOIN db_goods.t_goods_specification s ON s.goods_id=g.mark_id 
+                       WHERE g.mark_id=#{item.productId,jdbcType=VARCHAR} AND s.specification_ids=#{item.specificationIds,jdbcType=VARCHAR})
+                  WHEN #{item.productType,jdbcType=INTEGER}=1 THEN 
+                       0.00
+                  WHEN #{item.productType,jdbcType=INTEGER}=2 THEN
+                       (SELECT m.base_price FROM db_goods.t_meal_info m WHERE m.mark_id=#{item.productId,jdbcType=VARCHAR})
+                  WHEN #{item.productType,jdbcType=INTEGER}=3 THEN
+                       (SELECT a.base_price FROM db_goods.t_accessory_info a WHERE a.mark_id=#{item.productId,jdbcType=VARCHAR})
+             END),
             #{item.salePrice,jdbcType=DECIMAL}, #{item.payAmount,jdbcType=DECIMAL},
             #{item.voucherIds,jdbcType=VARCHAR}, #{item.storehouseId,jdbcType=VARCHAR})
         </foreach>
@@ -276,33 +287,12 @@
                 FROM db_goods.t_specification_info 
                 WHERE FIND_IN_SET(mark_id, i.specification_ids)) AS specs,
                i.sale_price AS salePrice, i.pay_amount AS payAmount, i.quantity,
-               <!-- (CASE WHEN i.product_type=0 THEN 
-                          IFNULL((SELECT gi.image_path 
-                                  FROM db_goods.t_goods_image gi
-                                  WHERE gi.goods_id=i.product_id AND gi.specification_ids=i.specification_ids AND gi.server_type=2 limit 1),
-                                (SELECT gi.image_path 
-                                 FROM db_goods.t_goods_image gi
-                                 WHERE gi.goods_id=i.product_id AND gi.server_type=0 limit 1)) 
-                    WHEN i.product_type=1 THEN 
-                         IFNULL((SELECT gi.image_path 
-                                 FROM db_goods.t_goods_image gi LEFT JOIN 
-                                      db_goods.t_goods_voucher v ON (v.product_id=gi.goods_id AND v.specification_ids=gi.specification_ids)
-                                 WHERE gi.goods_id=i.product_id AND gi.specification_ids=i.specification_ids AND gi.server_type=2 limit 1),
-                                (SELECT gi.image_path 
-                                 FROM db_goods.t_goods_image gi LEFT JOIN 
-                                      db_goods.t_goods_voucher v ON (v.product_id=gi.goods_id AND v.specification_ids=gi.specification_ids)
-                                 WHERE gi.goods_id=i.product_id AND gi.server_type=0 limit 1))
-                    WHEN i.product_type=2 THEN
-                         (SELECT m.image_path FROM db_goods.t_meal_image m WHERE m.meal_id=i.product_id AND m.server_type=0)
-                    WHEN i.product_type=3 THEN
-                         (SELECT a.image_path FROM db_goods.t_accessory_info a WHERE a.mark_id=i.product_id)
-               END) AS goodsImage,  -->
                IF(i.voucher_ids IS NULL, FALSE, TRUE) AS isVoucher
         FROM t_order_item i 
         WHERE i.order_id=#{orderId,jdbcType=VARCHAR}
     </select>
     
-    <select id="selectItemJudge" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.Judge">
+    <select id="selectItemJudge" resultType="com.szhengzhu.bean.wechat.vo.Judge">
         SELECT (CASE WHEN product_type=0 THEN 
                          product_id 
                      WHEN product_type=1 THEN 
@@ -314,10 +304,10 @@
                          (SELECT v.specification_ids FROM db_goods.t_goods_voucher v WHERE i.product_id=v.mark_id) 
                 END) AS specificationIds,
                (CASE WHEN product_type=1 THEN 0 ELSE product_type END) AS productType, 
-               product_name AS productNam,
-               order_id AS orderId
-        FROM t_order_item i 
-        WHERE order_id=#{orderId,jdbcType=VARCHAR} AND product_type IN (0,1,2);
+               product_name AS productName,
+               order_no AS orderNo
+        FROM t_order_item i LEFT JOIN t_order_info o ON i.order_id=o.mark_id
+        WHERE o.order_no=#{orderNo,jdbcType=VARCHAR} and o.user_id=#{userId,jdbcType=VARCHAR} AND product_type IN (0,1,2)
     </select>
     <select id="selectItemImg" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT 

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.BookingMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.Booking">
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="booker" column="booker" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
+        <result property="tableId" column="table_id" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="manNum" column="man_num" jdbcType="INTEGER"/>
+        <result property="bookingTime" column="booking_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employeeName" jdbcType="VARCHAR"/>
+        <result property="tableName" column="tableName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        b.mark_id,b.booker,b.phone,b.table_id,b.store_id,b.employee_id,b.man_num,b.booking_time,b.create_time,b.modify_time,b.`status`,b.remark
+    </sql>
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>,DATE_FORMAT(booking_time, '%H:%i') AS time,i.`name` AS tableName,
+        (SELECT `name` FROM t_employee_info WHERE b.employee_id = mark_id) AS employeeName
+        FROM t_table_booking b LEFT JOIN t_table_info i ON b.table_id=i.mark_id
+        where b.mark_id = #{markId,jdbcType=VARCHAR}
+        <if test="status != null">
+            AND b.`status` = #{status,jdbcType=INTEGER}
+        </if>
+    </select>
+    <!--根据条件查询预订信息-->
+    <select id="selectInfo" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.ordering.param.BookingParam">
+        SELECT
+        <include refid="Base_Column_List"/>,DATE_FORMAT(booking_time, '%H:%i') AS time,i.`name` AS tableName,
+        (SELECT `name` FROM t_employee_info WHERE b.employee_id = mark_id) AS employeeName
+        FROM t_table_booking b LEFT JOIN t_table_info i ON b.table_id=i.mark_id
+        <where>
+            <if test="markId != null and markId != ''">
+                AND b.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="tableId != null and tableId != ''">
+                AND b.table_id = #{tableId,jdbcType=VARCHAR}
+            </if>
+            <if test="storeId != null and storeId != ''">
+                AND b.store_id = #{storeId,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND b.phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="bookingTime != null">
+                AND TO_DAYS(booking_time) = TO_DAYS(#{bookingTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="status != null">
+                AND b.`status` = #{status,jdbcType=INTEGER}
+            </if>
+            <choose>
+                <when test="tableId != null and bookingTime != null">
+                    AND b.`status` = 1
+                </when>
+                <otherwise>
+                    AND b.`status` IN (1,2)
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY CONVERT(i.name using gbk),booking_time ASC
+    </select>
+    <!--新增预订信息-->
+    <insert id="add" parameterType="com.szhengzhu.bean.ordering.Booking">
+        INSERT INTO t_table_booking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="booker != null and booker != ''">
+                booker,
+            </if>
+            <if test="phone != null and phone != ''">
+                phone,
+            </if>
+            <if test="tableId != null and tableId != ''">
+                table_id,
+            </if>
+            <if test="storeId != null and storeId != ''">
+                store_id,
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id,
+            </if>
+            <if test="manNum != null">
+                man_num,
+            </if>
+            <if test="bookingTime != null">
+                booking_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="booker != null and booker != ''">
+                #{booker,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null and tableId != ''">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null and storeId != ''">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="manNum != null">
+                #{manNum,jdbcType=INTEGER},
+            </if>
+            <if test="bookingTime != null">
+                #{bookingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改预订信息-->
+    <update id="modify" parameterType="com.szhengzhu.bean.ordering.Booking">
+        UPDATE t_table_booking
+        <set>
+            <if test="booker != null and booker != ''">
+                booker = #{booker,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null and tableId != ''">
+                table_id = #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null and storeId != ''">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="manNum != null">
+                man_num = #{manNum,jdbcType=INTEGER},
+            </if>
+            <if test="bookingTime != null">
+                booking_time = #{bookingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            remark = #{remark,jdbcType=VARCHAR},
+        </set>
+        WHERE mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <!--通过主键删除预订信息-->
+    <delete id="deleteById">
+        DELETE
+        FROM t_table_booking
+        WHERE mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <!--修改预订信息的状态-->
+    <update id="modifyStatus">
+        UPDATE t_table_booking
+        <set>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE `status` = 1
+        <if test="markId != null">
+            AND mark_id = #{markId,jdbcType=VARCHAR}
+        </if>
+        <if test="bookingTime != null">
+            AND booking_time <![CDATA[<]]> NOW()
+        </if>
+    </update>
+</mapper>

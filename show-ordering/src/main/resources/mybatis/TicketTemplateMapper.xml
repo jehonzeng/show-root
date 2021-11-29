@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.TicketTemplateMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.TicketTemplate">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="limit_price" property="limitPrice" jdbcType="DECIMAL" />
+        <result column="received_count" property="receivedCount" jdbcType="INTEGER" />
+        <result column="discount" property="discount" jdbcType="DECIMAL" />
+        <result column="mode" property="mode" jdbcType="INTEGER" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
+        <result column="effective_days" property="effectiveDays" jdbcType="INTEGER" />
+        <result column="overlay_use" property="overlayUse" jdbcType="INTEGER" />
+        <result column="special_date" property="specialDate" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="rank_ids" property="rankIds" jdbcType="VARCHAR" />
+        <result column="send_count" property="sendCount" jdbcType="INTEGER" />
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        <result column="limit_store" property="limitStore" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, name, type, description, limit_price, received_count, discount, mode, start_time, stop_time,
+        effective_days, overlay_use, special_date, remark, rank_ids, send_count, modify_time,
+        create_time, creator, limit_store, status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_ticket_template
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_ticket_template
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.TicketTemplate">
+        insert into t_ticket_template (mark_id, name, type, description,
+        limit_price, received_count, discount,
+        mode, start_time, stop_time,
+        effective_days, overlay_use, special_date,
+        remark, rank_ids, send_count,
+        modify_time, create_time, creator,
+        limit_store, status)
+        values (#{markId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR},
+        #{limitPrice,jdbcType=DECIMAL}, #{receivedCount,jdbcType=INTEGER}, #{discount,jdbcType=DECIMAL},
+        #{mode,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP},
+        #{effectiveDays,jdbcType=INTEGER}, #{overlayUse,jdbcType=INTEGER}, #{specialDate,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR}, #{rankIds,jdbcType=VARCHAR}, #{sendCount,jdbcType=INTEGER},
+        #{modifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR},
+        #{limitStore,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.TicketTemplate">
+        insert into t_ticket_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="limitPrice != null">
+                limit_price,
+            </if>
+            <if test="receivedCount != null">
+                received_count,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="mode != null">
+                mode,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="effectiveDays != null">
+                effective_days,
+            </if>
+            <if test="overlayUse != null">
+                overlay_use,
+            </if>
+            <if test="specialDate != null">
+                special_date,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="rankIds != null">
+                rank_ids,
+            </if>
+            <if test="sendCount != null">
+                send_count,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="limitStore != null">
+                limit_store,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="limitPrice != null">
+                #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="receivedCount != null">
+                #{receivedCount,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="mode != null">
+                #{mode,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="effectiveDays != null">
+                #{effectiveDays,jdbcType=INTEGER},
+            </if>
+            <if test="overlayUse != null">
+                #{overlayUse,jdbcType=INTEGER},
+            </if>
+            <if test="specialDate != null">
+                #{specialDate,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="rankIds != null">
+                #{rankIds,jdbcType=VARCHAR},
+            </if>
+            <if test="sendCount != null">
+                #{sendCount,jdbcType=INTEGER},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="limitStore != null">
+                #{limitStore,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.TicketTemplate">
+        update t_ticket_template
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="limitPrice != null">
+                limit_price = #{limitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="receivedCount != null">
+                received_count = #{receivedCount,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="mode != null">
+                mode = #{mode,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="effectiveDays != null">
+                effective_days = #{effectiveDays,jdbcType=INTEGER},
+            </if>
+            <if test="overlayUse != null">
+                overlay_use = #{overlayUse,jdbcType=INTEGER},
+            </if>
+            <if test="specialDate != null">
+                special_date = #{specialDate,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="rankIds != null">
+                rank_ids = #{rankIds,jdbcType=VARCHAR},
+            </if>
+            <if test="sendCount != null">
+                send_count = #{sendCount,jdbcType=INTEGER},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="limitStore != null">
+                limit_store = #{limitStore,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.TicketTemplate">
+        update t_ticket_template
+        set name = #{name,jdbcType=VARCHAR},
+        type = #{type,jdbcType=INTEGER},
+        description = #{description,jdbcType=VARCHAR},
+        limit_price = #{limitPrice,jdbcType=DECIMAL},
+        received_count = #{receivedCount,jdbcType=INTEGER},
+        discount = #{discount,jdbcType=DECIMAL},
+        mode = #{mode,jdbcType=INTEGER},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        effective_days = #{effectiveDays,jdbcType=INTEGER},
+        overlay_use = #{overlayUse,jdbcType=INTEGER},
+        special_date = #{specialDate,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
+        rank_ids = #{rankIds,jdbcType=VARCHAR},
+        send_count = #{sendCount,jdbcType=INTEGER},
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        creator = #{creator,jdbcType=VARCHAR},
+        limit_store = #{limitStore,jdbcType=VARCHAR},
+        status = #{status,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.TicketTemplate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_ticket_template
+        where status <![CDATA[<>]]> -1
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="type != null">
+            AND type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="limitPrice != null">
+            AND limit_price = #{limitPrice,jdbcType=DECIMAL}
+        </if>
+        <if test="receivedCount != null">
+            AND received_count = #{receivedCount,jdbcType=INTEGER}
+        </if>
+        <if test="sendCount != null">
+            AND send_count = #{sendCount,jdbcType=INTEGER}
+        </if>
+        <if test="discount != null">
+            AND discount = #{discount,jdbcType=DECIMAL}
+        </if>
+        <if test="status != null">
+            AND status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="mode != null">
+            AND mode = #{mode,jdbcType=INTEGER}
+        </if>
+        <if test="startTime != null">
+            AND TO_DAYS(start_time) = TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
+        </if>
+        <if test="stopTime != null">
+            AND TO_DAYS(stop_time) = TO_DAYS(#{stopTime,jdbcType=TIMESTAMP})
+        </if>
+    </select>
+    <update id="updateBatchStatus" parameterType="java.util.List">
+        update t_ticket_template
+        set status = #{status,jdbcType=INTEGER},modify_time=NOW()
+        where mark_id in
+        <foreach collection="templateIds" index="index" item="templateId" open="(" separator="," close=")">
+            #{templateId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+</mapper>

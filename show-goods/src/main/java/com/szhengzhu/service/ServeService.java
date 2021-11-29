@@ -1,20 +1,21 @@
 package com.szhengzhu.service;
 
 import com.szhengzhu.bean.goods.ServerSupport;
+import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface ServeService {
 
-    Result<?> saveServer(ServerSupport base);
+    ServerSupport saveServer(ServerSupport base);
 
-    Result<?> modifyServer(ServerSupport base);
+    ServerSupport modifyServer(ServerSupport base);
 
-    Result<PageGrid<?>> getPage(PageParam<ServerSupport> base);
-    
-    Result<?> listServer();
+    PageGrid<ServerSupport> getPage(PageParam<ServerSupport> base);
 
-    Result<?> getServeById(String markId);
+    List<Combobox> listServer();
 
+    ServerSupport getServeById(String markId);
 }

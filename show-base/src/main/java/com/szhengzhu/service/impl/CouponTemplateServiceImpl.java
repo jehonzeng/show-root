@@ -1,24 +1,23 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.base.CouponTemplate;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
 import com.szhengzhu.mapper.CouponTemplateMapper;
 import com.szhengzhu.service.CouponTemplateService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("couponTemplateService")
 public class CouponTemplateServiceImpl implements CouponTemplateService {
 
@@ -26,44 +25,35 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     private CouponTemplateMapper couponTemplateMapper;
 
     @Override
-    public Result<CouponTemplate> saveTemplate(CouponTemplate couponTemplate) {
-        if (couponTemplate == null || StringUtils.isEmpty(couponTemplate.getCouponName())
-                || couponTemplate.getLineType() == null || couponTemplate.getCouponType() == null
-                || couponTemplate.getValidityType() == null
-                || couponTemplate.getRangeType() == null) {
-            return new Result<>(StatusCode._4004);
-        }
-        couponTemplate.setMarkId(IdGenerator.getInstance().nexId());
+    public CouponTemplate saveTemplate(CouponTemplate couponTemplate) {
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        couponTemplate.setMarkId(snowflake.nextIdStr());
         couponTemplateMapper.insertSelective(couponTemplate);
-        return new Result<>(couponTemplate);
+        return couponTemplate;
     }
 
     @Override
-    public Result<CouponTemplate> updateTemplate(CouponTemplate couponTemplate) {
-        if (couponTemplate == null || StringUtils.isEmpty(couponTemplate.getMarkId())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public CouponTemplate updateTemplate(CouponTemplate couponTemplate) {
         couponTemplateMapper.updateByPrimaryKeySelective(couponTemplate);
-        return new Result<>(couponTemplate);
+        return couponTemplate;
     }
 
     @Override
-    public Result<PageGrid<CouponTemplate>> pageTemplate(PageParam<CouponTemplate> templatePage) {
-        PageHelper.startPage(templatePage.getPageIndex(), templatePage.getPageSize());
-        PageHelper.orderBy(templatePage.getSidx() + " " + templatePage.getSort());
+    public PageGrid<CouponTemplate> pageTemplate(PageParam<CouponTemplate> templatePage) {
+        PageMethod.startPage(templatePage.getPageIndex(), templatePage.getPageSize());
+        PageMethod.orderBy(templatePage.getSidx() + " " + templatePage.getSort());
         PageInfo<CouponTemplate> pageInfo = new PageInfo<>(
                 couponTemplateMapper.selectByExampleSelective(templatePage.getData()));
-        return new Result<>(new PageGrid<>(pageInfo));
+        return new PageGrid<>(pageInfo);
     }
 
     @Override
     public CouponTemplate getCouponTemplate(String templateId) {
-        return couponTemplateMapper.selectByMark(templateId);
+        return couponTemplateMapper.selectByPrimaryKey(templateId);
     }
 
     @Override
-    public Result<List<Combobox>> getTemplateCombobox(Integer couponType) {
-        List<Combobox> list = couponTemplateMapper.selectComboboxList(couponType);
-        return new Result<>(list);
+    public List<Combobox> getTemplateCombobox(Integer couponType) {
+        return couponTemplateMapper.selectComboboxList(couponType);
     }
 }

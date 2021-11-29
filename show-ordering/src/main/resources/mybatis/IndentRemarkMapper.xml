@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IndentRemarkMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.IndentRemark">
+        <!--@Table t_indent_remark-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="indentId" column="indent_id" jdbcType="VARCHAR"/>
+        <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
+        <result property="serviceStar" column="service_star" jdbcType="INTEGER"/>
+        <result property="storeStar" column="store_star" jdbcType="INTEGER"/>
+        <result property="dishesStar" column="dishes_star" jdbcType="INTEGER"/>
+        <result property="dishesRemark" column="dishes_remark" jdbcType="VARCHAR"/>
+        <result property="serviceRemark" column="service_remark" jdbcType="VARCHAR"/>
+        <result property="other" column="other" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="billTime" column="billTime" jdbcType="VARCHAR"/>
+        <result property="tableName" column="tableName" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        r.mark_id, r.user_id, r.indent_id, r.store_id, r.service_star, r.store_star, r.dishes_star, r.dishes_remark, r.service_remark ,
+        r.other, r.create_time, r.modify_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_remark r
+        where r.mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="query" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>,
+        <choose>
+            <when test="isMember == 1">
+                (SELECT t.phone FROM db_member.t_member_account t WHERE t.user_id=r.user_id) AS phone,
+            </when>
+            <otherwise>
+                (SELECT u.phone FROM db_user.t_user_info u WHERE u.mark_id=r.user_id) AS phone,
+            </otherwise>
+        </choose>
+        i.bill_time AS billTime,
+        (SELECT `name` FROM t_table_info where mark_id=i.table_id) AS tableName
+        FROM t_indent_remark r LEFT JOIN t_indent_info i ON i.mark_id=r.indent_id
+        <where>
+            <if test="markId != null and markId != ''">
+                and r.mark_id = #{markId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and r.user_id = #{userId}
+            </if>
+            <if test="indentId != null and indentId != ''">
+                and r.indent_id = #{indentId}
+            </if>
+            <if test="storeId != null and storeId != ''">
+                and r.store_id = #{storeId}
+            </if>
+            <if test="serviceStar != null">
+                and r.service_star = #{serviceStar}
+            </if>
+            <if test="storeStar != null">
+                and r.store_star = #{storeStar}
+            </if>
+            <if test="dishesStar != null">
+                and dishes_star = #{dishesStar}
+            </if>
+            <if test="dishesRemark != null and dishesRemark != ''">
+                and r.dishes_remark = #{dishesRemark}
+            </if>
+            <if test="serviceRemark != null and serviceRemark != ''">
+                and r.service_remark = #{serviceRemark}
+            </if>
+            <if test="other != null and other != ''">
+                and r.other = #{other}
+            </if>
+            <if test="createTime != null">
+                and r.create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and r.modify_time = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_indent_remark
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id,
+            </if>
+            <if test="indentId != null and indentId != ''">
+                indent_id,
+            </if>
+            <if test="storeId != null and storeId != ''">
+                store_id,
+            </if>
+            <if test="serviceStar != null">
+                service_star,
+            </if>
+            <if test="storeStar != null">
+                store_star,
+            </if>
+            <if test="dishesStar != null">
+                dishes_star,
+            </if>
+            <if test="dishesRemark != null and dishesRemark != ''">
+                dishes_remark,
+            </if>
+            <if test="serviceRemark != null and serviceRemark != ''">
+                service_remark,
+            </if>
+            <if test="other != null and other != ''">
+                other,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="indentId != null and indentId != ''">
+                #{indentId},
+            </if>
+            <if test="storeId != null and storeId != ''">
+                #{storeId},
+            </if>
+            <if test="serviceStar != null">
+                #{serviceStar},
+            </if>
+            <if test="storeStar != null">
+                #{storeStar},
+            </if>
+            <if test="dishesStar != null">
+                #{dishesStar},
+            </if>
+            <if test="dishesRemark != null and dishesRemark != ''">
+                #{dishesRemark},
+            </if>
+            <if test="serviceRemark != null and serviceRemark != ''">
+                #{serviceRemark},
+            </if>
+            <if test="other != null and other != ''">
+                #{other},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_indent_remark
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="indentId != null and indentId != ''">
+                indent_id = #{indentId},
+            </if>
+            <if test="storeId != null and storeId != ''">
+                store_id = #{storeId},
+            </if>
+            <if test="serviceStar != null">
+                service_star = #{serviceStar},
+            </if>
+            <if test="storeStar != null">
+                store_star = #{storeStar},
+            </if>
+            <if test="dishesStar != null">
+                dishes_star = #{dishesStar},
+            </if>
+            <if test="dishesRemark != null and dishesRemark != ''">
+                dishes_remark = #{dishesRemark},
+            </if>
+            <if test="serviceRemark != null and serviceRemark != ''">
+                service_remark = #{serviceRemark},
+            </if>
+            <if test="other != null and other != ''">
+                other = #{other},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_indent_remark
+        where mark_id = #{markId}
+    </delete>
+</mapper>

@@ -1,14 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.LabelInfo;
+import com.szhengzhu.bean.wechat.vo.Label;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.LabelInfo;
-import com.szhengzhu.bean.wechat.vo.Label;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface LabelInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(LabelInfo record);
@@ -28,4 +31,7 @@ public interface LabelInfoMapper {
     
     @Select("SELECT mark_id AS labelId,theme,image_path AS imagePath, server_type AS type FROM t_label_info WHERE server_status=1 ORDER BY sort")
     List<Label> selectLabel();
+    
+    @Select("SELECT mark_id FROM t_label_info")
+    List<String> selectLabelIds();
 }

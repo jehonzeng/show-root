@@ -1,20 +1,23 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-
 import com.szhengzhu.bean.goods.GoodsInfo;
 import com.szhengzhu.bean.goods.SpecificationInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsVo;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.provider.GoodsProvider;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface GoodsInfoMapper {
 
     int deleteByPrimaryKey(String markId);
@@ -66,7 +69,7 @@ public interface GoodsInfoMapper {
     
     List<GoodsBase> selectRecommenByUser(@Param("userId") String userId); 
     
-    GoodsInfoVo selectById(@Param("goodsId") String goodsId);
+    GoodsDetail selectById(@Param("goodsId") String goodsId);
     
     List<GoodsBase> selectByCooker(@Param("cooker") String cooker, @Param("number") Integer number);
     
@@ -79,4 +82,21 @@ public interface GoodsInfoMapper {
     
     @Select("SELECT goods_name FROM t_goods_info WHERE mark_id=#{goodsId}")
     String selectNameById(@Param("goodsId") String goodsId);
+
+    @Update("UPDATE t_goods_info SET server_status ='ZT02' WHERE pre_upper_time <= #{currentTime} AND pre_down_time > #{currentTime} AND server_status='ZT01' ")
+    int updateAutoUpperStatus(@Param("currentTime") String currentTime);
+    
+    @Update("UPDATE t_goods_info SET server_status ='ZT03' WHERE pre_down_time <= #{currentTime} AND server_status = 'ZT02' ")
+    int updateAutoDownStatus(@Param("currentTime") String currentTime);
+    
+    @Select("SELECT mark_id FROM t_goods_info")
+    List<String> selectGoodsIds();
+    
+    BigDecimal selectGoodsSalePrice(@Param("goodsId") String goodsId);
+
+    @SelectProvider(type= GoodsProvider.class,method = "selectByCategoryId")
+    String selectDishesByCategoryId(@Param("productId") String productId);
+    
+    @Select("SELECT pre_upper_time AS preUpperTime ,pre_down_time AS preDownTime FROM t_goods_info WHERE pre_upper_time IS NOT NUll AND pre_down_time IS NOT NUll")
+    List<GoodsInfo> selectPreGoods();
 }

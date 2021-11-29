@@ -1,41 +1,27 @@
 package com.szhengzhu.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
+import com.szhengzhu.config.FtpServer;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * @author Jehon Zeng
+ */
+@Slf4j
 public class ImageDownloader {
 
 	private static final String USER_AGENT = "Mozilla/5.0 Firefox/26.0";
-	private static Logger logger = Logger.getLogger(ImageDownloader.class);
 	private static final int TIMEOUT_SECONDS = 120;
 	private static final int POOL_SIZE = 120;
 	private static CloseableHttpClient httpclient;
-
-	public static void main(String[] args) throws ClientProtocolException,
-			IOException {
-
-		ImageDownloader imageDownloader = new ImageDownloader();
-		imageDownloader.initApacheHttpClient();
-
-		String imageUrl = "http://wx.qlogo.cn/mmopen/zRoA9FhaiaibtQDZsXohO8wTvXSk8bOuHlfRRyF875ugGzKe8uvluyESH29neMEGBhkah9H0uMK7mmdS6OM4Stf7PkXWaia84MC/0";
-		imageDownloader.fetchContent(imageUrl,
-				"/usr/javaApplication/test111.png");
-
-		imageDownloader.destroyApacheHttpClient();
-	}
 
 	public void initApacheHttpClient() {
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
@@ -50,12 +36,12 @@ public class ImageDownloader {
 		try {
 			httpclient.close();
 		} catch (IOException e) {
-			logger.error("httpclient close fail", e);
+			log.error("httpclient close fail", e);
 		}
 	}
 
-	public void fetchContent(String imageUrl, String file_path)
-			throws ClientProtocolException, IOException {
+	public void fetchContent(String imageUrl, String filePath, String fileName, FtpServer ftpServer)
+			throws IOException {
 
 		HttpGet httpget = new HttpGet(imageUrl);
 		httpget.setHeader(
@@ -75,9 +61,7 @@ public class ImageDownloader {
 			}
 			if (entity != null) {
 				InputStream input = entity.getContent();
-				OutputStream output = new FileOutputStream(new File(file_path));
-				IOUtils.copy(input, output);
-				output.flush();
+				ftpServer.upload(filePath, fileName, input);
 			}
 		} finally {
 			response.close();

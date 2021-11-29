@@ -1,9 +1,10 @@
 package com.szhengzhu.bean.order;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * 用户地址信息
@@ -18,20 +19,26 @@ public class UserAddress implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String userName;
 
+    @NotBlank
     private String phone;
 
     private Double longitude;
 
     private Double latitude;
 
+    @NotBlank
     private String area;
 
+    @NotBlank
     private String city;
 
+    @NotBlank
     private String province;
 
+    @NotBlank
     private String userAddress;
 
     private Integer addressType;

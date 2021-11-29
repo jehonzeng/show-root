@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchPayMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchPay">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="match_id" jdbcType="VARCHAR" property="matchId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, match_id, user_id, quantity, amount, create_time, modify_time, status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_pay
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_pay
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchPay">
+        insert into t_match_pay (mark_id, match_id, user_id, quantity,
+                                 amount, create_time, modify_time,
+                                 status)
+        values (#{markId,jdbcType=VARCHAR}, #{matchId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},#{quantity,jdbcType=INTEGER},
+                #{amount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+                #{status,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchPay">
+        insert into t_match_pay
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="matchId != null">
+                match_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="matchId != null">
+                #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchPay">
+        update t_match_pay
+        <set>
+            <if test="matchId != null">
+                match_id = #{matchId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchPay">
+        update t_match_pay
+        set match_id    = #{matchId,jdbcType=VARCHAR},
+            user_id     = #{userId,jdbcType=VARCHAR},
+            quantity = #{quantity,jdbcType=INTEGER},
+            amount      = #{amount,jdbcType=DECIMAL},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            status      = #{status,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

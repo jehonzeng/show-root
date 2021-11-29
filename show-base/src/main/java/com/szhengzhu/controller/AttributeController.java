@@ -1,52 +1,53 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.base.AttributeInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.service.AttributeService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+@Validated
 @RestController
 @RequestMapping("/attributes")
 public class AttributeController {
 
     @Resource
     private AttributeService attributeService;
-    
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<AttributeInfo> addAttribute(@RequestBody AttributeInfo attributeInfo) {
+
+    @PostMapping(value = "/add")
+    public AttributeInfo addAttribute(@RequestBody @Validated AttributeInfo attributeInfo) {
         return attributeService.saveAttribute(attributeInfo);
     }
-    
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<AttributeInfo> modifyAttribute(@RequestBody AttributeInfo attributeInfo) {
+
+    @PatchMapping(value = "/modify")
+    public AttributeInfo modifyAttribute(@RequestBody @Validated AttributeInfo attributeInfo) {
         return attributeService.updateAttribute(attributeInfo);
     }
-    
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<AttributeInfo> getAttributeInfo(@PathVariable("markId") String markId) {
+
+    @GetMapping(value = "/{markId}")
+    public AttributeInfo getAttributeInfo(@PathVariable("markId") @NotBlank String markId) {
         return attributeService.getAttributeById(markId);
     }
-    
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<AttributeInfo>> pageAttribute(@RequestBody PageParam<AttributeInfo> attrPage) {
+
+    @PostMapping(value = "/page")
+    public PageGrid<AttributeInfo> pageAttribute(@RequestBody PageParam<AttributeInfo> attrPage) {
         return attributeService.pageAttribute(attrPage);
     }
-    
-    @RequestMapping(value = "/combobox", method = RequestMethod.GET)
-    public Result<List<Combobox>> listCombobox(@RequestParam("type") String type) {
+
+    @GetMapping(value = "/combobox")
+    public List<Combobox> listCombobox(@RequestParam("type") @NotBlank String type) {
         return attributeService.listCombobox(type);
+    }
+
+    @GetMapping(value = "/getCode")
+    public Result<String> getCodeByName(@RequestParam("name") @NotBlank String name) {
+        return new Result<>(attributeService.getCodeByName(name));
     }
 }

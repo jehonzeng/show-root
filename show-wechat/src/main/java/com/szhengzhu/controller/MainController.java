@@ -1,28 +1,29 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.szhengzhu.bean.user.UserToken;
-import com.szhengzhu.bean.wechat.vo.Cooker;
-import com.szhengzhu.bean.wechat.vo.GoodsBase;
-import com.szhengzhu.bean.wechat.vo.NavVo;
+import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.client.ShowBaseClient;
 import com.szhengzhu.client.ShowGoodsClient;
 import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.bean.user.UserToken;
+import com.szhengzhu.bean.wechat.vo.Cooker;
+import com.szhengzhu.bean.wechat.vo.GoodsBase;
+import com.szhengzhu.bean.wechat.vo.NavBase;
 import com.szhengzhu.core.Result;
-import com.szhengzhu.util.StringUtils;
-
+import com.szhengzhu.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = { "首页信息：MainController" })
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * @author Jehon Zeng
+ */
+@Api(tags = {"首页专题：MainController"})
 @RestController
 @RequestMapping("/main")
 public class MainController {
@@ -37,33 +38,29 @@ public class MainController {
     private ShowGoodsClient showGoodsClient;
 
     @ApiOperation(value = "获取首页轮播图等信息", notes = "获取首页轮播图等信息")
-    @RequestMapping(value = "/index/nav", method = RequestMethod.GET)
-    public Result<List<NavVo>> indexNav() {
+    @GetMapping(value = "/index/nav")
+    public Result<List<NavBase>> indexNav() {
         return showBaseClient.listNavAndItem();
     }
 
     @ApiOperation(value = "首页获取厨师排行榜前三的厨师", notes = "首页获取厨师排行榜前三的厨师")
-    @RequestMapping(value = "/index/cooker", method = RequestMethod.GET)
+    @GetMapping(value = "/index/cooker")
     public Result<List<Cooker>> cookList(HttpServletRequest request) {
-        String token = request.getHeader("Show-Token");
+        UserToken userToken = UserUtils.getUserTokenByToken(request, showUserClient);
         String userId = null;
-        if (!StringUtils.isEmpty(token)) {
-            Result<UserToken> tokenResult = showUserClient.getUserToken(token);
-            if (tokenResult.isSuccess())
-                userId = tokenResult.getData().getUserId();
+        if (ObjectUtil.isNotNull(userToken)) {
+            userId = userToken.getUserId();
         }
         return showGoodsClient.listCookerRank(userId);
     }
 
     @ApiOperation(value = "首页获取推荐商品", notes = "首页获取推荐商品")
-    @RequestMapping(value = "/index/goods/recommend", method = RequestMethod.GET)
+    @GetMapping(value = "/index/goods/recommend")
     public Result<List<GoodsBase>> recommend(HttpServletRequest request) {
-        String token = request.getHeader("Show-Token");
+        UserToken userToken = UserUtils.getUserTokenByToken(request, showUserClient);
         String userId = null;
-        if (!StringUtils.isEmpty(token)) {
-            Result<UserToken> tokenResult = showUserClient.getUserToken(token);
-            if (tokenResult.isSuccess())
-                userId = tokenResult.getData().getUserId();
+        if (ObjectUtil.isNotNull(userToken)) {
+            userId = userToken.getUserId();
         }
         return showGoodsClient.listRecommend(userId);
     }

@@ -2,6 +2,9 @@ package com.szhengzhu.mapper;
 
 import com.szhengzhu.bean.order.OrderError;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface OrderErrorMapper {
     
     int deleteByPrimaryKey(String markId);

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CategoryCommodityMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.CategoryCommodity">
+        <id column="category_id" jdbcType="VARCHAR" property="categoryId" />
+        <id column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <resultMap id="ModelResultMap" type="com.szhengzhu.bean.xwechat.vo.CategoryModel">
+        <id column="cateId" jdbcType="VARCHAR" property="cateId" />
+        <result column="cateName" jdbcType="VARCHAR" property="cateName" />
+        <result column="cateImg" jdbcType="VARCHAR" property="cateImg" />
+        <!-- <collection property="commodityList" ofType="com.szhengzhu.bean.xwechat.vo.CommodityModel">
+            <id column="commId" jdbcType="VARCHAR" property="commId" />
+            <result column="commCode" jdbcType="VARCHAR" property="commCode" />
+            <result column="commName" jdbcType="VARCHAR" property="commName" />
+            <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+            <result column="quantity" jdbcType="VARCHAR" property="quantity" />
+        </collection> -->
+    </resultMap>
+    <sql id="Base_Column_List">
+        category_id, commodity_id, sort
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_category_commodity
+        where category_id = #{categoryId,jdbcType=VARCHAR}
+        and commodity_id = #{commodityId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_category_commodity
+        where category_id = #{categoryId,jdbcType=VARCHAR}
+        and commodity_id = #{commodityId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.CategoryCommodity">
+        insert into t_category_commodity (category_id, commodity_id, sort
+        )
+        values (#{categoryId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.CategoryCommodity">
+        insert into t_category_commodity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="categoryId != null">
+                #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.CategoryCommodity">
+        update t_category_commodity
+        <set>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where category_id = #{categoryId,jdbcType=VARCHAR}
+        and commodity_id = #{commodityId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.CategoryCommodity">
+        update t_category_commodity
+        set sort = #{sort,jdbcType=INTEGER}
+        where category_id = #{categoryId,jdbcType=VARCHAR}
+        and commodity_id = #{commodityId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert ignore into t_category_commodity (category_id, commodity_id, sort)
+        values
+        <foreach collection="commodityIds" item="commodityId" index="index" separator=",">
+            (#{cateId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, #{index})
+        </foreach>
+    </insert>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete from t_category_commodity
+        where  category_id = #{cateId,jdbcType=VARCHAR}
+        and commodity_id in 
+        <foreach collection="commodityIds" index="index" item="commodityId" open="(" separator="," close=")">
+            #{commodityId}
+        </foreach>
+    </delete>
+    <insert id="insertCommodityBatch" parameterType="java.util.List">
+        insert ignore into t_category_commodity (category_id, commodity_id)
+        values
+        <foreach collection="cateIds" item="cateId" index="index" separator=",">
+            (#{cateId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="selectResCate" parameterType="java.lang.String" resultMap="ModelResultMap">
+        SELECT c.mark_id AS cateId, c.`name` AS cateName, c.img_id AS cateImg
+        FROM t_category_info c 
+        WHERE c.`status`<![CDATA[<>]]>-1 and
+              c.store_id=#{storeId,jdbcType=VARCHAR} 
+        ORDER BY c.sort
+    </select>
+    <select id="selectLjsCate" parameterType="java.lang.String" resultMap="ModelResultMap">
+        <!-- SELECT c.mark_id AS cateId, c.`name` AS cateName, c.img_id AS cateImg, i.mark_id AS commId, i.`code` AS commCode, i.`name` AS commName, i.introduction, i.quantity
+        FROM t_category_info c LEFT JOIN t_category_commodity cc ON  c.mark_id=cc.category_id LEFT JOIN 
+             t_commodity_info i ON cc.commodity_id=i.mark_id LEFT JOIN t_commodity_price p ON i.mark_id=p.commodity_id
+        WHERE c.`status`=1 AND i.`status`=1 AND p.defaults=TRUE AND
+              c.store_id=#{storeId,jdbcType=VARCHAR} AND i.store_id=#{storeId,jdbcType=VARCHAR}
+        ORDER BY c.sort, cc.sort, convert(i.name using gbk) -->
+        SELECT c.mark_id AS cateId, c.`name` AS cateName, c.img_id AS cateImg
+        FROM t_category_info c 
+        WHERE c.`status`=1 and
+              c.store_id=#{storeId,jdbcType=VARCHAR} 
+        ORDER BY c.sort
+    </select>
+</mapper>

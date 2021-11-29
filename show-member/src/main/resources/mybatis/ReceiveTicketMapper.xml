@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ReceiveTicketMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.ReceiveTicket">
+        <!--@Table t_give_ticket-->
+        <result property="giveId" column="give_id" jdbcType="VARCHAR"/>
+        <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        give_id, template_id, quantity
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_give_ticket g inner join db_ordering.t_ticket_template t on g.template_id = t.mark_id and t.status = 1
+        where give_id = #{receiveId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_give_ticket
+        <where>
+            <if test="giveId != null and giveId != ''">
+                and give_id = #{giveId}
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and template_id = #{templateId}
+            </if>
+            <if test="quantity != null">
+                and quantity = #{quantity}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="receiveId" useGeneratedKeys="true">
+        insert into t_give_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="giveId != null and giveId != ''">
+                give_id,
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="giveId != null and giveId != ''">
+                #{giveId},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                #{templateId},
+            </if>
+            <if test="quantity != null">
+                #{quantity},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="addBatchTicket" parameterType="java.util.List">
+        insert ignore into t_give_ticket (give_id, template_id,quantity)
+        values
+        <foreach collection="tickets" item="ticket" index="index" separator=",">
+            (#{receiveId,jdbcType=VARCHAR}, #{ticket.templateId,jdbcType=VARCHAR},#{ticket.quantity,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_give_ticket
+        <set>
+            <if test="quantity != null">
+                quantity = #{quantity},
+            </if>
+        </set>
+        where give_id = #{giveId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_give_ticket
+        where give_id = #{giveId}
+    </delete>
+</mapper>

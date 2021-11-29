@@ -41,22 +41,14 @@
         insert into t_user_info (mark_id, nick_name, real_name,
         phone, header_img, gender, city, province, country, language,
         user_level,wopen_id, xopen_id, union_id, create_time, wechat_status)
-        values (#{markId,jdbcType=VARCHAR},
-            #{nickName,jdbcType=VARCHAR},
-            #{realName,jdbcType=VARCHAR},
-            #{phone,jdbcType=VARCHAR},
-            #{headerImg,jdbcType=VARCHAR},
-            #{gender,jdbcType=INTEGER},
-            #{city,jdbcType=VARCHAR},
-            #{province,jdbcType=VARCHAR},
-            #{country,jdbcType=VARCHAR},
-            #{language,jdbcType=VARCHAR},
-            #{userLevel,jdbcType=VARCHAR},
-            #{wopenId,jdbcType=VARCHAR},
-            #{xopenId,jdbcType=VARCHAR},
-            #{unionId,jdbcType=VARCHAR},
-            #{createTime,jdbcType=TIMESTAMP},
-            #{wechatStatus,jdbcType=INTEGER})
+        values (#{markId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
+            #{realName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+            #{headerImg,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
+            #{city,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+            #{country,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR},
+            #{userLevel,jdbcType=VARCHAR}, #{wopenId,jdbcType=VARCHAR},
+            #{xopenId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP}, #{wechatStatus,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.UserInfo">
         insert into t_user_info
@@ -204,7 +196,7 @@
                 union_id = #{unionId,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP}
+                create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="wechatStatus != null">
                 wechat_status = #{wechatStatus,jdbcType=INTEGER},
@@ -231,89 +223,45 @@
             wechat_status = #{wechatStatus,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
+    <select id="selectManageByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where phone = #{phone,jdbcType=VARCHAR} AND mark_id IN 
+              (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id 
+               WHERE r.role_code='MANAGE')
+    </select>
+    <select id="selectRestaurantManageByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        WHERE phone = #{phone,jdbcType=VARCHAR} AND mark_id IN 
+              (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id 
+               WHERE r.role_code='RESTAURANT_MANAGE')
+    </select>
+    <select id="selectByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where phone = #{phone,jdbcType=VARCHAR}
+    </select>
     <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
         select
-        <include refid="Base_Column_List" /> ,
-        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
-        from t_user_info
+            <include refid="Base_Column_List" /> ,
+            (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
+        from t_user_info u
         <where>
-            <if test="markId != null">
-                mark_id = #{markId,jdbcType=VARCHAR}
-            </if>
             <if test="nickName != null">
-                AND nick_name LIKE CONCAT(CONCAT('%', #{nickName,jdbcType=VARCHAR}), '%')
+                AND nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
             </if>
             <if test="realName != null">
-                AND real_name LIKE CONCAT(CONCAT('%', #{realName,jdbcType=VARCHAR}), '%')
+                AND real_name LIKE CONCAT('%', #{realName,jdbcType=VARCHAR}, '%')
             </if>
             <if test="phone != null">
-                AND phone = #{phone,jdbcType=VARCHAR}
+                AND phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
             </if>
             <if test="gender != null">
                 AND gender = #{gender,jdbcType=INTEGER}
-            </if>
-            <if test="userLevel != null">
-                AND user_level = #{userLevel,jdbcType=VARCHAR}
-            </if>
-            <if test="wopenId != null">
-                AND wopen_id = #{wopenId,jdbcType=VARCHAR}
-            </if>
-            <if test="xopenId != null">
-                AND xopen_id = #{xopenId,jdbcType=VARCHAR}
-            </if>
-            <if test="unionId != null">
-                AND union_id = #{unionId,jdbcType=VARCHAR}
-            </if>
-            <if test="createTime != null">
-                AND TO_DAYS(create_time) =
-                TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
-            </if>
-            <if test="wechatStatus != null">
-                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
-            </if>
-            <if test="roleIds != null and roleIds.length > 0">
-                AND mark_id IN (SELECT ur.user_id
-                FROM t_user_role ur
-                WHERE ur.role_id IN
-                <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
-                    #{roleId}
-                </foreach>
-                )
-            </if>
-        </where>
-    </select>
-    <select id="selectNotInByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
-        select
-        <include refid="Base_Column_List" /> ,
-        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
-        from t_user_info
-        <where>
-            <if test="markId != null">
-                mark_id = #{markId,jdbcType=VARCHAR}
-            </if>
-            <if test="nickName != null">
-                AND nick_name LIKE CONCAT(CONCAT('%', #{nickName,jdbcType=VARCHAR}), '%')
-            </if>
-            <if test="realName != null">
-                AND real_name LIKE CONCAT(CONCAT('%', #{realName,jdbcType=VARCHAR}), '%')
-            </if>
-            <if test="phone != null">
-                AND phone = #{phone,jdbcType=VARCHAR}
-            </if>
-            <if test="gender != null">
-                AND gender = #{gender,jdbcType=INTEGER}
-            </if>
-            <if test="userLevel != null">
-                AND user_level = #{userLevel,jdbcType=VARCHAR}
-            </if>
-            <if test="wopenId != null">
-                AND wopen_id = #{wopenId,jdbcType=VARCHAR}
-            </if>
-            <if test="xopenId != null">
-                AND xopen_id = #{xopenId,jdbcType=VARCHAR}
-            </if>
-            <if test="unionId != null">
-                AND union_id = #{unionId,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">
                 AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
@@ -322,14 +270,146 @@
                 AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
             </if>
             <if test="roleIds != null and roleIds.length > 0">
-                AND mark_id not IN (SELECT ur.user_id
-                FROM t_user_role ur
-                WHERE ur.role_id IN
+                AND mark_id IN (SELECT ur.user_id FROM t_user_role ur WHERE ur.role_id IN
+                <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+                    #{roleId,jdbcType=VARCHAR}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+    <select id="selectOutRoleByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
+        select
+            <include refid="Base_Column_List" /> ,
+            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=user_level) AS userLevelname
+        from t_user_info u
+        <where>
+            <if test="nickName != null">
+                AND nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="realName != null">
+                AND real_name LIKE CONCAT('%', #{realName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="wechatStatus != null">
+                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
+            </if>
+            <if test="roleIds != null and roleIds.length > 0">
+                AND mark_id not IN (SELECT ur.user_id FROM t_user_role ur WHERE ur.role_id IN
                 <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
                     #{roleId}
                 </foreach>
                 )
             </if>
         </where>
+    </select>
+     <select id="selectInStoreByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
+        select
+        <include refid="Base_Column_List" />
+        from t_user_info
+        <where>
+            <if test="nickName != null">
+                AND nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="realName != null">
+                AND real_name LIKE CONCAT('%', #{realName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender,jdbcType=INTEGER}
+            </if>
+            <if test="userLevel != null">
+                AND user_level = #{userLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="wechatStatus != null">
+                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
+            </if>
+            <if test="storeId != null">
+                AND mark_id IN (SELECT i.user_id FROM db_base.t_store_item i WHERE i.store_id =#{storeId})
+            </if>
+        </where>
+    </select>
+    <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where wopen_id=#{openId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByXopenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where xopen_id=#{xopenId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByUnionId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where union_id=#{unionId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info
+        where mark_id IN (SELECT user_id FROM t_user_token WHERE token=#{token,jdbcType=VARCHAR})
+    </select>
+     <select id="selectOutStoreByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
+        select
+        <include refid="Base_Column_List" />
+        from t_user_info
+        <where>
+            <if test="nickName != null">
+                AND nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="realName != null">
+                AND real_name LIKE CONCAT('%', #{realName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender,jdbcType=INTEGER}
+            </if>
+            <if test="userLevel != null">
+                AND user_level = #{userLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND TO_DAYS(create_time) = TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="wechatStatus != null">
+                AND wechat_status = #{wechatStatus,jdbcType=INTEGER}
+            </if>
+            <if test="storeId != null">
+                AND mark_id NOT IN (SELECT i.user_id FROM db_base.t_store_item i WHERE i.store_id =#{storeId})
+            </if>
+        </where>
+    </select>
+    <select id="selectOutMember" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_user_info u
+        where NOT EXISTS (select user_id from db_member.t_member_account WHERE u.mark_id=user_id OR phone=u.phone) 
+    </select>
+    <select id="selectWopenIdsByUserId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT  wopen_id
+        FROM t_user_info u
+        WHERE mark_id IN
+        <foreach collection="list" item="userId" index="index" open="(" separator="," close=")">
+            #{userId,jdbcType=VARCHAR}
+        </foreach>
+
     </select>
 </mapper>

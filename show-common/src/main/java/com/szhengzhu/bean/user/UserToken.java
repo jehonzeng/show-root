@@ -1,10 +1,19 @@
 package com.szhengzhu.bean.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
+/**
+ * @author Administrator
+ */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserToken implements Serializable {
 

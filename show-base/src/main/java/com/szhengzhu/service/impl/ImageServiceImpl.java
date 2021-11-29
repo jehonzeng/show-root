@@ -1,40 +1,33 @@
 package com.szhengzhu.service.impl;
 
-import java.io.File;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.szhengzhu.bean.base.ImageInfo;
+import com.szhengzhu.core.Contacts;
+import com.szhengzhu.mapper.ImageInfoMapper;
+import com.szhengzhu.service.ImageService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
-
-import com.szhengzhu.bean.base.ImageInfo;
-import com.szhengzhu.core.Contacts;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
-import com.szhengzhu.mapper.ImageInfoMapper;
-import com.szhengzhu.service.ImageService;
-import com.szhengzhu.util.StringUtils;
-
+/**
+ * @author Administrator
+ */
 @Service("imageService")
 public class ImageServiceImpl implements ImageService {
-    
-    private final String DEFAULT_IMAGE = "default_hands.png";
 
     @Resource
     private ImageInfoMapper imageInfoMapper;
 
     @Override
-    public Result<ImageInfo> addImgInfo(ImageInfo imageInfo) {
-        if (imageInfo == null || StringUtils.isEmpty(imageInfo.getMarkId())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public ImageInfo addImgInfo(ImageInfo imageInfo) {
         imageInfoMapper.insert(imageInfo);
-        return new Result<>();
+        return imageInfo;
     }
 
     @Override
-    public Result<?> deleteImage(String markId) {
+    public void deleteImage(String markId) {
         imageInfoMapper.deleteByPrimaryKey(markId);
-        return new Result<>();
     }
 
     @Override
@@ -68,12 +61,10 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private ImageInfo getImage(ImageInfo image) {
-        if (image == null || StringUtils.isEmpty(image.getImagePath())) {
-            image = new ImageInfo();
-            image.setFileType("png");
-            image.setImagePath(Contacts.BASE_IMG_PATH + File.separator + DEFAULT_IMAGE);
+        if (ObjectUtil.isNull(image) || StrUtil.isEmpty(image.getImagePath())) {
+            image = ImageInfo.builder().fileType("png").imagePath("/" + Contacts.DEFAULT_IMG).build();
         } else {
-            image.setImagePath(Contacts.BASE_IMG_PATH + image.getImagePath());
+            image.setImagePath(image.getImagePath());
         }
         return image;
     }
@@ -81,6 +72,6 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageInfo getAccessorylImage(String markId) {
         ImageInfo image = imageInfoMapper.selectAccessoryImage(markId);
-        return  getImage(image);
+        return getImage(image);
     }
 }

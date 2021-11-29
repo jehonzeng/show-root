@@ -2,41 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.MealItemMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.MealItem">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="meal_id" property="mealId" jdbcType="VARCHAR" />
-        <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
-        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
-        <result column="quantity" property="quantity" jdbcType="INTEGER" />
-        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="meal_id" property="mealId" jdbcType="VARCHAR"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap type="com.szhengzhu.bean.vo.MealVo" id="BaseResultMapVo" extends="BaseResultMap">
-        <result column="mealName" property="mealName" jdbcType="VARCHAR" />
-        <result column="goodsName" property="goodsName" jdbcType="VARCHAR" />
-        <result column="specList" property="specList" jdbcType="VARCHAR" />
+        <result column="mealName" property="mealName" jdbcType="VARCHAR"/>
+        <result column="goodsName" property="goodsName" jdbcType="VARCHAR"/>
+        <result column="specList" property="specList" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, meal_id, goods_id,specification_ids, quantity, sort
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_meal_item
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_meal_item
+        delete
+        from t_meal_item
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.goods.MealItem">
         insert into t_meal_item (mark_id, meal_id,
-        goods_id,specification_ids,
-        quantity, sort)
-        values
-        (#{markId,jdbcType=VARCHAR},
-        #{mealId,jdbcType=VARCHAR},
-        #{goodsId,jdbcType=VARCHAR},
-        #{specificationIds,jdbcType=VARCHAR},
-        #{quantity,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
+                                 goods_id, specification_ids,
+                                 quantity, sort)
+        values (#{markId,jdbcType=VARCHAR},
+                #{mealId,jdbcType=VARCHAR},
+                #{goodsId,jdbcType=VARCHAR},
+                #{specificationIds,jdbcType=VARCHAR},
+                #{quantity,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.MealItem">
         insert into t_meal_item
@@ -91,8 +91,7 @@
                 goods_id = #{goodsId,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
-                specification_ids =
-                #{specificationIds,jdbcType=VARCHAR},
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
             </if>
             <if test="quantity != null">
                 quantity = #{quantity,jdbcType=INTEGER},
@@ -105,20 +104,16 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.MealItem">
         update t_meal_item
-        set meal_id =
-        #{mealId,jdbcType=VARCHAR},
-        goods_id =
-        #{goodsId,jdbcType=VARCHAR},
-        specification_ids =
-        #{specificationIds,jdbcType=VARCHAR},
-        quantity =
-        #{quantity,jdbcType=INTEGER},
-        sort = #{sort,jdbcType=INTEGER}
+        set meal_id           = #{mealId,jdbcType=VARCHAR},
+            goods_id          = #{goodsId,jdbcType=VARCHAR},
+            specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            quantity          = #{quantity,jdbcType=INTEGER},
+            sort              = #{sort,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMapVo">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         ,
         (SELECT theme FROM t_meal_info where mark_id = meal_id) AS mealName,
         (SELECT goods_name FROM t_goods_info where mark_id = goods_id)
@@ -132,7 +127,7 @@
         t_meal_item
         <where>
             <if test="markId != null">
-                mark_id = #{markId,jdbcType=VARCHAR},
+                mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="mealId != null">
                 AND meal_id = #{mealId,jdbcType=VARCHAR}
@@ -141,8 +136,7 @@
                 AND goods_id = #{goodsId,jdbcType=VARCHAR}
             </if>
             <if test="specificationIds != null">
-                AND specification_ids =
-                #{specificationIds,jdbcType=VARCHAR}
+                AND specification_ids = #{specificationIds,jdbcType=VARCHAR}
             </if>
             <if test="quantity != null">
                 AND quantity = #{quantity,jdbcType=INTEGER}

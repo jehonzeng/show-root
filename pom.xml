@@ -3,52 +3,28 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.szhengzhu.ljs</groupId>
-	<artifactId>show-mall</artifactId>
+	<artifactId>show-root</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
-		<!-- <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-		<maven-resources-plugin.version>2.6</maven-resources-plugin.version> -->
 		<com.alibaba.druid.version>1.1.10</com.alibaba.druid.version>
+		<spring-cloud.version>Hoxton.SR3</spring-cloud.version>
+		<spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
+		<show.version>1.0.0</show.version>
+		<show-common.version>1.0.0</show-common.version>
+		<weixin-popular.version>2.8.27</weixin-popular.version>
+		<mybatis.version>1.3.2</mybatis.version>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.9.RELEASE</version>
+		<version>2.2.2.RELEASE</version>
 	</parent>
-    <dependencies>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-            <version>5.1.2</version>
-        </dependency>
-    </dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<modules>
-		<module>show-server</module>
 		<module>show-config</module>
-		<module>show-gateway</module>
+		<module>show-website</module>
 		<module>show-goods</module>
 		<module>show-manage</module>
 		<module>show-wechat</module>
@@ -57,5 +33,40 @@
 		<module>show-common</module>
 		<module>show-activity</module>
 		<module>show-base</module>
+		<module>show-member</module>
+		<module>show-restaurant</module>
+		<module>show-xwechat</module>
+		<module>show-ordering</module>
 	</modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+		<!--使用protobuf作为数据传输格式，包含心跳检测、断开重连、上传数据、主动推送功能-->
+		<!--<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.14.0</version>
+		</dependency>-->
+    </dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--            springbootalibaba版本统一-->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>${spring-cloud-alibaba.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

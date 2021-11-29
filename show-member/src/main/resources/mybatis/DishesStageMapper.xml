@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.DishesStageMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.DishesStage">
+        <!--@Table t_dishes_stage-->
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="dishesId" column="dishes_id" jdbcType="VARCHAR"/>
+        <result property="stage" column="stage" jdbcType="VARCHAR"/>
+        <result property="days" column="days" jdbcType="INTEGER"/>
+        <result property="beginDays" column="beginDays" jdbcType="INTEGER"/>
+        <result property="endDays" column="endDays" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="dishesName" column="dishes_name" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_stage_List">
+        s.mark_id, s.dishes_id, s.stage, s.beginDays, s.endDays, s.sort, s.create_time, s.modify_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_stage_List"/>,d.dishes_name,(s.endDays-s.beginDays) as days
+        FROM t_dishes_stage s inner join t_dishes_info d on d.mark_id=s.dishes_id
+        where s.mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_stage_List"/>,d.dishes_name,(s.endDays-s.beginDays) as days
+        FROM t_dishes_stage s inner join t_dishes_info d on d.mark_id=s.dishes_id
+        <where>
+            <if test="markId != null and markId != ''">
+                and s.mark_id = #{markId}
+            </if>
+            <if test="dishesId != null and dishesId != ''">
+                and s.dishes_id = #{dishesId}
+            </if>
+            <if test="stage != null and stage != ''">
+                and s.stage = #{stage}
+            </if>
+            <if test="beginDays != null">
+                and s.beginDays = #{beginDays}
+            </if>
+            <if test="endDays != null">
+                and s.endDays = #{endDays}
+            </if>
+            <if test="sort != null">
+                and s.sort = #{sort}
+            </if>
+            <if test="createTime != null">
+                and TO_DAYS(s.create_time) = TO_DAYS(#{createTime})
+            </if>
+            <if test="modifyTime != null">
+                and TO_DAYS(s.modify_time) = TO_DAYS(#{modifyTime})
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_dishes_stage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="dishesId != null and dishesId != ''">
+                dishes_id,
+            </if>
+            <if test="stage != null and stage != ''">
+                stage,
+            </if>
+            <if test="beginDays != null">
+                beginDays,
+            </if>
+            <if test="endDays != null">
+                endDays,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="dishesId != null and dishesId != ''">
+                #{dishesId},
+            </if>
+            <if test="stage != null and stage != ''">
+                #{stage},
+            </if>
+            <if test="beginDays != null">
+                #{beginDays},
+            </if>
+            <if test="endDays != null">
+                #{endDays},
+            </if>
+            <if test="sort != null">
+                #{sort},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_dishes_stage
+        <set>
+            <if test="dishesId != null and dishesId != ''">
+                dishes_id = #{dishesId},
+            </if>
+            <if test="stage != null and stage != ''">
+                stage = #{stage},
+            </if>
+            <if test="beginDays != null">
+                beginDays = #{beginDays},
+            </if>
+            <if test="endDays != null">
+                endDays = #{endDays},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_dishes_stage
+        where mark_id = #{markId}
+    </delete>
+
+    <select id="selectByStage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_stage_List"/>,d.dishes_name,(s.endDays-s.beginDays) as days
+        FROM t_dishes_stage s inner join t_dishes_info d on d.mark_id=s.dishes_id
+        <where>
+            <if test="dishesId != null and dishesId != ''">
+                and s.dishes_id = #{dishesId}
+            </if>
+            <if test="sort != null">
+                and s.sort = #{sort}
+            </if>
+        </where>
+    </select>
+</mapper>

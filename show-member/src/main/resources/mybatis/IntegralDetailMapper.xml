@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IntegralDetailMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.IntegralDetail">
+        <result column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="account_id" jdbcType="VARCHAR" property="accountId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="integral_limit" jdbcType="INTEGER" property="integralLimit"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, account_id, user_id, type, integral_limit, create_time, remark, status
+    </sql>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.IntegralDetail">
+        insert into t_integral_detail (mark_id, account_id, user_id, type, integral_limit, create_time, remark, status)
+        values (#{markId,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+                #{integralLimit,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+                #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.IntegralDetail">
+        insert into t_integral_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="accountId != null">
+                account_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="integralLimit != null">
+                integral_limit,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="accountId != null">
+                #{accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="integralLimit != null">
+                #{integralLimit,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.IntegralDetail"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_integral_detail
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="accountId != null">
+                AND account_id = #{accountId,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+                AND type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="integralLimit != null">
+                AND integral_limit = #{integralLimit,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.IntegralDetail">
+        update t_integral_detail
+        <set>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="accountId != null">
+                account_id = #{accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="integralLimit != null">
+                integral_limit = #{integralLimit,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectUserMap" resultType="Map">
+        select IFNULL(SUM(integral_limit), 0) as total,
+               user_id                        as userId
+        from t_integral_detail
+        WHERE status = 1
+        GROUP BY user_id
+    </select>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_integral_detail
+        WHERE user_id=#{userId,jdbcType=VARCHAR} AND status = 1
+    </select>
+    <select id="memberIntegral" parameterType="com.szhengzhu.bean.member.MemberRecord" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_integral_detail
+        WHERE status = 1
+        <if test="userId != null and userId != ''">
+            AND user_id=#{userId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <delete id="deleteById">
+        delete
+        from t_integral_detail
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectIntegralExpire" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_integral_detail
+        WHERE status = 1 AND type <![CDATA[<>]]> -1
+        AND TIMESTAMPDIFF(MONTH, DATE_FORMAT(create_time, '%y-%m-%d'), NOW()) >= #{month}
+    </select>
+    <select id="selectPushUser" resultType="java.util.Map">
+        SELECT user_id as userId,IFNULL(SUM(integral_limit), 0) as integral
+        FROM t_integral_detail
+        WHERE status = 1 AND type <![CDATA[<>]]> -1
+        <if test="userId != null and userId != ''">
+            AND user_id=#{userId}
+        </if>
+        AND TIMESTAMPDIFF(DAY, NOW(), DATE_ADD(DATE_FORMAT(create_time, '%y-%m-%d'), INTERVAL #{month} MONTH)) =
+        #{pushDays}
+        GROUP BY user_id
+    </select>
+</mapper>
+

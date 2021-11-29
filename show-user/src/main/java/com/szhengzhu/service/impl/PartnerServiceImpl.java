@@ -1,24 +1,26 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.user.PartnerInfo;
+import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.PartnerInfoMapper;
 import com.szhengzhu.service.PartnerService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
-import com.szhengzhu.util.TimeUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("partnerService")
 public class PartnerServiceImpl implements PartnerService {
 
@@ -26,41 +28,40 @@ public class PartnerServiceImpl implements PartnerService {
     private PartnerInfoMapper partnerInfoMapper;
 
     @Override
-    public Result<?> addPartner(PartnerInfo base) {
-        if (base == null || StringUtils.isEmpty(base.getName()))
-            return new Result<>(StatusCode._4004);
+    public PartnerInfo addPartner(PartnerInfo base) {
         int count = partnerInfoMapper.repeatRecords(base.getName(), "");
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
-        base.setMarkId(IdGenerator.getInstance().nexId());
-        base.setAddTime(TimeUtils.today());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        base.setMarkId(snowflake.nextIdStr());
+        base.setAddTime(DateUtil.date());
         partnerInfoMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<?> editPartner(PartnerInfo base) {
-        if (base == null || base.getMarkId() == null)
-            return new Result<>(StatusCode._4004);
+    public PartnerInfo modify(PartnerInfo base) {
         int count = partnerInfoMapper.repeatRecords(base.getName(), base.getMarkId());
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         partnerInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<?> getPartnerPage(PageParam<PartnerInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<PartnerInfo> getPartnerPage(PageParam<PartnerInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         List<PartnerInfo> list = partnerInfoMapper.selectByExampleSelective(base.getData());
         PageInfo<PartnerInfo> page = new PageInfo<>(list);
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> deletePartner(String markId) {
+    public void deletePartner(String markId) {
         partnerInfoMapper.deleteByPrimaryKey(markId);
-        return new Result<>();
+    }
+
+    @Override
+    public List<Combobox> listCombobox() {
+        return partnerInfoMapper.selectCombobox();
     }
 }

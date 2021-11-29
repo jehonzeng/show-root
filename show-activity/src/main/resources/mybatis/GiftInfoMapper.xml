@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.GiftInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.GiftInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="gift_name" property="giftName" jdbcType="VARCHAR" />
+        <result column="product_id" property="productId" jdbcType="VARCHAR" />
+        <result column="gift_type" property="giftType" jdbcType="INTEGER" />
+        <result column="gift_status" property="giftStatus" jdbcType="BIT" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="productName" property="productName" jdbcType="VARCHAR" />
+        <result column="specList" property="specList" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, gift_name, product_id, gift_type,gift_status, price, specification_ids, image_path,
+        description
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_gift_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_gift_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.GiftInfo">
+        insert into t_gift_info (mark_id, gift_name, product_id,
+        gift_type,gift_status, price, specification_ids,
+        image_path, description)
+        values (#{markId,jdbcType=VARCHAR}, #{giftName,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
+        #{giftType,jdbcType=INTEGER},#{giftStatus,jdbcType=BIT},#{price,jdbcType=DECIMAL}, #{specificationIds,jdbcType=VARCHAR},
+        #{imagePath,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.GiftInfo">
+        insert into t_gift_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="giftName != null">
+                gift_name,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="giftType != null">
+                gift_type,
+            </if>
+            <if test="giftStatus != null">
+                gift_status,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="specificationIds != null">
+                specification_ids,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftName != null">
+                #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftType != null">
+                #{giftType,jdbcType=INTEGER},
+            </if>
+            <if test="giftStatus != null">
+                #{giftStatus,jdbcType=BIT},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="specificationIds != null">
+                #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.GiftInfo">
+        update t_gift_info
+        <set>
+            <if test="giftName != null">
+                gift_name = #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftType != null">
+                gift_type = #{giftType,jdbcType=INTEGER},
+            </if>
+            <if test="giftStatus != null">
+                gift_status = #{giftStatus,jdbcType=BIT},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="specificationIds != null">
+                specification_ids = #{specificationIds,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.GiftInfo">
+        update t_gift_info
+        set gift_name = #{giftName,jdbcType=VARCHAR},
+        product_id = #{productId,jdbcType=VARCHAR},
+        gift_type = #{giftType,jdbcType=INTEGER},
+        gift_status = #{giftStatus,jdbcType=BIT},
+        price = #{price,jdbcType=DECIMAL},
+        specification_ids = #{specificationIds,jdbcType=VARCHAR},
+        image_path = #{imagePath,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.GiftInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT g.goods_name FROM db_goods.t_goods_info g WHERE g.mark_id = product_id) AS productName,
+        (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+        FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, specification_ids)) AS specList
+        from t_gift_info
+        <where>
+            <if test="giftName != null">
+                gift_name = #{giftName,jdbcType=VARCHAR}
+            </if>
+            <if test="productId != null">
+                and product_id = #{productId,jdbcType=VARCHAR}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType,jdbcType=INTEGER}
+            </if>
+            <if test="giftStatus != null">
+                and gift_status = #{giftStatus,jdbcType=BIT}
+            </if>
+            <if test="price != null">
+                and price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="specificationIds != null">
+                and specification_ids = #{specificationIds,jdbcType=VARCHAR}
+            </if>
+            <if test="imagePath != null">
+                and image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

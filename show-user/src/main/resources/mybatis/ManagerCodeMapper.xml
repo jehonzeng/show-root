@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ManagerCodeMapper">
+        <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.ManagerCode">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="discount" jdbcType="DECIMAL" property="discount" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+        <result column="real_name" property="realName" jdbcType="VARCHAR" />
+        </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_id, code, discount, server_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_manager_code
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_manager_code
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.user.ManagerCode">
+        insert into t_manager_code (mark_id, user_id, code, 
+            discount, server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+            #{discount,jdbcType=DECIMAL}, #{serverStatus,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.ManagerCode">
+        insert into t_manager_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.user.ManagerCode">
+        update t_manager_code
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.user.ManagerCode">
+        update t_manager_code
+        set user_id = #{userId,jdbcType=VARCHAR},
+            code = #{code,jdbcType=VARCHAR},
+            discount = #{discount,jdbcType=DECIMAL},
+            server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.user.ManagerCode" resultMap="BaseResultMap">
+    	select 
+        	m.mark_id, m.user_id, m.code, m.discount, m.server_status,u.nick_name,u.real_name
+        from t_manager_code m left join t_user_info u on m.user_id=u.mark_id
+        <where>
+            <if test="code != null">
+                m.code = #{code,jdbcType=VARCHAR}
+            </if>
+            <if test="discount != null">
+                and discount = #{discount,jdbcType=DECIMAL}
+            </if>
+            <if test="serverStatus != null">
+                and server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="nickName != null">
+                and u.nick_name like concat('%', #{nickName,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="realName != null">
+                and u.real_name  like concat('%', #{realName,jdbcType=VARCHAR}, '%')  
+            </if>
+        </where>
+    </select>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_manager_code
+        (mark_id, user_id, code, discount, server_status)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR},
+            #{item.code,jdbcType=VARCHAR}, #{item.discount,jdbcType=DECIMAL},#{item.serverStatus,jdbcType=BIT})
+        </foreach>
+    </insert>
+</mapper>

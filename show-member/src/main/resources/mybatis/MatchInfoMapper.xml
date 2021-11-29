@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchInfo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="match_name" jdbcType="VARCHAR" property="matchName"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="img_id" jdbcType="VARCHAR" property="imgId"/>
+        <result column="description_id" jdbcType="VARCHAR" property="descriptionId"/>
+        <result column="ticket_type" jdbcType="TIMESTAMP" property="ticketType"/>
+        <result column="ticket_name" jdbcType="VARCHAR" property="ticketName"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="win_value" jdbcType="INTEGER" property="winValue"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="give_chance" jdbcType="INTEGER" property="giveChance"/>
+        <result column="consume_amount" jdbcType="INTEGER" property="consumeAmount"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, match_name, creator, start_time, end_time, img_id, description_id, ticket_type, ticket_name, amount, win_value, create_time,
+        modify_time, remark, status, give_chance, consume_amount
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchInfo">
+        insert into t_match_info (mark_id, match_name, creator,
+                                  start_time, end_time, img_id, description_id, ticket_type, ticket_name,
+                                  amount, win_value, create_time,
+                                  modify_time, remark, status, give_chance, consume_amount)
+        values (#{markId,jdbcType=VARCHAR}, #{matchName,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR},
+                #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{imgId,jdbcType=VARCHAR},
+                #{descriptionId,jdbcType=VARCHAR}, #{ticketType,jdbcType=INTEGER}, #{ticketName,jdbcType=VARCHAR},
+                #{amount,jdbcType=DECIMAL}, #{winValue,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=BIT},
+                #{giveChance,jdbcType=INTEGER}, #{consumeAmount,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchInfo">
+        insert into t_match_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="matchName != null">
+                match_name,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="imgId != null">
+                img_id,
+            </if>
+            <if test="descriptionId != null">
+                description_id,
+            </if>
+            <if test="ticketType != null">
+                ticket_type,
+            </if>
+            <if test="ticketName != null">
+                ticket_name,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="winValue != null">
+                win_value,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="giveChance != null">
+                give_chance,
+            </if>
+            <if test="consumeAmount != null">
+                consume_amount,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="matchName != null">
+                #{matchName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="imgId != null">
+                #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="descriptionId != null">
+                #{descriptionId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketType != null">
+                #{ticketType,jdbcType=INTEGER},
+            </if>
+            <if test="ticketName != null">
+                #{ticketName,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="winValue != null">
+                #{winValue,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="giveChance != null">
+                #{giveChance,jdbcType=INTEGER},
+            </if>
+            <if test="consumeAmount != null">
+                #{consumeAmount,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchInfo">
+        update t_match_info
+        <set>
+            <if test="matchName != null">
+                match_name = #{matchName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="imgId != null">
+                img_id = #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="descriptionId != null">
+                description_id = #{descriptionId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketType != null">
+                ticket_type = #{ticketType,jdbcType=INTEGER},
+            </if>
+            <if test="ticketName != null">
+                ticket_name = #{ticketName,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="winValue != null">
+                win_value = #{winValue,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="giveChance != null">
+                give_chance = #{giveChance,jdbcType=INTEGER},
+            </if>
+            <if test="consumeAmount != null">
+                consume_amount = #{consumeAmount,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchInfo">
+        update t_match_info
+        set match_name     = #{matchName,jdbcType=VARCHAR},
+            creator        = #{creator,jdbcType=VARCHAR},
+            start_time     = #{startTime,jdbcType=TIMESTAMP},
+            end_time       = #{endTime,jdbcType=TIMESTAMP},
+            img_id         = #{imgId,jdbcType=VARCHAR},
+            description_id = #{descriptionId,jdbcType=VARCHAR},
+            ticket_type    = #{ticketType,jdbcType=INTEGER},
+            ticket_name    = #{ticketName,jdbcType=VARCHAR},
+            amount         = #{amount,jdbcType=DECIMAL},
+            win_value      = #{winValue,jdbcType=INTEGER},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            modify_time    = #{modifyTime,jdbcType=TIMESTAMP},
+            remark         = #{remark,jdbcType=VARCHAR},
+            status         = #{status,jdbcType=BIT},
+            give_chance    = #{giveChance,jdbcType=INTEGER},
+            consume_amount = #{consumeAmount,jdbcType=INTEGER},
+            where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.MatchInfo"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        (select i.image_path from db_base.t_image_info i where i.mark_id = img_id) as imgPath,
+        (select i.image_path from db_base.t_image_info i where i.mark_id = description_id) as descriptionPath
+        from t_match_info
+        <where>
+            <if test="matchName != null">
+                match_name = #{matchName,jdbcType=VARCHAR}
+            </if>
+            <if test="creator != null">
+                AND creator = #{creator,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                AND start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                AND end_time = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ticketType != null">
+                AND ticket_type = #{ticketType,jdbcType=INTEGER}
+            </if>
+            <if test="ticketName != null">
+                AND ticket_name = #{ticketName,jdbcType=VARCHAR}
+            </if>
+            <if test="amount != null">
+                AND amount = #{amount,jdbcType=DECIMAL}
+            </if>
+            <if test="winValue != null">
+                AND win_value = #{winValue,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifyTime != null">
+                AND modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=BIT}
+            </if>
+            <if test="giveChance != null">
+                AND give_chance = #{giveChance,jdbcType=INTEGER}
+            </if>
+            <if test="consumeAmount != null">
+                AND consume_amount = #{consumeAmount,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectList" resultType="java.util.Map">
+        SELECT mark_id                                                                            AS markId,
+               match_name                                                                         as matchName,
+               start_time                                                                         as startTime,
+               end_time                                                                           As endTime,
+               give_chance                                                                        AS giveChance,
+               (select i.image_path from db_base.t_image_info i where i.mark_id = img_id)         as imgPath,
+               (select i.image_path from db_base.t_image_info i where i.mark_id = description_id) as descriptionPath
+        FROM t_match_info
+        WHERE status = 1
+          AND start_time <![CDATA[ < ]]> NOW()
+          AND end_time > NOW()
+    </select>
+    <select id="selectMatchInfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_match_info
+        WHERE status = 1
+        AND start_time <![CDATA[ < ]]> NOW()
+        AND end_time > NOW()
+        AND mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectMatchTime" resultType="com.szhengzhu.bean.member.MatchInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_match_info
+    </select>
+</mapper>

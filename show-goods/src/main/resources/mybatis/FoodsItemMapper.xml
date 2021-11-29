@@ -2,100 +2,98 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.FoodsItemMapper">
     <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.goods.FoodsItem">
+            id="BaseResultMap"
+            type="com.szhengzhu.bean.goods.FoodsItem">
         <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
+                column="mark_id"
+                property="markId"
+                jdbcType="VARCHAR"/>
         <result
-            column="food_id"
-            property="foodId"
-            jdbcType="VARCHAR" />
+                column="food_id"
+                property="foodId"
+                jdbcType="VARCHAR"/>
         <result
-            column="goods_id"
-            property="goodsId"
-            jdbcType="VARCHAR" />
+                column="goods_id"
+                property="goodsId"
+                jdbcType="VARCHAR"/>
         <result
-            column="specification_ids"
-            property="specificationIds"
-            jdbcType="VARCHAR" />
+                column="specification_ids"
+                property="specificationIds"
+                jdbcType="VARCHAR"/>
         <result
-            column="use_size"
-            property="useSize"
-            jdbcType="DECIMAL" />
+                column="use_size"
+                property="useSize"
+                jdbcType="DECIMAL"/>
         <result
-            column="server_status"
-            property="serverStatus"
-            jdbcType="BIT" />
+                column="server_status"
+                property="serverStatus"
+                jdbcType="BIT"/>
     </resultMap>
     <resultMap
-        type="com.szhengzhu.bean.vo.GoodsFoodVo"
-        id="BaseResultMapVo"
-        extends="BaseResultMap">
+            type="com.szhengzhu.bean.vo.GoodsFoodVo"
+            id="BaseResultMapVo"
+            extends="BaseResultMap">
         <result
-            column="goodsName"
-            property="goodsName"
-            jdbcType="VARCHAR" />
+                column="goodsName"
+                property="goodsName"
+                jdbcType="VARCHAR"/>
         <result
-            column="food_name"
-            property="foodName"
-            jdbcType="VARCHAR" />
+                column="food_name"
+                property="foodName"
+                jdbcType="VARCHAR"/>
         <result
-            column="purchase_rate"
-            property="purchaseRate"
-            jdbcType="DECIMAL" />
+                column="purchase_rate"
+                property="purchaseRate"
+                jdbcType="DECIMAL"/>
         <result
-            column="unit"
-            property="unit"
-            jdbcType="VARCHAR" />
+                column="unit"
+                property="unit"
+                jdbcType="VARCHAR"/>
         <result
-            column="specList"
-            property="specList"
-            jdbcType="VARCHAR" />
+                column="specList"
+                property="specList"
+                jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, food_id, goods_id, specification_ids, use_size,
         server_status
     </sql>
     <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+            id="selectByPrimaryKey"
+            resultMap="BaseResultMap"
+            parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_food_item
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
-        delete from t_food_item
+            id="deleteByPrimaryKey"
+            parameterType="java.lang.String">
+        delete
+        from t_food_item
         where mark_id =
-        #{markId,jdbcType=VARCHAR}
+              #{markId,jdbcType=VARCHAR}
     </delete>
     <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.goods.FoodsItem">
+            id="insert"
+            parameterType="com.szhengzhu.bean.goods.FoodsItem">
         insert into t_food_item (mark_id, food_id,
-        goods_id,
-        specification_ids, use_size, server_status
-        )
-        values
-        (#{markId,jdbcType=VARCHAR}, #{foodId,jdbcType=VARCHAR},
-        #{goodsId,jdbcType=VARCHAR},
-        #{specificationIds,jdbcType=VARCHAR},
-        #{useSize,jdbcType=DECIMAL}, #{serverStatus,jdbcType=BIT}
-        )
+                                 goods_id,
+                                 specification_ids, use_size, server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{foodId,jdbcType=VARCHAR},
+                #{goodsId,jdbcType=VARCHAR},
+                #{specificationIds,jdbcType=VARCHAR},
+                #{useSize,jdbcType=DECIMAL}, #{serverStatus,jdbcType=BIT})
     </insert>
     <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.goods.FoodsItem">
+            id="insertSelective"
+            parameterType="com.szhengzhu.bean.goods.FoodsItem">
         insert into t_food_item
         <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+                prefix="("
+                suffix=")"
+                suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
@@ -116,9 +114,9 @@
             </if>
         </trim>
         <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+                prefix="values ("
+                suffix=")"
+                suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
@@ -140,8 +138,8 @@
         </trim>
     </insert>
     <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.goods.FoodsItem">
+            id="updateByPrimaryKeySelective"
+            parameterType="com.szhengzhu.bean.goods.FoodsItem">
         update t_food_item
         <set>
             <if test="foodId != null">
@@ -164,35 +162,35 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.goods.FoodsItem">
+            id="updateByPrimaryKey"
+            parameterType="com.szhengzhu.bean.goods.FoodsItem">
         update t_food_item
-        set food_id =
-        #{foodId,jdbcType=VARCHAR},
-        goods_id =
-        #{goodsId,jdbcType=VARCHAR},
-        specification_ids =
-        #{specificationIds,jdbcType=VARCHAR},
-        use_size =
-        #{useSize,jdbcType=DECIMAL},
-        server_status =
-        #{serverStatus,jdbcType=BIT}
+        set food_id           =
+                #{foodId,jdbcType=VARCHAR},
+            goods_id          =
+                #{goodsId,jdbcType=VARCHAR},
+            specification_ids =
+                #{specificationIds,jdbcType=VARCHAR},
+            use_size          =
+                #{useSize,jdbcType=DECIMAL},
+            server_status     =
+                #{serverStatus,jdbcType=BIT}
         where mark_id =
-        #{markId,jdbcType=VARCHAR}
+              #{markId,jdbcType=VARCHAR}
     </update>
     <insert
-        id="insertBatch"
-        parameterType="java.util.List">
+            id="insertBatch"
+            parameterType="java.util.List">
         insert into t_food_item
         ( mark_id,food_id,
         goods_id,specification_ids,
         use_size,server_status)
         values
         <foreach
-            collection="list"
-            item="item"
-            index="index"
-            separator=",">
+                collection="list"
+                item="item"
+                index="index"
+                separator=",">
             (#{item.markId,jdbcType=VARCHAR},
             #{item.foodId,jdbcType=VARCHAR},
             #{item.goodsId,jdbcType=VARCHAR},
@@ -204,9 +202,9 @@
         use_size = values(use_size)
     </insert>
     <select
-        id="selectByExampleSelective"
-        parameterType="com.szhengzhu.bean.goods.FoodsItem"
-        resultMap="BaseResultMapVo">
+            id="selectByExampleSelective"
+            parameterType="com.szhengzhu.bean.goods.FoodsItem"
+            resultMap="BaseResultMapVo">
         SELECT i.mark_id ,i.food_id ,f.food_name,
         (select a.`name` from
         db_base.t_attribute_info a where a.code = f.unit) as

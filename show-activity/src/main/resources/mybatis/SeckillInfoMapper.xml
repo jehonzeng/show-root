@@ -3,22 +3,23 @@
 <mapper namespace="com.szhengzhu.mapper.SeckillInfoMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.SeckillInfo">
         <id column="mark_id" jdbcType="VARCHAR" property="markId" />
-        <result column="product_id" jdbcType="VARCHAR" property="productId" />
-        <result column="product_type" jdbcType="INTEGER" property="productType" />
-        <result column="product_name" jdbcType="VARCHAR" property="productName" />
-        <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
         <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="specification_ids" jdbcType="VARCHAR" property="specificationIds" />
         <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="total_stock" property="totalStock" jdbcType="INTEGER" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
         <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+        <result column="limited" jdbcType="INTEGER" property="limited" />
         <result column="free" jdbcType="BIT" property="free" />
         <result column="server_status" jdbcType="BIT" property="serverStatus" />
-        <result column="specifications" jdbcType="VARCHAR" property="specifications" />
-        <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+        <result column="specs" jdbcType="VARCHAR" property="specs"/>
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, product_id, product_type, product_name, specification_ids, theme, price, start_time, stop_time,
-        free, server_status
+        mark_id, theme, description, goods_id, goods_name, specification_ids, price, total_stock, start_time, stop_time,
+        limited, free, server_status
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -31,14 +32,13 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.activity.SeckillInfo">
-        insert into t_seckill_info (mark_id, product_id, product_type, product_name,
-        specification_ids, theme, price, start_time, stop_time, free, server_status)
-        values (#{markId,jdbcType=VARCHAR},
-        #{productId,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER},
-        #{productName,jdbcType=VARCHAR},
-        #{specificationIds,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR},
-        #{price,jdbcType=DECIMAL}, #{startTime,jdbcType=TIMESTAMP},
-        #{stopTime,jdbcType=TIMESTAMP}, #{free,jdbcType=BIT},
+        insert into t_seckill_info (mark_id, theme, description, goods_id,
+        goods_name, specification_ids, price, total_stock,
+        start_time, stop_time, limited, free, 
+        server_status)
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{goodsId,jdbcType=VARCHAR},
+        #{goodsName,jdbcType=VARCHAR}, #{specificationIds,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},#{totalStock,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP}, #{limited,jdbcType=INTEGER},#{free,jdbcType=BIT},
         #{serverStatus,jdbcType=BIT})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.SeckillInfo">
@@ -47,29 +47,35 @@
             <if test="markId != null">
                 mark_id,
             </if>
-            <if test="productId != null">
-                product_id,
+            <if test="theme != null">
+                theme,
             </if>
-            <if test="productType != null">
-                product_type,
+            <if test="description != null">
+                description,
             </if>
-            <if test="productName != null">
-                product_name,
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
             </if>
             <if test="specificationIds != null">
                 specification_ids,
             </if>
-            <if test="theme != null">
-                theme,
-            </if>
             <if test="price != null">
                 price,
+            </if>
+            <if test="totalStock != null">
+                total_stock,
             </if>
             <if test="startTime != null">
                 start_time,
             </if>
             <if test="stopTime != null">
                 stop_time,
+            </if>
+            <if test="limited != null">
+                limited,
             </if>
             <if test="free != null">
                 free,
@@ -82,29 +88,35 @@
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
-            <if test="productId != null">
-                #{productId,jdbcType=VARCHAR},
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
             </if>
-            <if test="productType != null">
-                #{productType,jdbcType=INTEGER},
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
             </if>
-            <if test="productName != null">
-                #{productName,jdbcType=VARCHAR},
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
                 #{specificationIds,jdbcType=VARCHAR},
             </if>
-            <if test="theme != null">
-                #{theme,jdbcType=VARCHAR},
-            </if>
             <if test="price != null">
                 #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="totalStock != null">
+                #{totalStock,jdbcType=INTEGEr},
             </if>
             <if test="startTime != null">
                 #{startTime,jdbcType=TIMESTAMP},
             </if>
             <if test="stopTime != null">
                 #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="limited != null">
+                #{limited,jdbcType=INTEGER},
             </if>
             <if test="free != null">
                 #{free,jdbcType=BIT},
@@ -117,29 +129,35 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.SeckillInfo">
         update t_seckill_info
         <set>
-            <if test="productId != null">
-                product_id = #{productId,jdbcType=VARCHAR},
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
             </if>
-            <if test="productType != null">
-                product_type = #{productType,jdbcType=INTEGER},
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
             </if>
-            <if test="productName != null">
-                product_name = #{productName,jdbcType=VARCHAR},
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
                 specification_ids = #{specificationIds,jdbcType=VARCHAR},
             </if>
-            <if test="theme != null">
-                theme = #{theme,jdbcType=VARCHAR},
-            </if>
             <if test="price != null">
                 price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="totalStock != null">
+                total_stock=#{totalStock,jdbcType=INTEGER},
             </if>
             <if test="startTime != null">
                 start_time = #{startTime,jdbcType=TIMESTAMP},
             </if>
             <if test="stopTime != null">
                 stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="limited != null">
+                limited=#{limited,jdbcType=INTEGER},
             </if>
             <if test="free != null">
                 free = #{free,jdbcType=BIT},
@@ -152,50 +170,54 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.SeckillInfo">
         update t_seckill_info
-        set product_id = #{productId,jdbcType=VARCHAR},
-        product_type = #{productType,jdbcType=INTEGER},
-        product_name = #{productName,jdbcType=VARCHAR},
+        set theme = #{theme,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        goods_id = #{goodsId,jdbcType=VARCHAR},
+        goods_name = #{goodsName,jdbcType=VARCHAR},
         specification_ids = #{specificationIds,jdbcType=VARCHAR},
-        theme = #{theme,jdbcType=VARCHAR},
         price = #{price,jdbcType=DECIMAL},
+        total_stock = #{totalStock,jdbcType=INTEGER},
         start_time = #{startTime,jdbcType=TIMESTAMP},
         stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        limited=#{limited,jdbcType=INTEGER},
         free = #{free,jdbcType=BIT},
         server_status = #{serverStatus,jdbcType=BIT}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.SeckillInfo" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List" />
-        ,
-        <!-- (CASE WHEN product_type = 1 THEN ( SELECT c.coupon_name FROM db_goods.t_goods_coupon c WHERE c.mark_id = product_id ) WHEN product_type = 0 THEN ( SELECT g.goods_name FROM db_goods.t_goods_info g WHERE g.mark_id = product_id ) WHEN product_type = 2 THEN ( SELECT m.theme FROM db_goods.t_meal_info m WHERE m.mark_id = product_id) END) AS goodsName, -->
-        (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';')
-        FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, specification_ids)) AS specifications
-        FROM t_seckill_info
+        select
+            <include refid="Base_Column_List" />,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
+             FROM db_goods.t_specification_info 
+             WHERE FIND_IN_SET(mark_id, specification_ids)) AS specs
+        from t_seckill_info
         <where>
-            <if test="markId != null">
-                mark_id = #{markId,jdbcType=VARCHAR}
-            </if>
-            <if test="productId != null">
-                AND product_id = #{productId,jdbcType=VARCHAR}
-            </if>
-            <if test="productType != null">
-                AND product_type = #{productType,jdbcType=INTEGER}
-            </if>
-            <if test="productName != null">
-                AND product_name = #{productName,jdbcType=VARCHAR}
-            </if>
             <if test="theme != null">
-                AND theme LIKE CONCAR(CONCAT('%', #{theme,jdbcType=VARCHAR}), '%')
+                theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="description != null">
+                AND description LIKE CONCAT('%', #{description,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="goodsId != null">
+                AND goods_id = #{goodsId,jdbcType=VARCHAR}
+            </if>
+            <if test="goodsName != null">
+                AND goods_name = #{goodsName,jdbcType=VARCHAR}
+            </if>
+            <if test="specificationIds != null">
+                AND specification_ids = #{specificationIds,jdbcType=VARCHAR}
             </if>
             <if test="price != null">
                 AND price = #{price,jdbcType=DECIMAL}
             </if>
             <if test="startTime != null">
-                AND TO_DAYS(start_time) = TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
+                AND AND TO_DAYS(start_time) = AND TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
             </if>
             <if test="stopTime != null">
-                AND TO_DAYS(stop_time) = TO_DAYS()#{stopTime,jdbcType=TIMESTAMP}
+                AND AND TO_DAYS(stop_time) = AND TO_DAYS(#{stopTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="limited != null">
+                AND limited=#{limited,jdbcType=INTEGER},
             </if>
             <if test="free != null">
                 AND free = #{free,jdbcType=BIT}
@@ -204,5 +226,37 @@
                 AND server_status = #{serverStatus,jdbcType=BIT}
             </if>
         </where>
+    </select>
+    <select id="selectForeList" resultType="java.util.HashMap">
+        SELECT mark_id AS markId, theme, description, goods_id AS goodsId, specification_ids AS specificationIds, price, start_time AS startTime, stop_time AS stopTime 
+        FROM t_seckill_info WHERE server_status=1
+    </select>
+    <select id="selectDetail" resultType="com.szhengzhu.bean.wechat.vo.SeckillDetail">
+        SELECT i.mark_id AS markId, i.theme, i.description, i.goods_id AS goodsId, i.goods_name AS goodsName, i.specification_ids AS specificationIds, 
+               i.start_time AS startTime, i.stop_time AS stopTime, i.price AS price, 
+               IF(s.promotion_mode IS NULL,gs.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN
+                           gs.sale_price-s.price
+                       WHEN s.promotion_mode=1 THEN
+                           gs.sale_price * s.discount
+                  END) AS salePrice
+        FROM t_seckill_info i LEFT JOIN db_goods.t_goods_specification gs ON (i.goods_id=gs.goods_id AND i.specification_ids=gs.specification_ids) LEFT JOIN
+            (SELECT s.promotion_mode,s.price,s.discount,i.goods_id FROM db_goods.t_special_info s LEFT JOIN db_goods.t_special_item i ON s.mark_id=i.special_id
+             WHERE s.server_status=1 AND s.promotion_type=1 AND
+               (CASE WHEN s.start_time IS NOT NULL THEN
+                         s.start_time <![CDATA[ < ]]> NOW()
+                     ELSE 1=1
+                END) AND
+               (CASE WHEN s.end_time IS NOT NULL THEN
+                         s.end_time <![CDATA[ > ]]> NOW()
+                     ELSE 1=1
+                END)) AS s ON i.goods_id=s.goods_id
+        WHERE i.mark_id=#{markId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectValidData" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_seckill_info
+        where server_status = 1
     </select>
 </mapper>

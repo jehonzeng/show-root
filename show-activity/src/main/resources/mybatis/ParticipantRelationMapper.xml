@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ParticipantRelationMapper" >
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ParticipantRelation" >
+    <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+    <result column="father_id" property="fatherId" jdbcType="VARCHAR" />
+    <result column="son_id" property="sonId" jdbcType="VARCHAR" />
+    <result column="activity_id" property="activityId" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="refresh_time" property="refreshTime" jdbcType="TIMESTAMP" />
+    <result column="point" property="point" jdbcType="INTEGER" />
+    <result column="server_status" property="serverStatus" jdbcType="INTEGER" />
+    <result column="server_type" property="serverType" jdbcType="INTEGER" />
+    <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mark_id, father_id, son_id, activity_id, add_time, refresh_time, point, server_status, 
+    server_type, activity_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_participant_relation
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_participant_relation
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.activity.ParticipantRelation" >
+    insert into t_participant_relation (mark_id, father_id, son_id, 
+      activity_id, add_time, refresh_time, 
+      point, server_status, server_type, 
+      activity_name)
+    values (#{markId,jdbcType=VARCHAR}, #{fatherId,jdbcType=VARCHAR}, #{sonId,jdbcType=VARCHAR}, 
+      #{activityId,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{refreshTime,jdbcType=TIMESTAMP}, 
+      #{point,jdbcType=INTEGER}, #{serverStatus,jdbcType=INTEGER}, #{serverType,jdbcType=INTEGER}, 
+      #{activityName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ParticipantRelation" >
+    insert into t_participant_relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="markId != null" >
+        mark_id,
+      </if>
+      <if test="fatherId != null" >
+        father_id,
+      </if>
+      <if test="sonId != null" >
+        son_id,
+      </if>
+      <if test="activityId != null" >
+        activity_id,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="refreshTime != null" >
+        refresh_time,
+      </if>
+      <if test="point != null" >
+        point,
+      </if>
+      <if test="serverStatus != null" >
+        server_status,
+      </if>
+      <if test="serverType != null" >
+        server_type,
+      </if>
+      <if test="activityName != null" >
+        activity_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="markId != null" >
+        #{markId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherId != null" >
+        #{fatherId,jdbcType=VARCHAR},
+      </if>
+      <if test="sonId != null" >
+        #{sonId,jdbcType=VARCHAR},
+      </if>
+      <if test="activityId != null" >
+        #{activityId,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refreshTime != null" >
+        #{refreshTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="point != null" >
+        #{point,jdbcType=INTEGER},
+      </if>
+      <if test="serverStatus != null" >
+        #{serverStatus,jdbcType=INTEGER},
+      </if>
+      <if test="serverType != null" >
+        #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="activityName != null" >
+        #{activityName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ParticipantRelation" >
+    update t_participant_relation
+    <set >
+      <if test="fatherId != null" >
+        father_id = #{fatherId,jdbcType=VARCHAR},
+      </if>
+      <if test="sonId != null" >
+        son_id = #{sonId,jdbcType=VARCHAR},
+      </if>
+      <if test="activityId != null" >
+        activity_id = #{activityId,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refreshTime != null" >
+        refresh_time = #{refreshTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="point != null" >
+        point = #{point,jdbcType=INTEGER},
+      </if>
+      <if test="serverStatus != null" >
+        server_status = #{serverStatus,jdbcType=INTEGER},
+      </if>
+      <if test="serverType != null" >
+        server_type = #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="activityName != null" >
+        activity_name = #{activityName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ParticipantRelation" >
+    update t_participant_relation
+    set father_id = #{fatherId,jdbcType=VARCHAR},
+      son_id = #{sonId,jdbcType=VARCHAR},
+      activity_id = #{activityId,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      refresh_time = #{refreshTime,jdbcType=TIMESTAMP},
+      point = #{point,jdbcType=INTEGER},
+      server_status = #{serverStatus,jdbcType=INTEGER},
+      server_type = #{serverType,jdbcType=INTEGER},
+      activity_name = #{activityName,jdbcType=VARCHAR}
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+</mapper>

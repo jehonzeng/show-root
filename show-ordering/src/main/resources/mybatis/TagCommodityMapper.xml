@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.TagCommodityMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.TagCommodity">
+        <id column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+        <id column="tag_id" jdbcType="VARCHAR" property="tagId" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_tag_commodity
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and tag_id = #{tagId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="java.lang.String">
+        insert into t_tag_commodity (commodity_id, tag_id)
+        values (#{commodityId,jdbcType=VARCHAR}, #{tagId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert ignore into t_tag_commodity (tag_id, commodity_id)
+        values
+        <foreach collection="commodityIds" item="commodityId" index="index" separator=",">
+            (#{tagId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete from t_tag_commodity
+        where  tag_id = #{tagId,jdbcType=VARCHAR}
+        and commodity_id in 
+        <foreach collection="commodityIds" index="index" item="commodityId" open="(" separator="," close=")">
+            #{commodityId}
+        </foreach>
+    </delete>
+    <insert id="insertCommodityBatch" parameterType="java.util.List">
+        insert ignore into t_tag_commodity (tag_id, commodity_id)
+        values
+        <foreach collection="tagIds" item="tagId" index="index" separator=",">
+            (#{tagId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

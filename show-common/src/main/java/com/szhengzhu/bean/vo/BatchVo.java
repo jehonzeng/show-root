@@ -1,9 +1,9 @@
 package com.szhengzhu.bean.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Set;
-
-import lombok.Data;
 
 /**
  * 自定义批量接收对象
@@ -19,8 +19,9 @@ public class BatchVo implements Serializable{
     private String commonId;
 
     private Set<String> ids;
-    
-    private Integer type;//0：普通商品2：表示套餐
+
+    /** 0：普通商品2：表示套餐 */
+    private Integer type;
 
 
 }

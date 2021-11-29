@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.szhengzhu.bean.base.NavInfo;
-import com.szhengzhu.bean.wechat.vo.NavVo;
+import com.szhengzhu.bean.wechat.vo.NavBase;
 
 public interface NavInfoMapper {
     int deleteByPrimaryKey(String markId);
@@ -26,5 +26,5 @@ public interface NavInfoMapper {
 
     List<NavInfo> selectByExampleSelective(NavInfo data);
     
-    List<NavVo> selectForeNav();
+    List<NavBase> selectForeNav();
 }

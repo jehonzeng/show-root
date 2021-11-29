@@ -3,6 +3,7 @@ package com.szhengzhu.mapper;
 import java.util.List;
 
 import com.szhengzhu.bean.base.FeedbackInfo;
+import com.szhengzhu.bean.rpt.IndexDisplay;
 
 public interface FeedbackInfoMapper {
     
@@ -19,4 +20,6 @@ public interface FeedbackInfoMapper {
     int updateByPrimaryKey(FeedbackInfo record);
     
     List<FeedbackInfo> selectByExampleSelective(FeedbackInfo feedbackInfo);
+
+    List<IndexDisplay> selectIndexFeebackCount();
 }

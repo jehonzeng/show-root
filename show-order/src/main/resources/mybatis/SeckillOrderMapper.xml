@@ -5,11 +5,10 @@
         <id column="mark_id" jdbcType="VARCHAR" property="markId" />
         <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
         <result column="theme" jdbcType="VARCHAR" property="theme" />
-        <result column="product_id" jdbcType="VARCHAR" property="productId" />
-        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
         <result column="seckill_id" jdbcType="VARCHAR" property="seckillId" />
         <result column="user_id" jdbcType="VARCHAR" property="userId" />
-        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
         <result column="specification_ids" property="specificationIds" jdbcType="VARCHAR" />
         <result column="quantity" jdbcType="INTEGER" property="quantity" />
         <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
@@ -28,8 +27,8 @@
         <result column="specs" jdbcType="VARCHAR" property="specs" />
     </resultMap>
     <sql id="Base_Column_List">
-        o.mark_id, o.order_no, o.theme, o.product_id, o.product_type,
-        o.seckill_id, o.user_id, o.product_name, o.specification_ids,
+        o.mark_id, o.order_no, o.theme, o.goods_id,
+        o.seckill_id, o.user_id, o.goods_name, o.specification_ids,
         o.quantity, o.order_amount, o.delivery_amount,
         o.pay_amount, o.order_time, o.cancel_time, o.delivery_date, o.send_time,
         o.arrive_time, o.order_source, o.order_status, o.storehouse_id
@@ -39,8 +38,8 @@
             <include refid="Base_Column_List" />,
             (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=user_id) AS nickName,
             (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
-            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
-             FROM db_goods.t_specification_info 
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';')
+             FROM db_goods.t_specification_info
              WHERE FIND_IN_SET(mark_id, o.specification_ids)) AS specs
         from t_seckill_order o
         where mark_id = #{markId,jdbcType=VARCHAR}
@@ -51,19 +50,17 @@
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.order.SeckillOrder">
         insert into t_seckill_order (mark_id, order_no, theme,
-            product_id, product_type, seckill_id,
-            user_id, product_name, specification_ids, quantity,
+            goods_id, seckill_id, user_id, goods_name, specification_ids, quantity,
             order_amount, delivery_amount, pay_amount, order_time,
             cancel_time, delivery_date, send_time, arrive_time, order_source, order_status, storehouse_id)
         values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
-            #{theme,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
-            #{productType,jdbcType=INTEGER}, #{seckillId,jdbcType=VARCHAR},
-            #{userId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+            #{theme,jdbcType=VARCHAR}, #{goodsId,jdbcType=VARCHAR}, #{seckillId,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR},
             #{specificationIds,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},
             #{orderAmount,jdbcType=DECIMAL}, #{deliveryAmount,jdbcType=DECIMAL},
             #{payAmount,jdbcType=DECIMAL}, #{orderTime,jdbcType=TIMESTAMP},
             #{cancelTime,jdbcType=TIMESTAMP}, #{deliveryDate,jdbcType=TIMESTAMP},
-            #{sendTime,jdbcType=TIMESTAMP}, #{arriveTime,jdbcType=TIMESTAMP}, 
+            #{sendTime,jdbcType=TIMESTAMP}, #{arriveTime,jdbcType=TIMESTAMP},
             #{orderSource,jdbcType=VARCHAR}, #{orderStatus,jdbcType=VARCHAR},#{storehouseId,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.SeckillOrder">
@@ -78,11 +75,8 @@
             <if test="theme != null">
                 theme,
             </if>
-            <if test="productId != null">
-                product_id,
-            </if>
-            <if test="productType != null">
-                product_type,
+            <if test="goodsId != null">
+                goods_id,
             </if>
             <if test="seckillId != null">
                 seckill_id,
@@ -90,8 +84,8 @@
             <if test="userId != null">
                 user_id,
             </if>
-            <if test="productName != null">
-                product_name,
+            <if test="goodsName != null">
+                goods_name,
             </if>
             <if test="specificationIds != null">
                 specification_ids,
@@ -143,11 +137,8 @@
             <if test="theme != null">
                 #{theme,jdbcType=VARCHAR},
             </if>
-            <if test="productId != null">
-                #{productId,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                #{productType,jdbcType=INTEGER},
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
             </if>
             <if test="seckillId != null">
                 #{seckillId,jdbcType=VARCHAR},
@@ -155,8 +146,8 @@
             <if test="userId != null">
                 #{userId,jdbcType=VARCHAR},
             </if>
-            <if test="productName != null">
-                #{productName,jdbcType=VARCHAR},
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
                 #{specificationIds,jdbcType=VARCHAR},
@@ -208,11 +199,8 @@
             <if test="theme != null">
                 theme = #{theme,jdbcType=VARCHAR},
             </if>
-            <if test="productId != null">
-                product_id = #{productId,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                product_type = #{productType,jdbcType=INTEGER},
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
             </if>
             <if test="seckillId != null">
                 seckill_id = #{seckillId,jdbcType=VARCHAR},
@@ -220,8 +208,8 @@
             <if test="userId != null">
                 user_id = #{userId,jdbcType=VARCHAR},
             </if>
-            <if test="productName != null">
-                product_name = #{productName,jdbcType=VARCHAR},
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
             </if>
             <if test="specificationIds != null">
                 specification_ids = #{specificationIds,jdbcType=VARCHAR},
@@ -269,11 +257,10 @@
         update t_seckill_order
         set order_no = #{orderNo,jdbcType=VARCHAR},
             theme = #{theme,jdbcType=VARCHAR},
-            product_id = #{productId,jdbcType=VARCHAR},
-            product_type = #{productType,jdbcType=INTEGER},
+            goods_id = #{goodsId,jdbcType=VARCHAR},
             seckill_id = #{seckillId,jdbcType=VARCHAR},
             user_id = #{userId,jdbcType=VARCHAR},
-            product_name = #{productName,jdbcType=VARCHAR},
+            goods_name = #{goodsName,jdbcType=VARCHAR},
             specification_ids = #{specificationIds,jdbcType=VARCHAR},
             quantity = #{quantity,jdbcType=INTEGER},
             order_amount = #{orderAmount,jdbcType=DECIMAL},
@@ -294,8 +281,8 @@
             <include refid="Base_Column_List" /> ,
             (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id=user_id) AS nickName,
             (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
-            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';') 
-             FROM db_goods.t_specification_info 
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';')
+             FROM db_goods.t_specification_info
              WHERE FIND_IN_SET(mark_id, o.specification_ids)) AS specs
         FROM t_seckill_order o
         <where>
@@ -303,16 +290,13 @@
                 o.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="orderNo != null">
-                AND o.order_no LIKE CONCAT(CONCAT('%', #{orderNo,jdbcType=VARCHAR}), '%')
+                AND o.order_no LIKE CONCAT('%', #{orderNo,jdbcType=VARCHAR}, '%')
             </if>
             <if test="theme != null">
-                AND o.theme LIKE CONCAT(CONCAT('%', #{theme,jdbcType=VARCHAR}), '%')
+                AND o.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR}, '%')
             </if>
-            <if test="productId != null">
-                AND o.product_id = #{productId,jdbcType=VARCHAR}
-            </if>
-            <if test="productType != null">
-                AND o.product_type = #{productType,jdbcType=INTEGER}
+            <if test="goodsId != null">
+                AND o.goods_id = #{goodsId,jdbcType=VARCHAR}
             </if>
             <if test="seckillId != null">
                 AND o.seckill_id = #{seckillId,jdbcType=VARCHAR}
@@ -320,8 +304,8 @@
             <if test="userId != null">
                 AND o.user_id = #{userId,jdbcType=VARCHAR}
             </if>
-            <if test="productName != null">
-                AND o.product_name LIKE CONCAT(CONCAT('%', #{productName,jdbcType=VARCHAR}), '%')
+            <if test="goodsName != null">
+                AND o.goods_name LIKE CONCAT('%', #{goodsName,jdbcType=VARCHAR}, '%')
             </if>
             <if test="specificationIds != null">
                 AND o.specification_ids = #{specificationIds,jdbcType=VARCHAR}
@@ -364,21 +348,23 @@
             </if>
         </where>
     </select>
-    <select id="selectItemImg" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT (CASE WHEN o.product_type=0 THEN (SELECT g.image_path FROM db_goods.t_goods_image g WHERE g.goods_id=o.product_id AND g.server_type=0 LIMIT 1) 
-                WHEN o.product_type=1 THEN 
-            (SELECT g.image_path FROM db_goods.t_goods_voucher c LEFT JOIN db_goods.t_goods_image g ON c.product_id=g.goods_id WHERE c.product_id=o.product_id AND g.server_type=0 LIMIT 1) 
-            WHEN o.product_type=2 THEN 
-            (SELECT m.image_path FROM db_goods.t_meal_image m WHERE m.meal_id=o.product_id AND m.server_type=0 LIMIT 1) 
-            WHEN o.product_type=3 THEN 
-            (SELECT a.image_path FROM db_goods.t_accessory_info a WHERE a.mark_id=o.product_id) END) AS image_path 
-        FROM t_seckill_order o 
-        WHERE o.mark_id=#{orderId,jdbcType=VARCHAR}
+    <select id="selectByNo" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />,
+            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc,
+            (SELECT GROUP_CONCAT(CONCAT(attr_name, ':', attr_value) SEPARATOR ';')
+             FROM db_goods.t_specification_info
+             WHERE FIND_IN_SET(mark_id, o.specification_ids)) AS specs
+        from t_seckill_order o
+        where o.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="userId != null">
+            and o.user_id=#{userId,jdbcType=VARCHAR}
+        </if>
     </select>
-    <select id="selectByNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectExpiredOrder" resultMap="BaseResultMap">
         select
             <include refid="Base_Column_List" />
         from t_seckill_order o
-        where o.order_no = #{orderNo,jdbcType=VARCHAR}
+        WHERE order_status='OT01' AND UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(order_time) > 15 * 60
     </select>
 </mapper>

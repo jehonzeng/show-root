@@ -8,7 +8,7 @@ public class TemplateProvider {
         String markId = map.get("templateId");
         StringBuilder sql = new StringBuilder();
         sql.append("select mark_id as markId, coupon_name as couponName,");
-        sql.append("coupon_total as couponTotal,line_type as lineType, ");
+        sql.append("coupon_total as couponTotal,server_type as serverType, ");
         sql.append("coupon_type as couponType,coupon_price as couponPrice,");
         sql.append("coupon_discount as couponDiscount,limit_price as limitPrice,");
         sql.append("limit_count as limitCount,server_status as serverStatus,");
@@ -24,6 +24,14 @@ public class TemplateProvider {
         sql.append("description as description from t_coupon_template ");
         sql.append("where mark_id = '" + markId + "' ");
         return sql.toString();
+    }
 
+    public String selectComboboxList(Map<String, Object> map) {
+        Integer couponType = (Integer) map.get("couponType");
+        StringBuilder sql = new StringBuilder(
+                "SELECT mark_id AS code,coupon_name AS name FROM t_coupon_template ");
+        sql.append("WHERE server_status = 1 ");
+        sql.append("AND coupon_type = '" + couponType + "' ");
+        return sql.toString();
     }
 }

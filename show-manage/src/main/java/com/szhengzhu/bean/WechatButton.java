@@ -1,10 +1,13 @@
 package com.szhengzhu.bean;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.Data;
-
+/**
+ * @author Administrator
+ */
 @Data
 public class WechatButton implements Serializable {
     

@@ -1,103 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.DeliveryAreaMapper">
-    <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.goods.DeliveryArea">
-        <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
-        <result
-            column="storehouse_id"
-            property="storehouseId"
-            jdbcType="VARCHAR" />
-        <result
-            column="province"
-            property="province"
-            jdbcType="VARCHAR" />
-        <result
-            column="city"
-            property="city"
-            jdbcType="VARCHAR" />
-        <result
-            column="area"
-            property="area"
-            jdbcType="VARCHAR" />
-        <result
-            column="limit_price"
-            property="limitPrice"
-            jdbcType="DECIMAL" />
-        <result
-            column="delivery_price"
-            property="deliveryPrice"
-            jdbcType="DECIMAL" />
-        <result
-            column="creator"
-            property="creator"
-            jdbcType="VARCHAR" />
-        <result
-            column="create_time"
-            property="createTime"
-            jdbcType="TIMESTAMP" />
-        <result
-            column="server_status"
-            property="serverStatus"
-            jdbcType="BIT" />
-        <result
-            column="houseName"
-            property="houseName"
-            jdbcType="BIT" />
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.DeliveryArea">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="storehouse_id" property="storehouseId" jdbcType="VARCHAR" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="area" property="area" jdbcType="VARCHAR" />
+        <result column="limit_price" property="limitPrice" jdbcType="DECIMAL" />
+        <result column="delivery_price" property="deliveryPrice" jdbcType="DECIMAL" />
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="houseName" property="houseName" jdbcType="BIT" />
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, storehouse_id, province, city, area,
         limit_price, delivery_price, creator,
-        create_time,
-        server_status
+        create_time, server_status
     </sql>
-    <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
-        ,
-        (SELECT `name` FROM t_storehouse_info where mark_id =
-        storehouse_id) AS houseName
+            <include refid="Base_Column_List" /> ,
+            (SELECT `name` FROM t_storehouse_info where mark_id = storehouse_id) AS houseName
         from t_delivery_area
-        where mark_id =
-        #{markId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
-    <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_delivery_area
-        where mark_id =
-        #{markId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
-    <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.goods.DeliveryArea">
-        insert into t_delivery_area (mark_id,
-        storehouse_id, province, city, limit_price, delivery_price,
-        creator, create_time, server_status)
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.DeliveryArea">
+        insert into t_delivery_area (mark_id, storehouse_id, province, city, limit_price, delivery_price, creator, create_time, server_status)
         values
-        (#{markId,jdbcType=VARCHAR},
-        #{storehouseId,jdbcType=VARCHAR},
+        (#{markId,jdbcType=VARCHAR}, #{storehouseId,jdbcType=VARCHAR},
         #{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},
         #{area,jdbcType=VARCHAR}, #{limitPrice,jdbcType=DECIMAL},
         #{deliveryPrice,jdbcType=DECIMAL}, #{creator,jdbcType=VARCHAR},
-        #{createTime,jdbcType=TIMESTAMP},
-        #{serverStatus,jdbcType=BIT})
+        #{createTime,jdbcType=TIMESTAMP}, #{serverStatus,jdbcType=BIT})
     </insert>
-    <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.goods.DeliveryArea">
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.DeliveryArea">
         insert into t_delivery_area
-        <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
@@ -129,10 +73,7 @@
                 server_status,
             </if>
         </trim>
-        <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
@@ -165,14 +106,11 @@
             </if>
         </trim>
     </insert>
-    <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.goods.DeliveryArea">
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.DeliveryArea">
         update t_delivery_area
         <set>
             <if test="storehouseId != null">
-                storehouse_id =
-                #{storehouseId,jdbcType=VARCHAR},
+                storehouse_id = #{storehouseId,jdbcType=VARCHAR},
             </if>
             <if test="province != null">
                 province = #{province,jdbcType=VARCHAR},
@@ -187,8 +125,7 @@
                 limit_price = #{limitPrice,jdbcType=DECIMAL},
             </if>
             <if test="deliveryPrice != null">
-                delivery_price =
-                #{deliveryPrice,jdbcType=DECIMAL},
+                delivery_price = #{deliveryPrice,jdbcType=DECIMAL},
             </if>
             <if test="creator != null">
                 creator = #{creator,jdbcType=VARCHAR},
@@ -202,94 +139,54 @@
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.goods.DeliveryArea">
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.DeliveryArea">
         update t_delivery_area
-        set storehouse_id =
-        #{storehouseId,jdbcType=VARCHAR},
-        province =
-        #{province,jdbcType=VARCHAR},
-        city = #{city,jdbcType=VARCHAR},
-        area = #{area,jdbcType=VARCHAR},
-        limit_price =
-        #{limitPrice,jdbcType=DECIMAL},
-        delivery_price =
-        #{deliveryPrice,jdbcType=DECIMAL},
-        creator =
-        #{creator,jdbcType=VARCHAR},
-        create_time =
-        #{createTime,jdbcType=TIMESTAMP},
-        server_status =
-        #{serverStatus,jdbcType=BIT}
-        where mark_id =
-        #{markId,jdbcType=VARCHAR}
+        set storehouse_id = #{storehouseId,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            city = #{city,jdbcType=VARCHAR},
+            area = #{area,jdbcType=VARCHAR},
+            limit_price = #{limitPrice,jdbcType=DECIMAL},
+            delivery_price = #{deliveryPrice,jdbcType=DECIMAL},
+            creator = #{creator,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select
-        id="selectByExampleSelective"
-        resultMap="BaseResultMap"
-        parameterType="com.szhengzhu.bean.goods.DeliveryArea">
-        select * from (select
-        mark_id, storehouse_id, creator,
-        create_time, limit_price, delivery_price,
-        server_status,
-        (SELECT
-        `name` FROM db_base.t_area_info WHERE num = province) AS
-        province,
-        (SELECT `name` FROM db_base.t_area_info WHERE num =
-        city) AS city,
-        (SELECT `name` FROM db_base.t_area_info WHERE num
-        = area) AS area,
-        (SELECT `name` FROM t_storehouse_info where
-        mark_id = storehouse_id) AS houseName
-        from t_delivery_area)
-        delivery
+    <select id="selectByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.goods.DeliveryArea">
+        SELECT d.mark_id, d.storehouse_id, d.creator, d.create_time, d.limit_price, d.delivery_price, d.server_status,p.`name` AS province,
+               c.`name` AS city,a.`name` AS area,h.`name` AS houseName
+        FROM t_delivery_area d LEFT JOIN t_storehouse_info h ON d.storehouse_id=h.mark_id LEFT JOIN
+             db_base.t_area_info p ON d.province=p.num LEFT JOIN
+             db_base.t_area_info c ON d.city=c.num LEFT JOIN
+             db_base.t_area_info a ON d.area=a.num
         <where>
-            <if test="markId != null">
-                #{markId,jdbcType=VARCHAR}
-            </if>
             <if test="storehouseId != null">
-                AND
-                storehouse_id=#{storehouseId,jdbcType=VARCHAR}
-            </if>
-            <if test="houseName != null">
-                AND houseName LIKE CONCAT(CONCAT('%',
-                #{houseName,jdbcType=VARCHAR}), '%')
+                d.storehouse_id=#{storehouseId,jdbcType=VARCHAR}
             </if>
             <if test="province != null">
-                AND province=#{province,jdbcType=VARCHAR}
+                AND p.`name` like concat('%', #{province,jdbcType=VARCHAR}, '%')
             </if>
             <if test="city != null">
-                AND city= #{city,jdbcType=VARCHAR}
+                AND c.`name`like concat('%', #{city,jdbcType=VARCHAR}, '%')
             </if>
             <if test="area != null">
-                AND area= #{area,jdbcType=VARCHAR}
+                AND a.`name` like concat('%', #{area,jdbcType=VARCHAR}, '%')
             </if>
             <if test="creator != null">
                 AND creator=#{creator,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">
-                AND create_time=
-                #{createTime,jdbcType=TIMESTAMP}
+                AND TO_DAYS(create_time)= TO_DAYS(#{createTime,jdbcType=TIMESTAMP})
             </if>
             <if test="serverStatus != null">
                 AND server_status= #{serverStatus,jdbcType=BIT}
             </if>
         </where>
     </select>
-    <insert
-        id="insertBatch"
-        parameterType="java.util.List">
-        insert into t_delivery_area
-        (mark_id, storehouse_id, province,
-        city, area, limit_price, delivery_price,
-        creator,create_time,server_status)
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_delivery_area (mark_id, storehouse_id, province, city, area, limit_price, delivery_price, creator,create_time,server_status)
         values
-        <foreach
-            collection="list"
-            item="item"
-            index="index"
-            separator=",">
+        <foreach collection="list" item="item" index="index" separator=",">
             (#{item.markId,jdbcType=VARCHAR},
             #{item.storehouseId,jdbcType=VARCHAR},
             #{item.province,jdbcType=VARCHAR},
@@ -304,4 +201,11 @@
         ON DUPLICATE KEY UPDATE
         storehouse_id = values(storehouse_id)
     </insert>
+    <select id="selectAreaByAddressId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT d.mark_id, d.storehouse_id, d.province, d.city, d.area, d.limit_price, d.delivery_price, d.creator, d.create_time, d.server_status
+        FROM t_delivery_area d LEFT JOIN
+             db_order.t_user_address a ON (d.city=a.city AND d.province=a.province AND d.area=a.area)
+        WHERE a.mark_id=#{addressId,jdbcType=VARCHAR} AND d.server_status=1
+        ORDER BY limit_price desc, delivery_price desc
+    </select>
 </mapper>

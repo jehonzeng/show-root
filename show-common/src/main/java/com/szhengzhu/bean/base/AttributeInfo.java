@@ -1,8 +1,9 @@
 package com.szhengzhu.bean.base;
 
-import java.io.Serializable;
-
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * 系统属性表
@@ -17,15 +18,19 @@ public class AttributeInfo implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String code;
 
     private Boolean serverStatus;
 
     private String type;
 
+    @NotBlank
     private String name;
 
     private String father;
+    
+    private String description;
 
     private Integer sort;
 }

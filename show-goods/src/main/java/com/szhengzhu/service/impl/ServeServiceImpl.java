@@ -1,76 +1,71 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.annotation.CheckGoodsChange;
 import com.szhengzhu.bean.goods.ServerSupport;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.ServerSupportMapper;
 import com.szhengzhu.service.ServeService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("serveService")
 public class ServeServiceImpl implements ServeService {
 
-    @Autowired
+    @Resource
     private ServerSupportMapper serverSupportMapper;
 
     @Override
-    public Result<?> saveServer(ServerSupport base) {
-        if (base == null || StringUtils.isEmpty(base.getTheme())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public ServerSupport saveServer(ServerSupport base) {
         int count = serverSupportMapper.repeatRecords(base.getTheme(), "");
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
-        base.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        base.setMarkId(snowflake.nextIdStr());
         base.setServerStatus(false);
         serverSupportMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<?> getServeById(String markId) {
-        return new Result<>(serverSupportMapper.selectByPrimaryKey(markId));
+    public ServerSupport getServeById(String markId) {
+        return serverSupportMapper.selectByPrimaryKey(markId);
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> modifyServer(ServerSupport base) {
-        if (base == null || base.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
-        String theme = base.getTheme() == null ? "" : base.getTheme();
+    public ServerSupport modifyServer(ServerSupport base) {
+        String theme = StrUtil.isEmpty(base.getTheme()) ? "" : base.getTheme();
         int count = serverSupportMapper.repeatRecords(theme, base.getMarkId());
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         serverSupportMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<PageGrid<?>> getPage(PageParam<ServerSupport> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<ServerSupport> getPage(PageParam<ServerSupport> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<ServerSupport> page = new PageInfo<>(
                 serverSupportMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> listServer() {
-        List<Combobox> list = serverSupportMapper.selectServeList();
-        return new Result<>(list);
+    public List<Combobox> listServer() {
+        return serverSupportMapper.selectServeList();
     }
 
 }

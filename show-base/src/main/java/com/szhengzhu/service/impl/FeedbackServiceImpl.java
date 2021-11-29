@@ -1,57 +1,61 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.base.FeedbackInfo;
+import com.szhengzhu.bean.rpt.IndexDisplay;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
 import com.szhengzhu.mapper.FeedbackInfoMapper;
 import com.szhengzhu.service.FeedbackService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.TimeUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("feedbackService")
 public class FeedbackServiceImpl implements FeedbackService {
 
     @Resource
     private FeedbackInfoMapper feedbackMapper;
-    
+
     @Override
-    public Result<PageGrid<FeedbackInfo>> pageFeedback(PageParam<FeedbackInfo> feedbackPage) {
-        PageHelper.startPage(feedbackPage.getPageIndex(), feedbackPage.getPageSize());
-        PageHelper.orderBy(feedbackPage.getSidx() + " " + feedbackPage.getSort());
+    public PageGrid<FeedbackInfo> pageFeedback(PageParam<FeedbackInfo> feedbackPage) {
+        PageMethod.startPage(feedbackPage.getPageIndex(), feedbackPage.getPageSize());
+        PageMethod.orderBy(feedbackPage.getSidx() + " " + feedbackPage.getSort());
         List<FeedbackInfo> list = feedbackMapper.selectByExampleSelective(feedbackPage.getData());
         PageInfo<FeedbackInfo> pageInfo = new PageInfo<>(list);
-        return new Result<>(new PageGrid<>(pageInfo));
+        return new PageGrid<>(pageInfo);
     }
 
     @Override
-    public Result<?> processFeedback(FeedbackInfo base) {
-        if (base == null || base.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
-        base.setProcessTime(TimeUtils.today());
+    public void processFeedback(FeedbackInfo base) {
+        base.setProcessTime(DateUtil.date());
         base.setServerStatus(true);
-        feedbackMapper.updateByPrimaryKeySelective(base);
-        return new Result<>();
+        int count = feedbackMapper.updateByPrimaryKeySelective(base);
+        if(count == 1 ) {
+            //推送反馈消息
+        }
     }
 
     @Override
-    public Result<?> add(FeedbackInfo feedbackInfo) {
-        IdGenerator generator = IdGenerator.getInstance();
-        feedbackInfo.setMarkId(generator.nexId());
-        feedbackInfo.setCreateTime(TimeUtils.today());
+    public void add(FeedbackInfo feedbackInfo) {
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        feedbackInfo.setMarkId(snowflake.nextIdStr());
+        feedbackInfo.setCreateTime(DateUtil.date());
         feedbackInfo.setServerStatus(false);
         feedbackMapper.insertSelective(feedbackInfo);
-        return new Result<>();
+    }
+
+    @Override
+    public List<IndexDisplay> getIndexFeedbackCount() {
+        return feedbackMapper.selectIndexFeebackCount();
     }
 
 }

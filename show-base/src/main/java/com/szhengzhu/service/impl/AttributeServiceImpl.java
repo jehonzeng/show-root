@@ -1,75 +1,83 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.bean.base.AreaInfo;
 import com.szhengzhu.bean.base.AttributeInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.mapper.AreaInfoMapper;
 import com.szhengzhu.mapper.AttributeInfoMapper;
+import com.szhengzhu.redis.Redis;
 import com.szhengzhu.service.AttributeService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("attributeService")
 public class AttributeServiceImpl implements AttributeService {
     
     @Resource
     private AttributeInfoMapper attributeMapper;
+    
+    @Resource
+    private AreaInfoMapper areaInfoMapper;
+    
+    @Resource
+    private Redis redis;
 
     @Override
-    public Result<AttributeInfo> saveAttribute(AttributeInfo attributeInfo) {
-        if (attributeInfo == null || StringUtils.isEmpty(attributeInfo.getCode()) || StringUtils.isEmpty(attributeInfo.getName())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public AttributeInfo saveAttribute(AttributeInfo attributeInfo) {
         int count = attributeMapper.countAttribute(attributeInfo.getCode(), attributeInfo.getName(), "0");
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
-        attributeInfo.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        attributeInfo.setMarkId(snowflake.nextIdStr());
         attributeMapper.insertSelective(attributeInfo);
-        return new Result<>(attributeInfo);
+        return attributeInfo;
     }
 
     @Override
-    public Result<AttributeInfo> updateAttribute(AttributeInfo attributeInfo) {
-        if (attributeInfo == null || attributeInfo.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
+    public AttributeInfo updateAttribute(AttributeInfo attributeInfo) {
         int count = attributeMapper.countAttribute(attributeInfo.getCode(), attributeInfo.getName(), attributeInfo.getMarkId());
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         attributeMapper.updateByPrimaryKeySelective(attributeInfo);
-        return new Result<>(attributeInfo);
+        if ("AV".equals(attributeInfo.getType())) {
+            List<AreaInfo> areaList = areaInfoMapper.selectAll();
+            redis.set("base:area:list", areaList, 7L * 24 * 60 * 60);
+        } 
+        return attributeInfo;
     }
 
     @Override
-    public Result<AttributeInfo> getAttributeById(String markId) {
-        AttributeInfo attributeInfo = attributeMapper.selectByPrimaryKey(markId);
-        return new Result<>(attributeInfo);
+    public AttributeInfo getAttributeById(String markId) {
+        return attributeMapper.selectByPrimaryKey(markId);
     }
 
     @Override
-    public Result<PageGrid<AttributeInfo>> pageAttribute(PageParam<AttributeInfo> attrPage) {
-        PageHelper.startPage(attrPage.getPageIndex(), attrPage.getPageSize());
-        PageHelper.orderBy(attrPage.getSidx() + " " + attrPage.getSort());
+    public PageGrid<AttributeInfo> pageAttribute(PageParam<AttributeInfo> attrPage) {
+        PageMethod.startPage(attrPage.getPageIndex(), attrPage.getPageSize());
+        PageMethod.orderBy(attrPage.getSidx() + " " + attrPage.getSort());
         PageInfo<AttributeInfo> pageInfo = new PageInfo<>(attributeMapper.selectByExampleSelective(attrPage.getData()));
-        return new Result<>(new PageGrid<>(pageInfo));
+        return new PageGrid<>(pageInfo);
     }
 
     @Override
-    public Result<List<Combobox>> listCombobox(String type) {
-        List<Combobox> comboboxs = attributeMapper.selectCombobox(type);
-        return new Result<>(comboboxs);
+    public List<Combobox> listCombobox(String type) {
+        return attributeMapper.selectCombobox(type);
+    }
+
+    @Override
+    public String getCodeByName(String name) {
+        return attributeMapper.selectByName(name);
     }
 
 }

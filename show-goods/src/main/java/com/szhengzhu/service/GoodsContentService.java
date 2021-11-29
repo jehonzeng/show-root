@@ -12,7 +12,7 @@ public interface GoodsContentService {
      * @param goodsId
      * @return
      */
-    Result<?> showContentByGoodsId(String goodsId);
+    GoodsContent showContentByGoodsId(String goodsId);
 
     /**
      * 编辑详情内容
@@ -21,5 +21,5 @@ public interface GoodsContentService {
      * @param base
      * @return
      */
-    Result<?> editGoodsContent(GoodsContent base);
+    GoodsContent editGoodsContent(GoodsContent base);
 }

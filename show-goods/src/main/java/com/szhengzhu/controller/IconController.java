@@ -1,23 +1,24 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.IconInfo;
 import com.szhengzhu.bean.goods.IconItem;
 import com.szhengzhu.bean.vo.BatchVo;
+import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.IconGoodsVo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.IconService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "icons")
 public class IconController {
@@ -25,49 +26,49 @@ public class IconController {
     @Resource
     private IconService iconService;
     
-    @RequestMapping(value = "/add" ,method =RequestMethod.POST)
-    public Result<?> add(@RequestBody IconInfo base){
+    @PostMapping(value = "/add")
+    public IconInfo add(@RequestBody @Validated IconInfo base) {
         return iconService.addIcon(base);
     }
     
-    @RequestMapping(value = "/update" ,method =RequestMethod.PATCH)
-    public Result<?> modify(@RequestBody IconInfo base){
+    @PatchMapping(value = "/update")
+    public IconInfo modify(@RequestBody @Validated IconInfo base) {
         return iconService.modifyIcon(base);
     }
     
-    @RequestMapping(value = "/page" ,method =RequestMethod.POST)
-    public Result<PageGrid<IconInfo>> getPage(@RequestBody PageParam<IconInfo> base){
+    @PostMapping(value = "/page")
+    public PageGrid<IconInfo> getPage(@RequestBody PageParam<IconInfo> base){
         return iconService.getPage(base);
     }
     
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<?> getIconInfo(@PathVariable("markId") String markId){
-        return iconService.getInconById(markId);
+    @GetMapping(value = "/{markId}")
+    public IconInfo getIconInfo(@PathVariable("markId") @NotBlank String markId){
+        return iconService.getIconById(markId);
     }
     
-    @RequestMapping(value = "/combobox", method = RequestMethod.GET)
-    public Result<?> listIconByGoods(@RequestParam("goodsId") String goodsId){
+    @GetMapping(value = "/combobox")
+    public List<Combobox> listIconByGoods(@RequestParam("goodsId") @NotBlank String goodsId){
         return iconService.getIconByGoods(goodsId);
     }
     
-    @RequestMapping(value = "/item/page", method = RequestMethod.POST)
-    public Result<PageGrid<IconGoodsVo>> iconItemPage(@RequestBody PageParam<IconItem> base){
+    @PostMapping(value = "/item/page")
+    public PageGrid<IconGoodsVo> iconItemPage(@RequestBody PageParam<IconItem> base){
         return iconService.getItemPage(base);
     }
 
-    @RequestMapping(value = "/item/delete", method = RequestMethod.POST)
-    public Result<?> deleteIconItem(@RequestBody IconItem base){
-        return iconService.deleteItem(base);
+    @PostMapping(value = "/item/delete")
+    public void deleteIconItem(@RequestBody IconItem base){
+        iconService.deleteItem(base);
     }
     
-    @RequestMapping(value = "/item/add", method = RequestMethod.POST)
-    public Result<?> addIconItem(@RequestBody IconItem base){
-        return iconService.addItem(base);
+    @PostMapping(value = "/item/add")
+    public void addIconItem(@RequestBody IconItem base){
+        iconService.addItem(base);
     }
 
-    @RequestMapping(value = "/goods/addBatch", method = RequestMethod.POST)
-    public Result<?> addBatchIconGoods(@RequestBody BatchVo base){
-        return iconService.addBatchGoods(base);
+    @PostMapping(value = "/goods/addBatch")
+    public void addBatchIconGoods(@RequestBody BatchVo base){
+        iconService.addBatchGoods(base);
     }
     
 }

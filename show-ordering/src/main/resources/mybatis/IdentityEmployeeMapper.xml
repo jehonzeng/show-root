@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IdentityEmployeeMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.IdentityEmployee">
+        <id column="employee_id" jdbcType="VARCHAR" property="employeeId" />
+        <id column="identity_id" jdbcType="VARCHAR" property="identityId" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.IdentityEmployee">
+        delete from t_identity_employee
+        where employee_id = #{employeeId,jdbcType=VARCHAR}
+        and identity_id = #{identityId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.IdentityEmployee">
+        insert into t_identity_employee (employee_id, identity_id)
+        values (#{employeeId,jdbcType=VARCHAR}, #{identityId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.IdentityEmployee">
+        insert into t_identity_employee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">
+                employee_id,
+            </if>
+            <if test="identityId != null">
+                identity_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeId != null">
+                #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="identityId != null">
+                #{identityId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert ignore into t_identity_employee (employee_id, identity_id)
+        values
+        <foreach collection="employeeIds" item="employeeId" index="index" separator=",">
+            (#{employeeId,jdbcType=VARCHAR}, #{identityId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

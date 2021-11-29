@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ActivityHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ActivityHistory">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="activity_id" property="activityId" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="delivery_time" property="deliveryTime" jdbcType="DATE" />
+        <result column="server_status" property="serverStatus" jdbcType="INTEGER" />
+        <result column="act_gift_id" property="actGiftId" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="BaseResultMapVo" type="com.szhengzhu.bean.vo.ActHistoryVo" extends="BaseResultMap">
+        <result column="nickName" property="nickName" jdbcType="VARCHAR" />
+        <result column="giftName" property="giftName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, activity_id, user_id, add_time, delivery_time, server_status, act_gift_id,type,activity_name
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_activity_history
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_activity_history
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ActivityHistory">
+        insert into t_activity_history (mark_id, activity_id, user_id,
+        add_time, delivery_time, server_status,act_gift_id,type,activity_name)
+        values (#{markId,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+        #{addTime,jdbcType=TIMESTAMP}, #{deliveryTime,jdbcType=DATE}, #{serverStatus,jdbcType=INTEGER},
+        #{actGiftId,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{activityName,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ActivityHistory">
+        insert into t_activity_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="deliveryTime != null">
+                delivery_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="actGiftId != null">
+                act_gift_id,
+            </if>
+             <if test="type != null">
+                type,
+            </if>
+            <if test="activityName != null">
+                activity_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deliveryTime != null">
+                #{deliveryTime,jdbcType=DATE},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="actGiftId != null">
+                #{actGiftId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                 #{type,jdbcType=INTEGER},
+            </if>
+            <if test="activityName != null">
+                #{activityName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ActivityHistory">
+        update t_activity_history
+        <set>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deliveryTime != null">
+                delivery_time = #{deliveryTime,jdbcType=DATE},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="actGiftId != null">
+                act_gift_id = #{actGiftId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="activityName != null">
+                activity_name = #{activityName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ActivityHistory">
+        update t_activity_history
+        set activity_id = #{activityId,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=VARCHAR},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        delivery_time = #{deliveryTime,jdbcType=DATE},
+        server_status = #{serverStatus,jdbcType=INTEGER},
+        act_gift_id = #{actGiftId,jdbcType=VARCHAR},
+        type = #{type,jdbcType=INTEGER},
+        activity_name = #{activityName,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.ActivityHistory" resultMap="BaseResultMapVo">
+        select
+        <include refid="Base_Column_List"/>,
+        (SELECT nick_name FROM db_user.t_user_info WHERE mark_id = user_id) AS nickName,
+        (SELECT gift_name FROM t_gift_info WHERE mark_id IN 
+        (SELECT gift_id from t_activity_gift WHERE mark_id = act_gift_id)) AS giftName
+        from t_activity_history
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="activityId != null">
+               and activity_id = #{activityId,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null">
+               and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="addTime != null">
+              and  TO_DAYS(add_time) = TO_DAYS(#{addTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="deliveryTime != null">
+              and  TO_DAYS(delivery_time) = TO_DAYS(#{deliveryTime,jdbcType=DATE})
+            </if>
+            <if test="serverStatus != null">
+              and  server_status = #{serverStatus,jdbcType=INTEGER}
+            </if>
+            <if test="actGiftId != null">
+               and act_gift_id = #{actGiftId,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+              and type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="activityName != null">
+              and activity_name = #{activityName,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

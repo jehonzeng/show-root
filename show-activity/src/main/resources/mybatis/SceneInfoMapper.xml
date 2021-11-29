@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SceneInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.SceneInfo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="promotion_type" jdbcType="INTEGER" property="promotionType" />
+        <result column="discount" jdbcType="DECIMAL" property="discount" />
+        <result column="limit_region" jdbcType="VARCHAR" property="limitRegion" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="regionDesc" jdbcType="VARCHAR" property="regionDesc" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, theme, promotion_type, discount, limit_region, create_time, start_time,
+        stop_time, server_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scene_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_scene_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.SceneInfo">
+        insert into t_scene_info (mark_id, theme, promotion_type,
+        discount, limit_region, create_time,
+        start_time, stop_time, server_status
+        )
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{promotionType,jdbcType=INTEGER},
+        #{discount,jdbcType=DECIMAL}, #{limitRegion,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP}, #{serverStatus,jdbcType=BIT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.SceneInfo">
+        insert into t_scene_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="promotionType != null">
+                promotion_type,
+            </if>
+            <if test="discount != null">
+                discount,
+            </if>
+            <if test="limitRegion != null">
+                limit_region,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                #{promotionType,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="limitRegion != null">
+                #{limitRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.SceneInfo">
+        update t_scene_info
+        <set>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                promotion_type = #{promotionType,jdbcType=INTEGER},
+            </if>
+            <if test="discount != null">
+                discount = #{discount,jdbcType=DECIMAL},
+            </if>
+            <if test="limitRegion != null">
+                limit_region = #{limitRegion,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.SceneInfo">
+        update t_scene_info
+        set theme = #{theme,jdbcType=VARCHAR},
+        promotion_type = #{promotionType,jdbcType=INTEGER},
+        discount = #{discount,jdbcType=DECIMAL},
+        limit_region = #{limitRegion,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        server_status = #{serverStatus,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective"  parameterType="com.szhengzhu.bean.activity.SceneInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT r.store_name FROM db_base.t_store_info r WHERE limit_region=r.mark_id) AS regionDesc
+        from t_scene_info
+        <where>
+            <if test="theme != null">
+                theme like concat('%', #{theme,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="startTime != null">
+                AND to_days(start_time) = to_days(#{startTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="stopTime != null">
+                AND to_days(stop_time) = to_days(#{stopTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="promotionType != null">
+                AND promotion_type = #{promotionType,jdbcType=INTEGER}
+            </if>
+            <if test="discount != null">
+                AND discount = #{discount,jdbcType=DECIMAL}
+            </if>
+            <if test="limitRegion != null">
+                AND limit_region = #{limitRegion,jdbcType=VARCHAR}
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+</mapper>

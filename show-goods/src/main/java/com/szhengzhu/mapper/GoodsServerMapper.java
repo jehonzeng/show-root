@@ -1,14 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.GoodsServer;
+import com.szhengzhu.bean.vo.BatchVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.GoodsServer;
-import com.szhengzhu.bean.vo.BatchVo;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface GoodsServerMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(GoodsServer record);

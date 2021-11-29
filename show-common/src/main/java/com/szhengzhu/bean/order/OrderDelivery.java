@@ -1,10 +1,16 @@
 package com.szhengzhu.bean.order;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class OrderDelivery implements Serializable {
 
@@ -36,11 +42,15 @@ public class OrderDelivery implements Serializable {
 
     private String remark;
 
+    /** 物流公司 */
     private String deliveryType;
 
-    private Integer orderType;
-    
+    private String orderType;
+
+    /** 运单号 */
     private String trackNo;
+    
+    private Date addTime;
     
     private String orderNo;
     
@@ -55,4 +65,6 @@ public class OrderDelivery implements Serializable {
     private String statusDesc;
     
     private String deliveryTypeDesc;
+    
+    private String userId;
 }

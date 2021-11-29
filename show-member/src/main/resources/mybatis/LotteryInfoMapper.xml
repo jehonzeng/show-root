@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.LotteryInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.LotteryInfo">
+        <!--@Table t_lottery_info-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="lotteryId" column="lottery_id" jdbcType="VARCHAR"/>
+        <result property="bgImg" column="bg_img" jdbcType="VARCHAR"/>
+        <result property="leftImg" column="left_img" jdbcType="VARCHAR"/>
+        <result property="midImg" column="mid_img" jdbcType="VARCHAR"/>
+        <result property="rightImg" column="right_img" jdbcType="VARCHAR"/>
+        <result property="rimColor" column="rim_color" jdbcType="VARCHAR"/>
+        <result property="dotColor" column="dot_color" jdbcType="VARCHAR"/>
+        <result property="bgColor" column="bg_color" jdbcType="VARCHAR"/>
+        <result property="midColor" column="mid_color" jdbcType="VARCHAR"/>
+        <result property="bottomColor" column="bottom_color" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="sbgImg" column="sbg_img" jdbcType="VARCHAR"/>
+        <result property="lotteryImg" column="lottery_img" jdbcType="VARCHAR"/>
+        <result property="fontColor" column="font_color" jdbcType="VARCHAR"/>
+        <result property="fontBgColor" column="font_bg_color" jdbcType="VARCHAR"/>
+
+        <result property="bgPath" column="bgPath" jdbcType="VARCHAR"/>
+        <result property="leftPath" column="leftPath" jdbcType="VARCHAR"/>
+        <result property="midPath" column="midPath" jdbcType="VARCHAR"/>
+        <result property="rightPath" column="rightPath" jdbcType="VARCHAR"/>
+        <result property="sbgPath" column="sbgPath" jdbcType="VARCHAR"/>
+        <result property="lotteryPath" column="lotteryPath" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        l.mark_id, lottery_id, rim_color, dot_color, bg_color, mid_color, bottom_color,
+        font_color, font_bg_color, l.create_time,
+        (select image_path from db_base.t_image_info i where l.bg_img=i.mark_id) as bgPath,
+        (select image_path from db_base.t_image_info i where l.left_img=i.mark_id) as leftPath,
+        (select image_path from db_base.t_image_info i where l.mid_img=i.mark_id) as midPath,
+        (select image_path from db_base.t_image_info i where l.right_img=i.mark_id) as rightPath,
+        (select image_path from db_base.t_image_info i where l.sbg_img=i.mark_id) as sbgPath,
+        (select image_path from db_base.t_image_info i where l.lottery_img=i.mark_id) as lotteryPath,
+        bg_img, left_img, mid_img, right_img, sbg_img, lottery_img
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_lottery_info l
+        where lottery_id = #{lotteryId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_lottery_info
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                and lottery_id = #{lotteryId}
+            </if>
+            <if test="bgImg != null and bgImg != ''">
+                and bg_img = #{bgImg}
+            </if>
+            <if test="leftImg != null and leftImg != ''">
+                and left_img = #{leftImg}
+            </if>
+            <if test="midImg != null and midImg != ''">
+                and mid_img = #{midImg}
+            </if>
+            <if test="rightImg != null and rightImg != ''">
+                and right_img = #{rightImg}
+            </if>
+            <if test="rimColor != null and rimColor != ''">
+                and rim_color = #{rimColor}
+            </if>
+            <if test="dotColor != null and dotColor != ''">
+                and dot_color = #{dotColor}
+            </if>
+            <if test="bgColor != null and bgColor != ''">
+                and bg_color = #{bgColor}
+            </if>
+            <if test="midColor != null and midColor != ''">
+                and mid_color = #{midColor}
+            </if>
+            <if test="bottomColor != null and bottomColor != ''">
+                and bottom_color = #{bottomColor}
+            </if>
+            <if test="sbgImg != null and sbgImg != ''">
+                and sbg_img = #{sbgImg}
+            </if>
+            <if test="lotteryImg != null and lotteryImg != ''">
+                and lottery_img = #{lotteryImg}
+            </if>
+            <if test="fontColor != null and fontColor != ''">
+                and font_color = #{fontColor}
+            </if>
+            <if test="fontBgColor != null and fontBgColor != ''">
+                and font_bg_color = #{fontBgColor}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_lottery_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                lottery_id,
+            </if>
+            <if test="bgImg != null and bgImg != ''">
+                bg_img,
+            </if>
+            <if test="leftImg != null and leftImg != ''">
+                left_img,
+            </if>
+            <if test="midImg != null and midImg != ''">
+                mid_img,
+            </if>
+            <if test="rightImg != null and rightImg != ''">
+                right_img,
+            </if>
+            <if test="rimColor != null and rimColor != ''">
+                rim_color,
+            </if>
+            <if test="dotColor != null and dotColor != ''">
+                dot_color,
+            </if>
+            <if test="bgColor != null and bgColor != ''">
+                bg_color,
+            </if>
+            <if test="midColor != null and midColor != ''">
+                mid_color,
+            </if>
+            <if test="bottomColor != null and bottomColor != ''">
+                bottom_color,
+            </if>
+            <if test="sbgImg != null and sbgImg != ''">
+                sbg_img,
+            </if>
+            <if test="lotteryImg != null and lotteryImg != ''">
+                lottery_img,
+            </if>
+            <if test="fontColor != null and fontColor != ''">
+                font_color,
+            </if>
+            <if test="fontBgColor != null and fontBgColor != ''">
+                font_bg_color,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="lotteryId != null and lotteryId != ''">
+                #{lotteryId},
+            </if>
+            <if test="bgImg != null and bgImg != ''">
+                #{bgImg},
+            </if>
+            <if test="leftImg != null and leftImg != ''">
+                #{leftImg},
+            </if>
+            <if test="midImg != null and midImg != ''">
+                #{midImg},
+            </if>
+            <if test="rightImg != null and rightImg != ''">
+                #{rightImg},
+            </if>
+            <if test="rimColor != null and rimColor != ''">
+                #{rimColor},
+            </if>
+            <if test="dotColor != null and dotColor != ''">
+                #{dotColor},
+            </if>
+            <if test="bgColor != null and bgColor != ''">
+                #{bgColor},
+            </if>
+            <if test="midColor != null and midColor != ''">
+                #{midColor},
+            </if>
+            <if test="bottomColor != null and bottomColor != ''">
+                #{bottomColor},
+            </if>
+            <if test="sbgImg != null and sbgImg != ''">
+                #{sbgImg},
+            </if>
+            <if test="lotteryImg != null and lotteryImg != ''">
+                #{lotteryImg},
+            </if>
+            <if test="fontColor != null and fontColor != ''">
+                #{fontColor},
+            </if>
+            <if test="fontBgColor != null and fontBgColor != ''">
+                #{fontBgColor},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_lottery_info
+        <set>
+            <if test="lotteryId != null and lotteryId != ''">
+                lottery_id = #{lotteryId},
+            </if>
+            <if test="bgImg != null and bgImg != ''">
+                bg_img = #{bgImg},
+            </if>
+            <if test="leftImg != null and leftImg != ''">
+                left_img = #{leftImg},
+            </if>
+            <if test="midImg != null and midImg != ''">
+                mid_img = #{midImg},
+            </if>
+            <if test="rightImg != null and rightImg != ''">
+                right_img = #{rightImg},
+            </if>
+            <if test="rimColor != null and rimColor != ''">
+                rim_color = #{rimColor},
+            </if>
+            <if test="dotColor != null and dotColor != ''">
+                dot_color = #{dotColor},
+            </if>
+            <if test="bgColor != null and bgColor != ''">
+                bg_color = #{bgColor},
+            </if>
+            <if test="midColor != null and midColor != ''">
+                mid_color = #{midColor},
+            </if>
+            <if test="bottomColor != null and bottomColor != ''">
+                bottom_color = #{bottomColor},
+            </if>
+            <if test="sbgImg != null and sbgImg != ''">
+                sbg_img = #{sbgImg},
+            </if>
+            <if test="lotteryImg != null and lotteryImg != ''">
+                lottery_img = #{lotteryImg},
+            </if>
+            <if test="fontColor != null and fontColor != ''">
+                font_color = #{fontColor},
+            </if>
+            <if test="fontBgColor != null and fontBgColor != ''">
+                font_bg_color = #{fontBgColor},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_lottery_info
+        where mark_id = #{markId}
+    </delete>
+</mapper>

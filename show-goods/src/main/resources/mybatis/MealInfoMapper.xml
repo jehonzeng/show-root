@@ -1,106 +1,64 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.MealInfoMapper">
-    <resultMap
-        id="BaseResultMap"
-        type="com.szhengzhu.bean.goods.MealInfo">
-        <id
-            column="mark_id"
-            property="markId"
-            jdbcType="VARCHAR" />
-        <result
-            column="theme"
-            property="theme"
-            jdbcType="VARCHAR" />
-        <result
-            column="base_price"
-            property="basePrice"
-            jdbcType="DECIMAL" />
-        <result
-            column="sale_price"
-            property="salePrice"
-            jdbcType="DECIMAL" />
-        <result
-            column="stock_size"
-            property="stockSize"
-            jdbcType="INTEGER" />
-        <result
-            column="server_status"
-            property="serverStatus"
-            jdbcType="BIT" />
-        <result
-            column="description"
-            property="description"
-            jdbcType="VARCHAR" />
-        <result
-            column="sort"
-            property="sort"
-            jdbcType="INTEGER" />
-        <result
-            column="meal_no"
-            property="mealNo"
-            jdbcType="VARCHAR" />
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.goods.MealInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="theme" property="theme" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+        <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="meal_no" property="mealNo" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List">
-        m.mark_id, m.theme, m.base_price,
-        m.sale_price,m.stock_size,m.server_status,
+        m.mark_id, m.theme,m.create_time, m.base_price,
+        m.sale_price,m.server_status,
         m.description,m.sort,m.meal_no
     </sql>
-    <select
-        id="selectByPrimaryKey"
-        resultMap="BaseResultMap"
-        parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List" />
         from t_meal_info m
         where m.mark_id = #{markId,jdbcType=VARCHAR}
     </select>
-    <delete
-        id="deleteByPrimaryKey"
-        parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_meal_info
         where mark_id =
         #{markId,jdbcType=VARCHAR}
     </delete>
-    <insert
-        id="insert"
-        parameterType="com.szhengzhu.bean.goods.MealInfo">
-        insert into t_meal_info (mark_id, theme,
-        base_price,
-        sale_price, stock_size, server_status, description,
+    <insert id="insert" parameterType="com.szhengzhu.bean.goods.MealInfo">
+        insert into t_meal_info (mark_id, theme,create_time,
+        base_price, sale_price, server_status, description,
         sort,meal_no)
         values
         (#{markId,jdbcType=VARCHAR},
         #{theme,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
         #{basePrice,jdbcType=DECIMAL},
         #{salePrice,jdbcType=DECIMAL},
-        #{stockSize,jdbcType=INTEGER},
         #{serverStatus,jdbcType=BIT},
         #{description,jdbcType=VARCHAR},
         #{sort,jdbcType=INTEGER},#{mealNo,jdbcType=VARCHAR})
     </insert>
-    <insert
-        id="insertSelective"
-        parameterType="com.szhengzhu.bean.goods.MealInfo">
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.goods.MealInfo">
         insert into t_meal_info
-        <trim
-            prefix="("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 mark_id,
             </if>
             <if test="theme != null">
                 theme,
             </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
             <if test="basePrice != null">
                 base_price,
             </if>
             <if test="salePrice != null">
                 sale_price,
-            </if>
-            <if test="stockSize != null">
-                stock_size,
             </if>
             <if test="serverStatus != null">
                 server_status,
@@ -115,24 +73,21 @@
                 meal_no,
             </if>
         </trim>
-        <trim
-            prefix="values ("
-            suffix=")"
-            suffixOverrides=",">
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
                 #{markId,jdbcType=VARCHAR},
             </if>
             <if test="theme != null">
                 #{theme,jdbcType=VARCHAR},
             </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="basePrice != null">
                 #{basePrice,jdbcType=DECIMAL},
             </if>
             <if test="salePrice != null">
                 #{salePrice,jdbcType=DECIMAL},
-            </if>
-            <if test="stockSize != null">
-                #{stockSize,jdbcType=INTEGER},
             </if>
             <if test="serverStatus != null">
                 #{serverStatus,jdbcType=BIT},
@@ -148,22 +103,20 @@
             </if>
         </trim>
     </insert>
-    <update
-        id="updateByPrimaryKeySelective"
-        parameterType="com.szhengzhu.bean.goods.MealInfo">
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.goods.MealInfo">
         update t_meal_info
         <set>
             <if test="theme != null">
                 theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="basePrice != null">
                 base_price = #{basePrice,jdbcType=DECIMAL},
             </if>
             <if test="salePrice != null">
                 sale_price = #{salePrice,jdbcType=DECIMAL},
-            </if>
-            <if test="stockSize != null">
-                stock_size = #{stockSize,jdbcType=INTEGER},
             </if>
             <if test="serverStatus != null">
                 server_status = #{serverStatus,jdbcType=BIT},
@@ -180,30 +133,19 @@
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <update
-        id="updateByPrimaryKey"
-        parameterType="com.szhengzhu.bean.goods.MealInfo">
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.goods.MealInfo">
         update t_meal_info
-        set theme =
-        #{theme,jdbcType=VARCHAR},
-        base_price =
-        #{basePrice,jdbcType=DECIMAL},
-        sale_price =
-        #{salePrice,jdbcType=DECIMAL},
-        stock_size =
-        #{stockSize,jdbcType=INTEGER},
-        server_status =
-        #{serverStatus,jdbcType=BIT},
-        description =
-        #{description,jdbcType=VARCHAR},
+        set theme = #{theme,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        base_price = #{basePrice,jdbcType=DECIMAL},
+        sale_price = #{salePrice,jdbcType=DECIMAL},
+        server_status = #{serverStatus,jdbcType=BIT},
+        description = #{description,jdbcType=VARCHAR},
         sort = #{sort,jdbcType=INTEGER},
         meal_no = #{mealNo,jdbcType=VARCHAR}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select
-        id="selectByExampleSelective"
-        parameterType="com.szhengzhu.bean.goods.MealInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM t_meal_info m
@@ -212,8 +154,10 @@
                 m.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="theme != null">
-                AND m.theme LIKE CONCAT('%',
-                #{theme,jdbcType=VARCHAR},'%')
+                AND m.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="createTime != null">
+                AND m.create_time = #{createTime,jdbcType=TIMESTAMP}
             </if>
             <if test="basePrice != null">
                 AND m.base_price = #{basePrice,jdbcType=DECIMAL}
@@ -221,16 +165,11 @@
             <if test="salePrice != null">
                 AND m.sale_price = #{salePrice,jdbcType=DECIMAL}
             </if>
-            <if test="stockSize != null">
-                AND m.stock_size = #{stockSize,jdbcType=INTEGER}
-            </if>
             <if test="serverStatus != null">
-                AND m.server_status =
-                #{serverStatus,jdbcType=BIT}
+                AND m.server_status = #{serverStatus,jdbcType=BIT}
             </if>
             <if test="description != null">
-                AND m.description =
-                #{description,jdbcType=VARCHAR}
+                AND m.description = #{description,jdbcType=VARCHAR}
             </if>
             <if test="sort != null">
                 AND m.sort = #{sort,jdbcType=INTEGER}
@@ -240,15 +179,10 @@
             </if>
         </where>
     </select>
-    <select
-        id="selectByExampleSelectiveNotColumn"
-        parameterType="com.szhengzhu.bean.goods.MealInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelectiveNotColumn" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
-        FROM t_meal_info m
-        LEFT JOIN t_column_goods i
-        ON i.goods_id =
+        FROM t_meal_info m LEFT JOIN t_column_goods i ON i.goods_id =
         m.mark_id
         <where>
             NOT EXISTS (SELECT c.mark_id FROM t_column_info c WHERE
@@ -258,23 +192,17 @@
                 AND m.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="theme != null">
-                AND m.theme LIKE CONCAT('%',
-                #{theme,jdbcType=VARCHAR},'%')
+                AND m.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
             </if>
             <if test="mealNo != null">
                 AND m.meal_no = #{mealNo,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
-    <select
-        id="selectByExampleSelectiveNotLabel"
-        parameterType="com.szhengzhu.bean.goods.MealInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelectiveNotLabel" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
-        FROM t_meal_info m
-        LEFT JOIN t_label_goods i
-        ON i.goods_id =
+        FROM t_meal_info m LEFT JOIN t_label_goods i ON i.goods_id =
         m.mark_id
         <where>
             NOT EXISTS (SELECT c.mark_id FROM t_label_info c WHERE
@@ -284,169 +212,128 @@
                 AND m.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="theme != null">
-                AND m.theme LIKE CONCAT('%',
-                #{theme,jdbcType=VARCHAR},'%')
+                AND m.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
             </if>
             <if test="mealNo != null">
                 AND m.meal_no = #{mealNo,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
-    <select
-        id="selectByExampleSelectiveNotSpecial"
-        parameterType="com.szhengzhu.bean.goods.MealInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelectiveNotSpecial" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM t_meal_info m
         <where>
-            m.server_status = 1
-            AND
-            NOT EXISTS (SELECT i.mark_id FROM
-            t_special_item i WHERE i.goods_id =
-            m.mark_id)
+            m.server_status = 1 AND NOT EXISTS (SELECT i.mark_id FROM
+            t_special_item i WHERE i.goods_id = m.mark_id)
             <if test="markId != null">
                 AND m.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="theme != null">
-                AND m.theme LIKE CONCAT('%',
-                #{theme,jdbcType=VARCHAR},'%')
+                AND m.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
             </if>
             <if test="mealNo != null">
                 AND m.meal_no = #{mealNo,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
-    <select
-        id="selectByExampleSelectiveNotIcon"
-        parameterType="com.szhengzhu.bean.goods.MealInfo"
-        resultMap="BaseResultMap">
+    <select id="selectByExampleSelectiveNotIcon" parameterType="com.szhengzhu.bean.goods.MealInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM t_meal_info m
         <where>
-            m.server_status = 1
-            AND
-            NOT EXISTS (SELECT i.mark_id FROM
+            m.server_status = 1 AND NOT EXISTS (SELECT i.mark_id FROM
             t_icon_item i WHERE i.goods_id = m.mark_id)
-
             <if test="markId != null">
                 AND m.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="theme != null">
-                AND m.theme LIKE CONCAT('%',
-                #{theme,jdbcType=VARCHAR},'%')
+                AND m.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
             </if>
             <if test="mealNo != null">
                 AND m.meal_no = #{mealNo,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
-    <select
-        id="selectLabelMeal"
-        parameterType="java.lang.String"
-        resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
+    <select id="selectLabelMeal" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.GoodsBase">
         SELECT m.mark_id AS goodsId,m.theme AS goodsName,m.description,
-        (SELECT image_path FROM t_meal_image WHERE meal_id=m.mark_id AND
-        server_type=0 limit 1) AS goodImage,
-        m.sale_price AS salePrice ,
-        IF(s.promotion_mode IS NULL,m.sale_price,
-        CASE WHEN
-        s.promotion_mode=0 THEN
-        m.sale_price-s.price
-        WHEN
-        s.promotion_mode=1 THEN
-        m.sale_price * s.discount
-        END) AS
-        specialPrice,
-        c.image_path AS iconPath, 2 AS productType
-        FROM
-        t_label_goods l LEFT JOIN
-        t_meal_info m ON l.goods_id=m.mark_id
-        LEFT JOIN
-        (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
-        FROM t_special_info s LEFT JOIN
-        t_special_item i ON
-        s.mark_id=i.special_id
-        WHERE s.server_status=1 AND
-        s.promotion_type=1 AND
-        (CASE WHEN s.start_time IS NOT NULL THEN
-        s.start_time <![CDATA[ < ]]>
-        NOW()
-        ELSE
-        1=1
-        END) AND
-        (CASE WHEN s.end_time IS NOT NULL THEN
-        s.end_time <![CDATA[ > ]]>
-        NOW()
-        ELSE
-        1=1
-        END)) s ON m.mark_id=s.goods_id LEFT JOIN
-        (SELECT
-        i.image_path, t.goods_id
-        FROM t_icon_info i LEFT JOIN
-        t_icon_item
-        t ON i.mark_id=t.icon_id
-        WHERE i.server_status=1 AND t.mark_id IS
-        NOT NULL) c ON
-        m.mark_id=c.goods_id
-        WHERE
-        l.label_id=#{labelId,jdbcType=VARCHAR}
-        AND l.server_status=1 AND
-        m.mark_id IS NOT NULL AND
-        m.server_status=1 AND m.server_status=1
+              (SELECT image_path FROM t_meal_image WHERE meal_id=m.mark_id AND server_type=0 limit 1) AS goodImage,
+               m.sale_price AS salePrice ,
+               IF(s.promotion_mode IS NULL,m.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN
+                           m.sale_price-s.price
+                       WHEN s.promotion_mode=1 THEN
+                           m.sale_price * s.discount
+                  END) AS specialPrice,
+               c.image_path AS iconPath, 2 AS productType
+        FROM t_label_goods l LEFT JOIN
+             t_meal_info m ON l.goods_id=m.mark_id LEFT JOIN
+             (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
+              FROM t_special_info s LEFT JOIN
+                   t_special_item i ON s.mark_id=i.special_id
+              WHERE s.server_status=1 AND s.promotion_type=1 AND
+                    (CASE WHEN s.start_time IS NOT NULL THEN
+                              s.start_time <![CDATA[ < ]]> NOW()
+                          ELSE 1=1
+                     END) AND
+                    (CASE WHEN s.end_time IS NOT NULL THEN
+                              s.end_time <![CDATA[ > ]]> NOW()
+                          ELSE 1=1
+                     END)) s ON m.mark_id=s.goods_id LEFT JOIN
+             (SELECT i.image_path, t.goods_id
+              FROM t_icon_info i LEFT JOIN
+                   t_icon_item t ON i.mark_id=t.icon_id
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON m.mark_id=c.goods_id
+        WHERE l.label_id=#{labelId,jdbcType=VARCHAR} AND l.server_status=1 AND m.mark_id IS NOT NULL AND m.server_status=1 AND m.server_status=1
         ORDER BY l.sort
     </select>
-    <select
-        id="selectById"
-        parameterType="java.lang.String"
-        resultType="com.szhengzhu.bean.wechat.vo.GoodsInfoVo">
-        SELECT m.mark_id AS goodsId,m.theme AS
-        goodsName,m.description,c.content,m.sale_price AS basePice,
-        IF(s.promotion_mode IS NULL,m.sale_price,
-        CASE WHEN
-        s.promotion_mode=0 THEN
-        m.sale_price-s.price
-        WHEN
-        s.promotion_mode=1 THEN
-        m.sale_price * s.discount
-        END) AS
-        salePrice,
-        c.image_path AS iconPath, 2 AS productType,
-        (SELECT
-        SUM(j.star)/SUM(5) FROM t_meal_judge j WHERE j.meal_id=m.mark_id
-        GROUP BY j.meal_id) AS praise
+    <select id="selectById" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.GoodsDetail">
+        SELECT m.mark_id AS goodsId,m.theme AS goodsName,m.description,c.content,m.sale_price AS basePice,
+               IF(s.promotion_mode IS NULL,m.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN
+                           m.sale_price-s.price
+                       WHEN s.promotion_mode=1 THEN
+                           m.sale_price * s.discount
+                  END) AS salePrice,
+               c.image_path AS iconPath, 2 AS productType,
+               (SELECT SUM(j.star)/SUM(5) FROM t_meal_judge j WHERE j.meal_id=m.mark_id GROUP BY j.meal_id) AS praise
+        FROM t_meal_info m LEFT JOIN t_meal_content c ON m.mark_id=c.meal_id LEFT JOIN
+             (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
+              FROM t_special_info s LEFT JOIN t_special_item i ON s.mark_id=i.special_id
+              WHERE s.server_status=1 AND s.promotion_type=1 AND
+                    (CASE WHEN s.start_time IS NOT NULL THEN
+                              s.start_time <![CDATA[ < ]]> NOW()
+                          ELSE 1=1
+                     END) AND
+                    (CASE WHEN s.end_time IS NOT NULL THEN
+                              s.end_time <![CDATA[ > ]]> NOW()
+                          ELSE 1=1
+                     END)) s ON m.mark_id=s.goods_id LEFT JOIN
+             (SELECT i.image_path, t.goods_id FROM t_icon_info i LEFT JOIN t_icon_item t ON i.mark_id=t.icon_id
+              WHERE i.server_status=1 AND t.mark_id IS NOT NULL) c ON m.mark_id=c.goods_id
+        WHERE m.mark_id=#{mealId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectMealInfo" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.StockBase">
+        SELECT m.mark_id AS goodsId, m.sale_price AS basePrice,m.meal_no AS goodsNo,
+               IF(s.promotion_mode IS NULL,m.sale_price,
+                  CASE WHEN s.promotion_mode=0 THEN
+                           m.sale_price-s.price
+                       WHEN s.promotion_mode=1 THEN
+                           m.sale_price * s.discount
+                  END) AS salePrice
         FROM t_meal_info m LEFT JOIN
-        t_meal_content c ON m.mark_id=c.meal_id LEFT JOIN
-        (SELECT
-        s.promotion_mode,s.price,s.discount,i.goods_id
-        FROM
-        t_special_info s LEFT JOIN
-        t_special_item i ON
-        s.mark_id=i.special_id
-        WHERE s.server_status=1 AND
-        s.promotion_type=1 AND
-        (CASE WHEN s.start_time IS NOT NULL THEN
-        s.start_time <![CDATA[ < ]]>
-        NOW()
-        ELSE
-        1=1
-        END) AND
-        (CASE WHEN s.end_time IS NOT NULL THEN
-        s.end_time <![CDATA[ > ]]>
-        NOW()
-        ELSE
-        1=1
-        END)) s ON m.mark_id=s.goods_id LEFT JOIN
-        (SELECT
-        i.image_path, t.goods_id
-        FROM t_icon_info i LEFT JOIN
-        t_icon_item
-        t ON i.mark_id=t.icon_id
-        WHERE i.server_status=1 AND t.mark_id IS
-        NOT NULL) c ON
-        m.mark_id=c.goods_id
-        WHERE
-        m.mark_id=#{mealId,jdbcType=VARCHAR}
+            (SELECT s.promotion_mode,s.price,s.discount,i.goods_id
+             FROM t_special_info s LEFT JOIN t_special_item i ON s.mark_id=i.special_id
+             WHERE s.server_status=1 AND s.promotion_type=1 AND
+                   (CASE WHEN s.start_time IS NOT NULL THEN 
+                             s.start_time <![CDATA[ < ]]> NOW()
+                         ELSE 1=1
+                    END) AND
+                   (CASE WHEN s.end_time IS NOT NULL THEN 
+                             s.end_time <![CDATA[ > ]]> NOW()
+                         ELSE 1=1
+                    END)) AS s ON m.mark_id=s.goods_id
+        WHERE m.mark_id=#{mealId,jdbcType=VARCHAR}
+        AND m.server_status=1
     </select>
 </mapper>

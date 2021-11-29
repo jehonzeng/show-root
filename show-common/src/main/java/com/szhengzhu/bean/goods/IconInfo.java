@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 商品活动促销标识信息
  * 
@@ -17,6 +19,7 @@ public class IconInfo implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String theme;
 
     private String imagePath;

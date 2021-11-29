@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CommodityMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.Commodity">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="in_discount" jdbcType="BIT" property="inDiscount"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <resultMap id="BaseResultMapPage" type="com.szhengzhu.bean.ordering.vo.CommodityPageVo" extends="BaseResultMap">
+        <result column="unit" jdbcType="VARCHAR" property="unit"/>
+        <result column="base_price" jdbcType="DECIMAL" property="basePrice"/>
+        <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
+        <result column="member_price" jdbcType="DECIMAL" property="memberPrice"/>
+        <result column="imgId" jdbcType="VARCHAR" property="imgId"/>
+        <result column="cates" jdbcType="VARCHAR" property="cates"/>
+    </resultMap>
+    <resultMap id="ModelResultMap" type="com.szhengzhu.bean.xwechat.vo.CommodityModel">
+        <id column="commId" jdbcType="VARCHAR" property="commId"/>
+        <result column="commCode" jdbcType="VARCHAR" property="commCode"/>
+        <result column="commName" jdbcType="VARCHAR" property="commName"/>
+        <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+        <result column="quantity" jdbcType="VARCHAR" property="quantity"/>
+        <result column="tagImgs" jdbcType="VARCHAR" property="tagImgs"/>
+        <result column="imgs" jdbcType="VARCHAR" property="imgs"/>
+        <collection property="priceList" ofType="com.szhengzhu.bean.xwechat.vo.PriceModel">
+            <id column="priceId" jdbcType="VARCHAR" property="priceId"/>
+            <result column="unit" jdbcType="VARCHAR" property="unit"/>
+            <result column="minPoint" jdbcType="INTEGER" property="minPoint"/>
+            <result column="maxPoint" jdbcType="INTEGER" property="maxPoint"/>
+            <result column="priceType" jdbcType="INTEGER" property="priceType" />
+            <result column="salePrice" jdbcType="DECIMAL" property="salePrice"/>
+            <result column="integralPrice" jdbcType="DECIMAL" property="integralPrice"/>
+            <result column="defaults" jdbcType="BIT" property="defaults"/>
+        </collection>
+        <collection property="specsList" ofType="com.szhengzhu.bean.xwechat.vo.SpecsModel">
+            <result column="specsName" jdbcType="VARCHAR" property="specsName"/>
+            <result column="min_value" jdbcType="INTEGER" property="minValue"/>
+            <result column="max_value" jdbcType="INTEGER" property="maxValue"/>
+            <collection property="itemList" ofType="com.szhengzhu.bean.xwechat.vo.ItemModel">
+                <id column="itemId" jdbcType="VARCHAR" property="itemId"/>
+                <result column="itemName" jdbcType="VARCHAR" property="itemName"/>
+                <result column="markupPrice" jdbcType="DECIMAL" property="markupPrice"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="BaseResultMapVo" type="com.szhengzhu.bean.ordering.vo.CommodityVo" extends="BaseResultMap">
+    </resultMap>
+    <sql id="Base_Column_List">
+        c.mark_id, c.code, c.name, c.store_id, c.type, c.introduction, c.quantity, c.in_discount, c.creator, c.create_time, c.modifier, c.modify_time, c.status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_commodity_info c
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_commodity_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.Commodity">
+        insert into t_commodity_info (mark_id, code, name, store_id,
+                                      type, introduction, quantity,in_discount, creator, create_time, modifier,
+                                      modify_time, status)
+        values (#{markId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{storeId,jdbcType=VARCHAR},
+                #{type,jdbcType=INTEGER}, #{introduction,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},#{inDiscount,jdbcType=BIT},
+                #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.Commodity">
+        insert into t_commodity_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="inDiscount != null">
+                in_discount,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="introduction != null">
+                #{introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="inDiscount != null">
+                #{inDiscount,jdbcType=BIT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.Commodity">
+        update t_commodity_info
+        <set>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="inDiscount != null">
+                in_discount = #{inDiscount,jdbcType=BIT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.Commodity">
+        update t_commodity_info
+        set code         = #{code,jdbcType=VARCHAR},
+            name         = #{name,jdbcType=VARCHAR},
+            store_id     = #{storeId,jdbcType=VARCHAR},
+            type         = #{type,jdbcType=INTEGER},
+            introduction = #{introduction,jdbcType=VARCHAR},
+            quantity     = #{quantity,jdbcType=INTEGER},
+            in_discount  = #{inDiscount,jdbcType=BIT},
+            creator      = #{creator,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            modifier     = #{modifier,jdbcType=VARCHAR},
+            modify_time  = #{modifyTime,jdbcType=TIMESTAMP},
+            status       = #{status,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.param.CommodityParam"
+            resultMap="BaseResultMapPage">
+        SELECT
+        <include refid="Base_Column_List"/>,
+        (SELECT img_id FROM t_commodity_img WHERE commodity_id=c.mark_id ORDER BY sort LIMIT 1) AS imgId,
+        (SELECT GROUP_CONCAT(`name`) from t_category_commodity cc LEFT JOIN t_category_info ON cc.category_id=mark_id
+        WHERE cc.commodity_id=c.mark_id) AS cates
+        FROM t_commodity_info c
+        WHERE STATUS <![CDATA[<>]]> -1
+        <if test="code != null and code != ''">
+            and code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="storeId != null and storeId != ''">
+            and store_id = #{storeId,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+            and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="status != null">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="selectByCate" parameterType="com.szhengzhu.bean.ordering.param.CommodityParam"
+            resultMap="BaseResultMapPage">
+        select
+        <include refid="Base_Column_List"/>,
+        (SELECT img_id FROM t_commodity_img ORDER BY sort LIMIT 1) AS imgId,
+        (SELECT GROUP_CONCAT(`name`) from t_category_commodity cc LEFT JOIN t_category_info ON cc.category_id=mark_id
+        WHERE cc.commodity_id=c.mark_id) AS cates
+        from t_commodity_info c LEFT JOIN t_category_commodity cc on c.mark_id=cc.commodity_id
+        where status <![CDATA[<>]]> -1
+        <if test="code != null and code != ''">
+            and code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="storeId != null and storeId != ''">
+            and store_id = #{storeId,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+            and type = #{type,jdbcType=INTEGER}
+        </if>
+        <if test="status != null">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+        <choose>
+            <when test="cateId == -1">
+                and category_id is null
+            </when>
+            <when test="cateId != null and cateId != -1">
+                and category_id=#{cateId,jdbcType=VARCHAR}
+            </when>
+        </choose>
+    </select>
+    <update id="updateBatchStatus" parameterType="java.util.List">
+        update t_commodity_info
+        set status = #{status,jdbcType=INTEGER}, modify_time = NOW()
+        where mark_id in
+        <foreach collection="commodityIds" index="index" item="commodityId" open="(" separator="," close=")">
+            #{commodityId}
+        </foreach>
+    </update>
+    <select id="selectVoById" parameterType="java.lang.String" resultMap="BaseResultMapVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_commodity_info c
+        where mark_id = #{commodityId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByName" parameterType="java.lang.String" resultType="java.util.Map">
+        select mark_id as markId, name
+        from t_commodity_info
+        where status <![CDATA[<>]]> -1
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+        </if>
+    </select>
+    <select id="selectResCommodity" parameterType="java.lang.String" resultMap="ModelResultMap">
+        SELECT i.mark_id                 AS commId,
+               i.`code`                  AS commCode,
+               i.`name`                  AS commName,
+               i.introduction,
+               i.quantity,
+               p.mark_id                 AS priceId,
+               p.unit,
+               IFNULL(p.min_point, 0)    AS minPoint,
+               IFNULL(p.max_point, 0)    AS maxPoint,
+               IFNULL(p.sale_price, 0)   as salePrice,
+               p.defaults,
+               s.`name`                  AS specsName,
+               cs.min_value              AS min_value,
+               cs.max_value              AS max_value,
+               ci.item_id                AS itemId,
+               si.`name`                 AS itemName,
+               ci.markup_price           AS markupPrice
+        FROM t_category_commodity cc
+                 LEFT JOIN
+             t_commodity_info i ON cc.commodity_id = i.mark_id
+                 LEFT JOIN t_commodity_price p ON i.mark_id = p.commodity_id
+                 LEFT JOIN
+             t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
+                 LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
+                 LEFT JOIN
+             t_specs_info s ON ci.specs_id = s.mark_id
+                 LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
+        WHERE i.`status`<![CDATA[ <>]]> -1
+          AND p.mark_id IS NOT NULL
+          AND cc.category_id = #{cateId,jdbcType=VARCHAR}
+          AND i.store_id = #{storeId,jdbcType=VARCHAR}
+        ORDER BY cc.sort, convert(i.name using gbk), p.defaults DESC, p.create_time
+    </select>
+    <select id="selectLjsCommodity" parameterType="java.lang.String" resultMap="ModelResultMap">
+        SELECT i.mark_id                           AS commId,
+               i.`code`                            AS commCode,
+               i.`name`                            AS commName,
+               i.introduction,
+               i.quantity,
+               (select GROUP_CONCAT(ii.image_path)
+                from t_commodity_img ci
+                         LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ci.img_id
+                where ci.commodity_id = i.mark_id) AS imgs,
+               (SELECT GROUP_CONCAT(ii.image_path)
+                FROM t_tag_commodity tc
+                         LEFT JOIN t_tag_info ti ON tc.tag_id = ti.mark_id
+                         LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ti.img_id
+                WHERE ti.`status` = 1
+                  AND tc.commodity_id = i.mark_id) AS tagImgs,
+               p.mark_id                           AS priceId,
+               p.unit,
+               IFNULL(p.min_point, 0)              AS minPoint,
+               IFNULL(p.max_point, 0)              AS maxPoint,
+               p.price_type                        as priceType,
+               IFNULL(p.sale_price, 0)             as salePrice,
+               IFNULL(p.integral_price, 0)         AS integralPrice,
+               p.defaults,
+               s.`name`                            AS specsName,
+               cs.min_value                        AS min_value,
+               cs.max_value                        AS max_value,
+               ci.item_id                          AS itemId,
+               si.`name`                           AS itemName,
+               ci.markup_price                     AS markupPrice
+        FROM t_category_commodity cc
+                 LEFT JOIN
+             t_commodity_info i ON cc.commodity_id = i.mark_id
+                 LEFT JOIN (select mark_id,
+                                   commodity_id,
+                                   unit,
+                                   min_point,
+                                   max_point,
+                                   price_type,
+                                   sale_price,
+                                   integral_price,
+                                   defaults,
+                                   create_time
+                            from t_commodity_price
+                            where price_type = 1
+                            UNION
+                            select mark_id,
+                                   commodity_id,
+                                   unit,
+                                   min_point,
+                                   max_point,
+                                   price_type,
+                                   sale_price,
+                                   integral_price,
+                                   defaults,
+                                   create_time
+                            from t_commodity_price
+                            where commodity_id not in
+                                  (select commodity_id from t_commodity_price where price_type = 1)) p
+                           ON i.mark_id = p.commodity_id
+                 LEFT JOIN
+             t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
+                 LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
+                 LEFT JOIN
+             t_specs_info s ON ci.specs_id = s.mark_id
+                 LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
+        WHERE i.`status` = 1
+          AND p.mark_id IS NOT NULL
+          AND cc.category_id = #{cateId,jdbcType=VARCHAR}
+          AND i.store_id = #{storeId,jdbcType=VARCHAR}
+        ORDER BY cc.sort, convert(i.name using gbk), p.defaults DESC, p.create_time
+    </select>
+</mapper>

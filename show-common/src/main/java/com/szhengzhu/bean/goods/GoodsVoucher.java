@@ -1,9 +1,10 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
 
 /**
  * 商品券信息
@@ -24,6 +25,7 @@ public class GoodsVoucher implements Serializable {
     
     private Integer productType;
 
+    @NotBlank
     private String voucherName;
 
     private BigDecimal price;

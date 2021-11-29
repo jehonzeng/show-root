@@ -1,72 +1,64 @@
 package com.szhengzhu.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.goods.GoodsJudge;
 import com.szhengzhu.bean.vo.GoodsJudgeVo;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
 import com.szhengzhu.mapper.GoodsJudgeMapper;
 import com.szhengzhu.service.GoodsJudgeService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
-import com.szhengzhu.util.TimeUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("goodsJudgeService")
 public class GoodsJudgeServiceImpl implements GoodsJudgeService {
-    
-    @Autowired
+
+    @Resource
     private GoodsJudgeMapper goodsJudgeMapper;
 
     @Override
-    public Result<?> modifyJudgeInfo(GoodsJudge base) {
-        if(base == null | base.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
+    public GoodsJudge modifyJudgeInfo(GoodsJudge base) {
         goodsJudgeMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<PageGrid<GoodsJudgeVo>> getPage(PageParam<GoodsJudge> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("j."+base.getSidx() +" "+base.getSort());
+    public PageGrid<GoodsJudgeVo> getPage(PageParam<GoodsJudge> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("j."+base.getSidx() +" "+base.getSort());
         PageInfo<GoodsJudgeVo> page= new PageInfo<>(
                 goodsJudgeMapper.selectByExampleSelective(base.getData()));
-         return new Result<>(new PageGrid<>(page));
+         return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> getJudgeInfosByGoodsId(String goodsId) {
-        if(StringUtils.isEmpty(goodsId))
-            return new Result<>(StatusCode._4008);
-        List<GoodsJudge> goodsJudge = goodsJudgeMapper.selectByGoodsId(goodsId);
-        return new Result<>(goodsJudge);
+    public List<GoodsJudge> getJudgeInfosByGoodsId(String goodsId) {
+        return goodsJudgeMapper.selectByGoodsId(goodsId);
     }
 
     @Override
-    public Result<GoodsJudge> addJudgeInfo(GoodsJudge base) {
-        if(base == null || StringUtils.isEmpty(base.getGoodsId()) )
-            return new Result<>(StatusCode._4004);
-        base.setMarkId(IdGenerator.getInstance().nexId());
+    public GoodsJudge addJudgeInfo(GoodsJudge base) {
+        Snowflake snowflake = IdUtil.getSnowflake(1,1);
+        base.setMarkId(snowflake.nextIdStr());
         base.setServerStatus(false);
-        base.setAddTime(TimeUtils.today());
+        base.setAddTime(DateUtil.date());
         goodsJudgeMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<List<JudgeBase>> list(String goodsId, String userId) {
-        List<JudgeBase> judges = goodsJudgeMapper.selectJudge(userId, goodsId, null);
-        return new Result<>(judges);
+    public List<JudgeBase> list(String goodsId, String userId) {
+        return goodsJudgeMapper.selectJudge(userId, goodsId, null);
     }
 
 }

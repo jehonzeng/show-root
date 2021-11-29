@@ -4,10 +4,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class UserCoupon implements Serializable{
+public class UserCoupon implements Serializable,Cloneable{
     
     private static final long serialVersionUID = -8781180480933079396L;
 
@@ -43,24 +49,16 @@ public class UserCoupon implements Serializable{
     
     private String limitRegion;
     
-    public UserCoupon() {}
+    private String limitTime;
     
-    public UserCoupon(UserCoupon coupon) {
-        this.markId = coupon.getMarkId();
-        this.userId = coupon.getUserId();
-        this.templateId = coupon.getTemplateId();
-        this.serverStatus = coupon.getServerStatus();
-        this.startTime = coupon.getStartTime();
-        this.stopTime = coupon.getStopTime();
-        this.useTime = coupon.getUseTime();
-        this.limitPrice = coupon.getLimitPrice();
-        this.couponPrice = coupon.getCouponPrice();
-        this.couponDiscount = coupon.getCouponDiscount();
-        this.couponName = coupon.getCouponName();
-        this.linkId = coupon.getLinkId();
-        this.linkName = coupon.getLinkName();
-        this.couponType = coupon.getCouponType();
-        this.userName = coupon.getUserName();
-        this.limitRegion = coupon.getLimitRegion();
+    @Override
+    public  UserCoupon clone(){
+        UserCoupon userCoupon = null;
+        try {
+            userCoupon = (UserCoupon) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return userCoupon;
     }
 }

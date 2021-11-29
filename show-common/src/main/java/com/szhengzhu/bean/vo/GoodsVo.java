@@ -30,5 +30,7 @@ public class GoodsVo extends GoodsInfo {
     private String brandName;
 
     private String cookerName;
+    
+    private String vaildName;//验证是否为菜品
 
 }

@@ -1,14 +1,16 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.GoodsSpecification;
+import com.szhengzhu.bean.wechat.vo.StockBase;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.GoodsSpecification;
-import com.szhengzhu.bean.wechat.vo.StockBase;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface GoodsSpecificationMapper {
     
     int deleteByPrimaryKey(String markId);

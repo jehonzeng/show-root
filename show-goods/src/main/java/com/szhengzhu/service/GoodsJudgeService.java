@@ -1,13 +1,12 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.GoodsJudge;
 import com.szhengzhu.bean.vo.GoodsJudgeVo;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface GoodsJudgeService {
 
@@ -18,7 +17,7 @@ public interface GoodsJudgeService {
      * @param base
      * @return
      */
-    Result<?> modifyJudgeInfo(GoodsJudge base);
+    GoodsJudge modifyJudgeInfo(GoodsJudge base);
 
     /**
      * 获取评论信息分页
@@ -27,7 +26,7 @@ public interface GoodsJudgeService {
      * @param base
      * @return
      */
-    Result<PageGrid<GoodsJudgeVo>> getPage(PageParam<GoodsJudge> base);
+    PageGrid<GoodsJudgeVo> getPage(PageParam<GoodsJudge> base);
 
     /**
      * 根据库存商品id获取商品的评论信息列表
@@ -36,7 +35,7 @@ public interface GoodsJudgeService {
      * @param goodsId
      * @return
      */
-    Result<?> getJudgeInfosByGoodsId(String goodsId);
+    List<GoodsJudge> getJudgeInfosByGoodsId(String goodsId);
 
     
     /**
@@ -46,7 +45,7 @@ public interface GoodsJudgeService {
      * @param base
      * @return
      */
-    Result<GoodsJudge> addJudgeInfo(GoodsJudge base);
+    GoodsJudge addJudgeInfo(GoodsJudge base);
     
     /**
      * 商城获取商品评论列表
@@ -56,5 +55,5 @@ public interface GoodsJudgeService {
      * @param userId
      * @return
      */
-    Result<List<JudgeBase>> list(String goodsId, String userId);
+    List<JudgeBase> list(String goodsId, String userId);
 }

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.PrinterInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.PrinterInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="printer_code" property="printerCode" jdbcType="VARCHAR"/>
+        <result column="port_name" property="portName" jdbcType="VARCHAR"/>
+        <result column="port_type" property="portType" jdbcType="INTEGER"/>
+        <result column="server_status" property="serverStatus" jdbcType="INTEGER"/>
+        <result column="store_id" property="storeId" jdbcType="VARCHAR"/>
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR"/>
+        <result column="tail" property="tail" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="BaseResultMapVo" type="com.szhengzhu.bean.ordering.vo.PrinterVo" extends="BaseResultMap"/>
+    <sql id="Base_Column_List">
+        mark_id, printer_code, port_name, port_type, server_status, store_id,dept_name, tail, create_time,
+        modify_time,remark,sort
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_printer_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_printer_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.PrinterInfo">
+        insert into t_printer_info (mark_id, printer_code, port_name,
+                                    port_type, server_status, store_id, dept_name, tail,
+                                    create_time, modify_time, remark, sort)
+        values (#{markId,jdbcType=VARCHAR}, #{printerCode,jdbcType=VARCHAR}, #{portName,jdbcType=VARCHAR},
+                #{portType,jdbcType=INTEGER}, #{serverStatus,jdbcType=INTEGER}, #{storeId,jdbcType=VARCHAR},
+                #{deptName,jdbcType=VARCHAR}, #{tail,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.PrinterInfo">
+        insert into t_printer_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="printerCode != null">
+                printer_code,
+            </if>
+            <if test="portName != null">
+                port_name,
+            </if>
+            <if test="portType != null">
+                port_type,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="deptName != null">
+                dept_name,
+            </if>
+            <if test="tail != null">
+                tail,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="printerCode != null">
+                #{printerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="portName != null">
+                #{portName,jdbcType=VARCHAR},
+            </if>
+            <if test="portType != null">
+                #{portType,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null">
+                #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="tail != null">
+                #{tail,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.PrinterInfo">
+        update t_printer_info
+        <set>
+            <if test="printerCode != null">
+                printer_code = #{printerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="portName != null">
+                port_name = #{portName,jdbcType=VARCHAR},
+            </if>
+            <if test="portType != null">
+                port_type = #{portType,jdbcType=INTEGER},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=INTEGER},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptName != null">
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="tail != null">
+                tail = #{tail,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.PrinterInfo">
+        update t_printer_info
+        set printer_code  = #{printerCode,jdbcType=VARCHAR},
+            port_name     = #{portName,jdbcType=VARCHAR},
+            port_type     = #{portType,jdbcType=INTEGER},
+            server_status = #{serverStatus,jdbcType=INTEGER},
+            store_id      = #{storeId,jdbcType=VARCHAR},
+            dept_name     = #{deptName,jdbcType=VARCHAR},
+            tail          = #{tail,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            modify_time   = #{modifyTime,jdbcType=TIMESTAMP},
+            remark        = #{remark,jdbcType=VARCHAR},
+            sort          = #{sort,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.PrinterInfo"
+            resultMap="BaseResultMapVo">
+        select
+        <include refid="Base_Column_List"/>
+        from t_printer_info
+        where server_status <![CDATA[<>]]> -1 and store_id=#{storeId,jdbcType=VARCHAR}
+        <if test="printerCode != null and printCode != ''">
+            and printer_code = #{printerCode,jdbcType=VARCHAR}
+        </if>
+        <if test="portName != null and portName != ''">
+            and port_name like concat('%', #{portName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="portType != null">
+            and port_type = #{portType,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <update id="updateBatchStatus" parameterType="java.util.List">
+        update t_printer_info
+        set server_status = #{status,jdbcType=INTEGER},modify_time=NOW()
+        where mark_id in
+        <foreach collection="printerIds" index="index" item="printerId" open="(" separator="," close=")">
+            #{printerId}
+        </foreach>
+    </update>
+    <select id="selectStorePrinterByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_printer_info
+        where store_id=#{storeId,jdbcType=VARCHAR} and server_status=1
+          <if test="printerCode != null and printerCode != ''">
+            and printer_code = #{printerCode,jdbcType=VARCHAR}
+          </if>
+    </select>
+</mapper>

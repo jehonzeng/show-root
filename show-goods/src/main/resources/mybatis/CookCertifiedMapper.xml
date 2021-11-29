@@ -172,11 +172,11 @@
         ,
         (SELECT u.nick_name FROM db_user.t_user_info u WHERE u.mark_id = user_id) AS userName,
         (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= cook_level) AS cookLevelName,
-        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= cook_style) AS cookStyleDesc
+        (SELECT GROUP_CONCAT(`name`) FROM db_base.t_attribute_info WHERE FIND_IN_SET(`code`,cook_style)) AS cookStyleDesc
         from t_cook_certified
         <where>
             <if test="markId != null">
-                mark_id = #{markId,jdbcType=VARCHAR},
+                mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="userId != null">
                 AND user_id = #{userId,jdbcType=VARCHAR}
@@ -220,7 +220,8 @@
                 0 AS follow
             </otherwise>
         </choose>
-        FROM t_cook_certified t LEFT JOIN v_cooker_sale_rank c ON t.mark_id=c.cooker
+        FROM t_cook_certified t LEFT JOIN v_cooker_sale_rank c ON t.mark_id=c.cooker 
+        WHERE certified=1
         <if test="number != null">
             ORDER BY c.quantity DESC
             limit #{number,jdbcType=INTEGER}
@@ -243,6 +244,7 @@
                 0 AS follow
             </otherwise>
         </choose>
-        FROM t_cook_certified t WHERE t.mark_id=#{cooker,jdbcType=VARCHAR}
+        FROM t_cook_certified t 
+        WHERE t.mark_id=#{cooker,jdbcType=VARCHAR} AND t.certified=1
     </select>
 </mapper>

@@ -1,15 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.CategoryInfo;
+import com.szhengzhu.bean.vo.Combobox;
+import com.szhengzhu.provider.CategoryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 
-import com.szhengzhu.bean.goods.CategoryInfo;
-import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.provider.CategoryProvider;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface CategoryInfoMapper {
 
     int deleteByPrimaryKey(String markId);
@@ -29,15 +31,9 @@ public interface CategoryInfoMapper {
 
     List<CategoryInfo> selectByExampleSelective(CategoryInfo record);
 
-    @Select("SELECT mark_id AS markIdValue,name AS nameKey FROM t_category_info WHERE server_status = #{serverStatus}")
-    List<Combobox> selectValidComboboxList(@Param("serverStatus") Boolean serverStatus);
-
-    @Select("SELECT mark_id AS markId,super_id AS superId,(SELECT name FROM t_category_info WHERE mark_id = super_id) AS superName ,name AS name,level AS level FROM t_category_info WHERE mark_id = #{markId}")
-    CategoryInfo selectByMark(@Param("markId") String markId);
+//    @Select("SELECT c.mark_id AS markId,c.super_id AS superId,(SELECT s.name FROM t_category_info s WHERE s.mark_id = c.super_id) AS superName ,c.name AS name,c.level AS level FROM t_category_info c WHERE c.mark_id = #{markId}")
+//    CategoryInfo selectByMark(@Param("markId") String markId);
 
     @SelectProvider(type = CategoryProvider.class, method = "selectDownList")
     List<Combobox> selectDownList(@Param("serverStatus") String serverStatus);
-
-    @Select("SELECT super_id AS code,name AS name FROM t_category_info order by sort")
-    List<Combobox> selectSuperList();
 }

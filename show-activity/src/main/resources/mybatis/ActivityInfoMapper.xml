@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ActivityInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.ActivityInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="theme" property="theme" jdbcType="VARCHAR" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
+        <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="award_url" property="awardUrl" jdbcType="VARCHAR" />
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap type="com.szhengzhu.bean.vo.ActivityModel" id="BaseResultMapVo" extends="BaseResultMap">
+        <result column="follow" property="follow" jdbcType="INTEGER" />
+        <result column="initiator_limit" property="initiatorLimit" jdbcType="VARCHAR" />
+        <result column="limited" property="limited" jdbcType="VARCHAR" />
+        <result column="helper_limit" property="helperLimit" jdbcType="VARCHAR" />
+        <result column="actLimiedDesc" property="actLimiedDesc" jdbcType="VARCHAR" />
+        <result column="initiatorLimitDesc" property="initiatorLimitDesc" jdbcType="VARCHAR" />
+        <result column="helperLimitDesc" property="helperLimitDesc" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, theme, start_time, stop_time, check_time, end_time, server_status, award_url,
+        image_path
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_activity_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_activity_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.ActivityInfo">
+        insert into t_activity_info (mark_id, theme, start_time,
+        stop_time, check_time, end_time,
+        server_status, award_url, image_path,
+        follow, limited, initiator_limited,
+        helper_limited)
+        values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP},
+        #{stopTime,jdbcType=TIMESTAMP}, #{checkTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+        #{serverStatus,jdbcType=BIT}, #{awardUrl,jdbcType=VARCHAR}, #{imagePath,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.ActivityInfo">
+        insert into t_activity_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="awardUrl != null">
+                award_url,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="awardUrl != null">
+                #{awardUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.ActivityInfo">
+        update t_activity_info
+        <set>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="awardUrl != null">
+                award_url = #{awardUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.ActivityInfo">
+        update t_activity_info
+        set theme = #{theme,jdbcType=VARCHAR},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+        server_status = #{serverStatus,jdbcType=BIT},
+        award_url = #{awardUrl,jdbcType=VARCHAR},
+        image_path = #{imagePath,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.ActivityInfo" resultMap="BaseResultMapVo">
+        select
+        a.mark_id, a.theme, a.start_time, a.stop_time, a.check_time, a.end_time, a.server_status, a.award_url,
+        a.image_path,r.follow,r.limited,r.initiator_limit,r.helper_limit,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= r.limited) as actLimiedDesc,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= r.initiator_limit) as initiatorLimitDesc,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`= r.helper_limit) as helperLimitDesc
+        from t_activity_info a left join t_activity_rule r on r.mark_id = a.mark_id
+        <where>
+            <if test="markId != null">
+                a.mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="theme != null">
+                AND a.theme LIKE CONCAT('%', #{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startTime != null">
+                AND TO_DAYS(a.start_time) = TO_DAYS(#{startTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="stopTime != null">
+                AND TO_DAYS(a.stop_time) = TO_DAYS(#{stopTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="checkTime != null">
+                AND TO_DAYS(a.check_time) = TO_DAYS(#{checkTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="endTime != null">
+                AND TO_DAYS(a.end_time) = TO_DAYS#({endTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="serverStatus != null">
+                AND a.server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="imagePath != null">
+                AND a.image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+            <if test="awardUrl != null">
+                AND a.award_url = #{awardUrl,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

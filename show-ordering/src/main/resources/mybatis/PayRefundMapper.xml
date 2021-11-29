@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.PayRefundMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.PayRefund">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="pay_id" jdbcType="VARCHAR" property="payId" />
+        <result column="refund_no" jdbcType="VARCHAR" property="refundNo" />
+        <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+        <result column="back_status" jdbcType="INTEGER" property="backStatus" />
+        <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="refund_info" jdbcType="VARCHAR" property="refundInfo" />
+        <result column="back_info" jdbcType="VARCHAR" property="backInfo" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, pay_id, refund_no, refund_status, back_status, total_fee, create_time, modify_time,
+        refund_info, back_info
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_pay_refund
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_pay_refund
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.PayRefund">
+        insert into t_pay_refund (mark_id, pay_id, refund_no,
+        refund_status, back_status, total_fee,
+        create_time, modify_time, refund_info,
+        back_info)
+        values (#{markId,jdbcType=VARCHAR}, #{payId,jdbcType=VARCHAR}, #{refundNo,jdbcType=VARCHAR},
+        #{refundStatus,jdbcType=INTEGER}, #{backStatus,jdbcType=INTEGER}, #{totalFee,jdbcType=DECIMAL},
+        #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{refundInfo,jdbcType=VARCHAR},
+        #{backInfo,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.PayRefund">
+        insert into t_pay_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="payId != null">
+                pay_id,
+            </if>
+            <if test="refundNo != null">
+                refund_no,
+            </if>
+            <if test="refundStatus != null">
+                refund_status,
+            </if>
+            <if test="backStatus != null">
+                back_status,
+            </if>
+            <if test="totalFee != null">
+                total_fee,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="refundInfo != null">
+                refund_info,
+            </if>
+            <if test="backInfo != null">
+                back_info,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="payId != null">
+                #{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="refundNo != null">
+                #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                #{refundStatus,jdbcType=INTEGER},
+            </if>
+            <if test="backStatus != null">
+                #{backStatus,jdbcType=INTEGER},
+            </if>
+            <if test="totalFee != null">
+                #{totalFee,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refundInfo != null">
+                #{refundInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="backInfo != null">
+                #{backInfo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.PayRefund">
+        update t_pay_refund
+        <set>
+            <if test="payId != null">
+                pay_id = #{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="refundNo != null">
+                refund_no = #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                refund_status = #{refundStatus,jdbcType=INTEGER},
+            </if>
+            <if test="backStatus != null">
+                back_status = #{backStatus,jdbcType=INTEGER},
+            </if>
+            <if test="totalFee != null">
+                total_fee = #{totalFee,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refundInfo != null">
+                refund_info = #{refundInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="backInfo != null">
+                back_info = #{backInfo,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.PayRefund">
+        update t_pay_refund
+        set pay_id = #{payId,jdbcType=VARCHAR},
+        refund_no = #{refundNo,jdbcType=VARCHAR},
+        refund_status = #{refundStatus,jdbcType=INTEGER},
+        back_status = #{backStatus,jdbcType=INTEGER},
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+        refund_info = #{refundInfo,jdbcType=VARCHAR},
+        back_info = #{backInfo,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_pay_refund
+        where refund_no = #{refundNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

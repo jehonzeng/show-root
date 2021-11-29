@@ -1,172 +1,176 @@
 package com.szhengzhu.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.szhengzhu.application.WechatConfig;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.client.ShowUserClient;
 import com.szhengzhu.bean.base.ImageInfo;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.user.UserToken;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.config.FtpServer;
+import com.szhengzhu.config.WechatConfig;
+import com.szhengzhu.core.Contacts;
+import com.szhengzhu.core.LoginBase;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.redis.Redis;
 import com.szhengzhu.util.SmsUtils;
-import com.szhengzhu.util.StringUtils;
 import com.szhengzhu.util.WechatUtils;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import weixin.popular.api.SnsAPI;
 import weixin.popular.bean.sns.SnsToken;
 import weixin.popular.bean.user.User;
 
-@Api(tags = {"登录模块：LoginController"})
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author Jehon Zeng
+ */
+@Slf4j
+@Api(tags = {"登录专题：LoginController"})
 @RestController
 public class LoginController {
-    
-    @Resource 
+
+    @Resource
+    private Redis redis;
+
+    @Resource
     private ShowUserClient showUserClient;
-    
+
     @Resource
     private WechatConfig wechatConfig;
-    
+
     @Resource
     private ShowBaseClient showBaseClient;
 
+    @Resource
+    private FtpServer ftpServer;
+
+    private static final String CODE_CACHE_PRE = "wechat:code:send:";
+
     @ApiOperation(value = "用户静默授权", notes = "用户静默授权")
-    @RequestMapping(value = "/wechat", method = RequestMethod.GET)
-    public Result<?> wechat(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    @GetMapping(value = "/wechat")
+    public Result wechat(HttpServletRequest request) {
         String code = request.getParameter("code");
-        SnsToken token = SnsAPI.oauth2AccessToken(wechatConfig.getAppid(), wechatConfig.getSecret(), code);
-        if (token != null && token.isSuccess()) {
-            String openId = token.getOpenid();
-            Result<UserInfo> userResult = showUserClient.getUserByOpenId(openId);
-            if (userResult.getCode().equals("200") && userResult.getData() == null) {
-                return new Result<>(StatusCode._4012);
-            } else if (userResult.isSuccess()) {
-                Map<String, String> resultMap = new HashMap<>();
-                UserInfo user = userResult.getData();
-                Result<UserToken> tokenResult = showUserClient.addUserToken(user.getMarkId());
-                resultMap.put("token", tokenResult.getData().getToken());
-                return new Result<>(resultMap);
-            } else {
-                return new Result<>(StatusCode._5000);
-            }
-        }
-        return new Result<>(StatusCode._5004); 
+        SnsToken token = SnsAPI.oauth2AccessToken(wechatConfig.getAppId(), wechatConfig.getSecret(), code);
+        ShowAssert.checkTrue((token == null || !token.isSuccess()), StatusCode._5004);
+        String openId = token.getOpenid();
+        Result<UserInfo> userResult = showUserClient.getUserByOpenId(openId);
+        ShowAssert.checkTrue(!userResult.isSuccess(), StatusCode._4012);
+        Map<String, String> resultMap = new HashMap<>(2);
+        UserInfo user = userResult.getData();
+        Result<UserToken> tokenResult = showUserClient.addUserToken(user.getMarkId());
+        resultMap.put("token", tokenResult.getData().getToken());
+        return new Result<>(resultMap);
     }
-    
+
     @ApiOperation(value = "用户非静默授权", notes = "用户非静默授权")
-    @RequestMapping(value = "/oauthWechat", method = RequestMethod.GET)
-    public Result<?> oauthWechat(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    @GetMapping(value = "/oauthWechat")
+    public Result oauthWechat(HttpServletRequest request) {
         String code = request.getParameter("code");
-        SnsToken token = SnsAPI.oauth2AccessToken(wechatConfig.getAppid(), wechatConfig.getSecret(), code);
-        if (token != null && token.isSuccess()) {
-            String openId = token.getOpenid();
-            String accessToken = token.getAccess_token();
-            String refreshToken = token.getRefresh_token();
-            User wxUser = WechatUtils.getWxUser(wechatConfig.getAppid(), openId, accessToken, refreshToken);
-            UserInfo userInfo = getUserInfo(openId, wxUser);
-            if (userInfo == null)
-                return new Result<>(StatusCode._5000);
-            Result<UserToken> tokenResult = showUserClient.addUserToken(userInfo.getMarkId());
-            if (tokenResult.isSuccess()) {
-                Map<String, String> resultMap = new HashMap<>();
-                resultMap.put("token", tokenResult.getData().getToken());
-                return new Result<>(resultMap);
-            } else {
-                return new Result<>(StatusCode._5000);  //5000错误一律为feign请求发生错误统称为服务器异常
-            }
-            
-        }
-        return new Result<>(StatusCode._5004); 
-    }   
-    
-    private UserInfo getUserInfo(String openId, User wxUser) {
+        SnsToken token = SnsAPI.oauth2AccessToken(wechatConfig.getAppId(), wechatConfig.getSecret(), code);
+        ShowAssert.checkTrue((token == null || !token.isSuccess()), StatusCode._5004);
+        String openId = token.getOpenid();
+        String accessToken = token.getAccess_token();
+        String refreshToken = token.getRefresh_token();
+        User wxUser = WechatUtils.getWxUser(wechatConfig.getAppId(), openId, accessToken, refreshToken);
         UserInfo userInfo = null;
         if (wxUser.isSuccess()) {
-            Result<UserInfo> userResult = showUserClient.getUserByOpenId(openId);
-            if (userResult.getCode().equals("200") && userResult.getData() == null) {
-                ImageInfo imageInfo = WechatUtils.downLoadImage(wxUser.getHeadimgurl());
-                showBaseClient.addImgInfo(imageInfo);
-                userInfo = new UserInfo();
-                userInfo.setNickName(wxUser.getNickname());
-                userInfo.setHeaderImg(imageInfo.getMarkId());
-                userInfo.setGender(wxUser.getSex());
-                userInfo.setCity(wxUser.getCity());
-                userInfo.setProvince(wxUser.getProvince());
-                userInfo.setCountry(wxUser.getCountry());
-                userInfo.setLanguage(wxUser.getLanguage());
-                userInfo.setUserLevel("");
-                userInfo.setWopenId(openId);
-                userInfo.setUnionId(wxUser.getUnionid());
-                userInfo.setWechatStatus(wxUser.getSubscribe());
-                userInfo = showUserClient.addUser(userInfo).getData();
-            } else if (userResult.getCode().equals("200") && userResult.getData() != null) {
-                userInfo = userResult.getData();
-            }
+            userInfo = getUserInfo(openId, wxUser);
         }
-        return userInfo;
+        ShowAssert.checkNull(userInfo, StatusCode._5000);
+        Result<UserToken> tokenResult = showUserClient.addUserToken(userInfo.getMarkId());
+        // 5000错误一律为feign请求发生错误统称为服务器异常
+        ShowAssert.checkTrue(!tokenResult.isSuccess(), StatusCode._5000);
+        Map<String, String> resultMap = new HashMap<>(4);
+        resultMap.put("token", tokenResult.getData().getToken());
+        return new Result<>(resultMap);
     }
-    
+
+    /**
+     * 获取用户信息
+     *
+     * @param openId
+     * @param wxUser
+     * @return
+     */
+    private UserInfo getUserInfo(String openId, User wxUser) {
+        Result<UserInfo> userResult = showUserClient.getUserByOpenId(openId);
+        if (userResult.isSuccess()) {
+            return userResult.getData();
+        }
+        if (!Contacts.SUCCESS_CODE.equals(userResult.getCode())) {
+            return null;
+        }
+        String headerImg = null;
+        ImageInfo imageInfo = WechatUtils.downLoadImage(ftpServer, wxUser.getHeadimgurl());
+        if (ObjectUtil.isNotNull(imageInfo)) {
+            showBaseClient.addImgInfo(imageInfo);
+            headerImg = imageInfo.getMarkId();
+        }
+        return createUser(wxUser, headerImg, openId);
+    }
+
+    /**
+     * 创建新用户
+     *
+     * @param wxUser
+     * @param headerImg
+     * @param openId
+     * @return
+     */
+    private UserInfo createUser(User wxUser, String headerImg, String openId) {
+        UserInfo userInfo = UserInfo.builder().nickName(wxUser.getNickname()).headerImg(headerImg)
+                .gender(wxUser.getSex()).city(wxUser.getCity()).province(wxUser.getProvince()).country(wxUser.getCountry())
+                .language(wxUser.getLanguage()).userLevel("").wopenId(openId).unionId(wxUser.getUnionid()).wechatStatus(wxUser.getSubscribe())
+                .createTime(DateUtil.date()).build();
+        return showUserClient.addUser(userInfo).getData();
+    }
+
     @ApiOperation(value = "用户手机发送验证码", notes = "用户手机发送验证码")
-    @RequestMapping(value = "/code", method = RequestMethod.GET)
-    public Result<String> getCode(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    @GetMapping(value = "/code")
+    public void getCode(HttpServletRequest request) {
         String phone = request.getParameter("phone");
-        if (StringUtils.isEmpty(phone))
-            return new Result<>(StatusCode._4004);
-        int time = (int) session.getAttribute("time");
-        if (time > 6) 
-            return new Result<>(StatusCode._4001);
-        session.setAttribute("time", time);
-        String code = (String) session.getAttribute("smsCode");
-        if (code == null || code.length() != 6) {
-            code = (int)((Math.random() * 9 + 1) * 100000) + "";
-        }
-        Result<String> result = SmsUtils.send(phone, code);
-        if (result.getCode().equals("200")) {
-            session.setAttribute("userPhone", phone);
-            session.setAttribute("smsCode", code);
-            session.setAttribute("send_time", System.currentTimeMillis());
-            session.setMaxInactiveInterval(60);
-            return new Result<>();
-        }
-        return result;
+        ShowAssert.checkTrue(!Validator.isMobile(phone), StatusCode._4000);
+        int sendTimes = 6;
+        String codeCacheKey = CODE_CACHE_PRE + phone;
+        Object obj = redis.get(codeCacheKey);
+        LoginBase loginBase = ObjectUtil.isNull(obj) ? new LoginBase(phone) : JSON.parseObject(JSON.toJSONString(obj), LoginBase.class);
+        ShowAssert.checkTrue(loginBase.isOften(sendTimes), StatusCode._4001);
+        loginBase.refresh(phone);
+        redis.set(codeCacheKey, loginBase, 3 * 60);
+        SmsUtils.send(phone, loginBase.getCode());
+        log.info("{}的验证码：{}", phone, loginBase.getCode());
     }
-    
-    public Result<?> login(HttpServletRequest request, HttpSession session) {
+
+    @ApiOperation(value = "用户网页登录商城", notes = "用户网页登录商城")
+    @GetMapping(value = "/web/login")
+    public Result login(HttpServletRequest request) {
         String phone = request.getParameter("phone");
         String code = request.getParameter("code");
-        String userPhone = (String) session.getAttribute("userPhone");
-        String smsCode = (String) session.getAttribute("smsCode");
-        if ((phone.equals(userPhone) && code.equals(smsCode))) {
-            Long long_time = (Long) session.getAttribute("long_time");
-            boolean time_out = System.currentTimeMillis() - long_time.longValue() > 600000;
-            if (time_out)
-                return new Result<>(StatusCode._4003);
-        } else {
-            return new Result<>(StatusCode._4002);
-        }
+        String codeCacheKey = CODE_CACHE_PRE + phone;
+        Object obj = redis.get(codeCacheKey);
+        ShowAssert.checkNull(obj, StatusCode._4003);
+        LoginBase loginBase = JSON.parseObject(JSON.toJSONString(obj), LoginBase.class);
+        ShowAssert.checkTrue(!loginBase.equals(phone, code), StatusCode._4002);
+        redis.del(codeCacheKey);
         Result<UserInfo> userResult = showUserClient.getUserByPhone(phone);
-        if (userResult.isSuccess()) {
-            Result<UserToken> tokenResult = showUserClient.addUserToken(userResult.getData().getMarkId());
-            if (tokenResult.isSuccess()) {
-                Map<String, String> resultMap = new HashMap<>();
-                resultMap.put("token", tokenResult.getData().getToken());
-                return new Result<>(resultMap);
-            } 
-        }
-        return new Result<>(StatusCode._5000);  //5000错误一律为feign请求发生错误统称为服务器异常
+        // 5000错误一律为feign请求发生错误统称为服务器异常
+        ShowAssert.checkTrue(!userResult.isSuccess(), StatusCode._5000);
+        Result<UserToken> tokenResult = showUserClient.addUserToken(userResult.getData().getMarkId());
+        ShowAssert.checkTrue(!tokenResult.isSuccess(), StatusCode._5000);
+        Map<String, String> resultMap = new HashMap<>(4);
+        resultMap.put("token", tokenResult.getData().getToken());
+        return new Result<>(resultMap);
     }
-    
 }

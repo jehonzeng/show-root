@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Select;
 
 import com.szhengzhu.bean.goods.GoodsContent;
 
+/**
+ * @author Administrator
+ */
 public interface GoodsContentMapper {
     
     int deleteByPrimaryKey(String markId);
@@ -21,6 +24,6 @@ public interface GoodsContentMapper {
 
     int updateByPrimaryKey(GoodsContent record);
     
-    @Select("SELECT mark_id AS markId,content AS content FROM t_goods_content WHERE goods_id = #{goodsId}")
+    @Select("SELECT mark_id AS markId,goods_id AS goodsId,content AS content FROM t_goods_content WHERE goods_id = #{goodsId}")
     GoodsContent selectByGoodsId(@Param("goodsId") String goodsId);
 }

@@ -193,30 +193,30 @@
             </if>
             <if test="name != null">
                 AND name like
-                CONTACT('%',#{name,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{name,jdbcType=VARCHAR},'%')
             </if>
             <if test="contact != null">
                 AND contact like
-                CONTACT('%',#{contact,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{contact,jdbcType=VARCHAR},'%')
             </if>
             <if test="phone != null">
                 AND phone = #{phone,jdbcType=VARCHAR}
             </if>
             <if test="area != null">
                 AND area like
-                CONTACT('%',#{area,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{area,jdbcType=VARCHAR},'%')
             </if>
             <if test="city != null">
                 AND city like
-                CONTACT('%',#{city,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{city,jdbcType=VARCHAR},'%')
             </if>
             <if test="province != null">
                 AND province like
-                CONTACT('%',#{province,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{province,jdbcType=VARCHAR},'%')
             </if>
             <if test="country != null">
                 AND country like
-                CONTACT('%',#{country,jdbcType=VARCHAR},'%')
+                CONCAT('%',#{country,jdbcType=VARCHAR},'%')
             </if>
             <if test="address != null">
                 AND address = #{address,jdbcType=VARCHAR}

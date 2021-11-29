@@ -1,10 +1,12 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+
 /**
  * 商品图片信息
  * 
@@ -20,6 +22,7 @@ public class GoodsImage implements Serializable {
     @ApiModelProperty(value = "ID", name = "markId")
     private String markId;
 
+    @NotBlank
     @ApiModelProperty(value = "关联基础商品", name = "goodsId")
     private String goodsId;
 

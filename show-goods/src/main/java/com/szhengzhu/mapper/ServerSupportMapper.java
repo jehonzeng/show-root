@@ -1,15 +1,18 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-import java.util.Map;
-
+import com.szhengzhu.bean.goods.ServerSupport;
+import com.szhengzhu.bean.vo.Combobox;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.ServerSupport;
-import com.szhengzhu.bean.vo.Combobox;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 public interface ServerSupportMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(ServerSupport record);

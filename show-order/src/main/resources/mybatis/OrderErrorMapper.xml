@@ -8,10 +8,10 @@
     <result column="error_type" jdbcType="INTEGER" property="errorType" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="user_mark" jdbcType="VARCHAR" property="userMark" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
   </resultMap>
   <sql id="Base_Column_List">
-    mark_id, order_no, error_info, error_type, add_time, user_mark, type
+    mark_id, order_no, error_info, error_type, add_time, user_mark, order_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -25,10 +25,10 @@
   </delete>
   <insert id="insert" parameterType="com.szhengzhu.bean.order.OrderError">
     insert into t_order_error (mark_id, order_no, error_info, 
-      error_type, add_time, user_mark,type)
+      error_type, add_time, user_mark, order_type)
     values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{errorInfo,jdbcType=VARCHAR}, 
       #{errorType,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{userMark,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER})
+      #{orderType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.OrderError">
     insert into t_order_error
@@ -51,8 +51,8 @@
       <if test="userMark != null">
         user_mark,
       </if>
-      <if test="type != null">
-        type,
+      <if test="orderType != null">
+        order_type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -74,8 +74,8 @@
       <if test="userMark != null">
         #{userMark,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="orderType != null">
+        #{orderType,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -97,8 +97,8 @@
       <if test="userMark != null">
         user_mark = #{userMark,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=INTEGER},
       </if>
     </set>
     where mark_id = #{markId,jdbcType=VARCHAR}
@@ -110,7 +110,7 @@
       error_type = #{errorType,jdbcType=INTEGER},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       user_mark = #{userMark,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER}
+      order_type = #{orderType,jdbcType=INTEGER}
     where mark_id = #{markId,jdbcType=VARCHAR}
   </update>
 </mapper>

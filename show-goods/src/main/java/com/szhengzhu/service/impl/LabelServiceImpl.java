@@ -1,14 +1,10 @@
 package com.szhengzhu.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.annotation.CheckStatus;
 import com.szhengzhu.bean.goods.LabelGoods;
 import com.szhengzhu.bean.goods.LabelInfo;
 import com.szhengzhu.bean.vo.BatchVo;
@@ -16,146 +12,190 @@ import com.szhengzhu.bean.vo.LabelGoodsVo;
 import com.szhengzhu.bean.vo.LabelMealVo;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;
 import com.szhengzhu.bean.wechat.vo.Label;
-import com.szhengzhu.core.PageGrid;
-import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
-import com.szhengzhu.mapper.GoodsInfoMapper;
-import com.szhengzhu.mapper.LabelGoodsMapper;
-import com.szhengzhu.mapper.LabelInfoMapper;
-import com.szhengzhu.mapper.MealInfoMapper;
+import com.szhengzhu.core.*;
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.mapper.*;
+import com.szhengzhu.redis.Redis;
 import com.szhengzhu.service.LabelService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
+/**
+ * @author Administrator
+ */
 @Service("labelService")
 public class LabelServiceImpl implements LabelService {
 
-    @Autowired
+    @Resource
     private LabelInfoMapper labelInfoMapper;
-    
-    @Autowired
+
+    @Resource
     private LabelGoodsMapper labelGoodsMapper;
-    
-    @Autowired
+
+    @Resource
     private GoodsInfoMapper goodsInfoMapper;
-    
-    @Autowired
+
+    @Resource
     private MealInfoMapper mealInfoMapper;
 
+    @Resource
+    private Redis redis;
+
+    private final ConcurrentHashMap<String, Boolean> lockIdMap = new ConcurrentHashMap<>();
+
     @Override
-    public Result<?> addLabel(LabelInfo base) {
-        if (base == null || StringUtils.isEmpty(base.getTheme())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public LabelInfo addLabel(LabelInfo base) {
         int count = labelInfoMapper.repeatRecords(base.getTheme(), "");
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
-        IdGenerator generator = IdGenerator.getInstance();
-        base.setMarkId(generator.nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        base.setMarkId(snowflake.nextIdStr());
         base.setServerStatus(false);
         labelInfoMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<?> modifyLabel(LabelInfo base) {
-        if (base == null || base.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
+    public LabelInfo modifyLabel(LabelInfo base) {
         int count = labelInfoMapper.repeatRecords(base.getTheme(), base.getMarkId());
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         labelInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        labelChange(base.getMarkId());
+        return base;
+    }
+
+    private void labelChange(String labelId) {
+        redis.del("goods:label:product");
+        redis.del("goods:label:product:" + labelId);
     }
 
     @Override
-    public Result<PageGrid<LabelInfo>> getPage(PageParam<LabelInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
-        PageInfo<LabelInfo> page = new PageInfo<>(
-                labelInfoMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<LabelInfo> getPage(PageParam<LabelInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
+        PageInfo<LabelInfo> page = new PageInfo<>(labelInfoMapper.selectByExampleSelective(base.getData()));
+        return new PageGrid<>(page);
     }
-    
 
     @Override
-    public Result<?> addBatchLabelGoods(BatchVo base) {
+    public void addBatchLabelGoods(BatchVo base) {
         List<LabelGoods> list = new LinkedList<>();
         LabelGoods labelGoods;
-        IdGenerator generator = IdGenerator.getInstance();
-        for(String goodsId:base.getIds()) {
-             labelGoods = new LabelGoods();
-             labelGoods.setMarkId(generator.nexId());
-             labelGoods.setLabelId(base.getCommonId());
-             labelGoods.setGoodsId(goodsId);
-             labelGoods.setServerStatus(false);
-             labelGoods.setGoodsType(base.getType());
-             list.add(labelGoods);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        for (String goodsId : base.getIds()) {
+            labelGoods = LabelGoods.builder().markId(snowflake.nextIdStr()).labelId(base.getCommonId())
+                    .goodsId(goodsId).serverStatus(false).goodsType(base.getType()).build();
+            list.add(labelGoods);
+            labelChange(base.getCommonId());
         }
-        if(list.size() > 0) {
+        if (!list.isEmpty()) {
             labelGoodsMapper.insertBatch(list);
         }
-        return new Result<>();
     }
 
     @Override
-    public Result<PageGrid<LabelGoodsVo>> getLabelGoodsPage(PageParam<LabelGoods> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("c."+base.getSidx() + " " + base.getSort());
-        PageInfo<LabelGoodsVo> page = new PageInfo<>(
-                labelGoodsMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<LabelGoodsVo> getLabelGoodsPage(PageParam<LabelGoods> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("c." + base.getSidx() + " " + base.getSort());
+        PageInfo<LabelGoodsVo> page = new PageInfo<>(labelGoodsMapper.selectByExampleSelective(base.getData()));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<?> deleteLabelGoods(LabelGoods base) {
-        if(base == null)
-            return new Result<>(StatusCode._4008);
-        labelGoodsMapper.deleteItem(base.getLabelId(),base.getGoodsId());
-        return new Result<>();
+    public void deleteLabelGoods(LabelGoods base) {
+        labelGoodsMapper.deleteItem(base.getLabelId(), base.getGoodsId());
+        labelChange(base.getLabelId());
     }
 
     @Override
-    public Result<?> modifyLabelGoods(LabelGoods base) {
-        if(base == null || base.getMarkId() == null) {
-            return new Result<>(StatusCode._4008);
-        }
+    public LabelGoods modifyLabelGoods(LabelGoods base) {
         labelGoodsMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        labelChange(base.getLabelId());
+        return base;
     }
 
     @Override
-    public Result<LabelInfo> getLabelInfo(String markId) {
-        return new Result<>(labelInfoMapper.selectByPrimaryKey(markId));
+    public LabelInfo getLabelInfo(String markId) {
+        return labelInfoMapper.selectByPrimaryKey(markId);
     }
 
     @Override
-    public Result<PageGrid<LabelMealVo>> getLabelMealPage(PageParam<LabelGoods> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("c."+base.getSidx() + " " + base.getSort());
+    public PageGrid<LabelMealVo> getLabelMealPage(PageParam<LabelGoods> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("c." + base.getSidx() + " " + base.getSort());
         List<LabelMealVo> list = labelGoodsMapper.selectMealByExampleSelective(base.getData());
         PageInfo<LabelMealVo> page = new PageInfo<>(list);
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
+    @CheckStatus
+    @SuppressWarnings("unchecked")
     @Override
-    public Result<List<Label>> listLabelGoods() {
-        List<Label> labels = labelInfoMapper.selectLabel();
-        for (int index = 0, size = labels.size(); index < size; index++) {
-            String labelId = labels.get(index).getLabelId();
-            int type = labels.get(index).getType();
-            List<GoodsBase> goodsList = new ArrayList<>();
-            if (type == 0) 
-                goodsList = goodsInfoMapper.selectLabelGoods(labelId);
-             else if (type == 2) 
-                goodsList = mealInfoMapper.selectLabelMeal(labelId);
-            labels.get(index).setGoodsList(goodsList);
+    public List<Label> listLabelGoods() {
+        List<Label> labels = (List<Label>) redis.get("goods:label:product");
+        if (labels != null) {
+            return labels;
         }
-        return new Result<>(labels);
+        //非公平锁
+        Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            labels = (List<Label>) redis.get("goods:label:product");
+            if (labels != null) {
+                return labels;
+            }
+            labels = labelInfoMapper.selectLabel();
+            for (Label label : labels) {
+                String labelId = label.getLabelId();
+                String type = label.getType().toString();
+                List<GoodsBase> goodsList = new ArrayList<>();
+                if (Contacts.TYPE_OF_GOODS.equals(type)) {
+                    goodsList = goodsInfoMapper.selectLabelGoods(labelId);
+                } else if (Contacts.TYPE_OF_MEAL.equals(type)) {
+                    goodsList = mealInfoMapper.selectLabelMeal(labelId);
+                }
+                label.setGoodsList(goodsList);
+            }
+            labels = labels.stream().filter(label -> !label.getGoodsList().isEmpty()).collect(Collectors.toList());
+            redis.set("goods:label:product", labels, 4L * 60 * 60);
+        } finally {
+            lock.unlock();
+        }
+        return labels;
+    }
+
+    @CheckStatus
+    @Override
+    public List<GoodsBase> listLabelGoods(String labelId) {
+        List<GoodsBase> goodsList;
+        try {
+            goodsList = (List<GoodsBase>) redis.get("goods:label:product:" + labelId);
+            if (goodsList != null) {
+                return goodsList;
+            }
+            boolean lock = lockIdMap.put(labelId, true) == null;
+            ShowAssert.checkTrue(!lock, StatusCode._5010);
+            goodsList = (List<GoodsBase>) redis.get("goods:label:product:" + labelId);
+            if (goodsList != null) {
+                return goodsList;
+            }
+            LabelInfo label = labelInfoMapper.selectByPrimaryKey(labelId);
+            String type = label.getServerType().toString();
+            if (Contacts.TYPE_OF_GOODS.equals(type)) {
+                goodsList = goodsInfoMapper.selectLabelGoods(labelId);
+            } else if (Contacts.TYPE_OF_MEAL.equals(type)) {
+                goodsList = mealInfoMapper.selectLabelMeal(labelId);
+            }
+            redis.set("goods:label:product:" + labelId, goodsList, 8L * 60 * 60);
+        } finally {
+            lockIdMap.remove(labelId);
+        }
+        return goodsList;
     }
 
 }

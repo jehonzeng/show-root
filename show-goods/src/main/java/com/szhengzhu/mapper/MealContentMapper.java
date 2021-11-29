@@ -5,7 +5,11 @@ import org.apache.ibatis.annotations.Select;
 
 import com.szhengzhu.bean.goods.MealContent;
 
+/**
+ * @author Administrator
+ */
 public interface MealContentMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(MealContent record);

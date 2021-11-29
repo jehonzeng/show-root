@@ -1,13 +1,16 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.ColumnInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.ColumnInfo;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface ColumnInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(ColumnInfo record);

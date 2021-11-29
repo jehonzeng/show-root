@@ -1,39 +1,45 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.base.AreaInfo;
 import com.szhengzhu.bean.vo.AreaVo;
 import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.AreaService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "areas")
 public class AreaController {
 
     @Resource
     private AreaService areaService;
-    
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Result<List<AreaInfo>> listAll() {
+
+    @GetMapping(value = "/list")
+    public List<AreaInfo> listAll() {
         return areaService.listArea();
     }
-    
-    @RequestMapping(value = "/provinces", method = RequestMethod.GET)
-    public Result<List<Combobox>> listProvince(){
+
+    @GetMapping(value = "/list/{version}")
+    public Map<String, Object> listAll(@PathVariable("version") int version) {
+        return areaService.listArea(version);
+    }
+
+    @GetMapping(value = "/provinces")
+    public List<Combobox> listProvince() {
         return areaService.listProvince();
     }
-    
-    @RequestMapping(value = "/listCityAndArea",method=RequestMethod.GET)
-    public Result<List<AreaVo>> listCityAndArea(@RequestParam("province") String province){
+
+    @GetMapping(value = "/listCityAndArea")
+    public List<AreaVo> listCityAndArea(@RequestParam("province") @NotBlank String province) {
         return areaService.listCityAndArea(province);
     }
 }

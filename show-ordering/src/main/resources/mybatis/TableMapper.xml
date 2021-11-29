@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.TableMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.Table">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="seats" jdbcType="INTEGER" property="seats"/>
+        <result column="area_id" jdbcType="VARCHAR" property="areaId"/>
+        <result column="cls_id" jdbcType="VARCHAR" property="clsId"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="qr_code" jdbcType="VARCHAR" property="qrCode"/>
+        <result column="qr_url" jdbcType="VARCHAR" property="qrUrl"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="man_num" jdbcType="INTEGER" property="manNum"/>
+        <result column="open_time" jdbcType="TIMESTAMP" property="openTime"/>
+        <result column="table_status" jdbcType="VARCHAR" property="tableStatus"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="temp_num" jdbcType="VARCHAR" property="tempNum"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, code, name, seats, area_id, cls_id, store_id, qr_code, qr_url, create_time, modify_time,
+        ifnull(man_num, 0) as man_num, open_time, table_status, status, temp_num
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_table_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_table_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.Table">
+        insert into t_table_info (mark_id, code, name,
+                                  seats, area_id, cls_id,
+                                  store_id, qr_code, qr_url, create_time,
+                                  modify_time, man_num, open_time, table_status, status, temp_num)
+        values (#{markId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{seats,jdbcType=INTEGER}, #{areaId,jdbcType=VARCHAR}, #{clsId,jdbcType=VARCHAR},
+                #{storeId,jdbcType=VARCHAR}, #{qrCode,jdbcType=VARCHAR}, #{qrUrl,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP}, #{manNum,jdbcType=INTEGER}, #{openTime,jdbcType=TIMESTAMP},
+                #{tableStatus,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{tempNum,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.Table">
+        insert into t_table_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="seats != null">
+                seats,
+            </if>
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="clsId != null">
+                cls_id,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="qrCode != null">
+                qr_code,
+            </if>
+            <if test="qrUrl != null">
+                qr_url,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="manNum != null">
+                man_num,
+            </if>
+            <if test="openTime != null">
+                open_time,
+            </if>
+            <if test="tableStatus != null">
+                table_status,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="tempNum != null">
+                temp_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="seats != null">
+                #{seats,jdbcType=INTEGER},
+            </if>
+            <if test="areaId != null">
+                #{areaId,jdbcType=VARCHAR},
+            </if>
+            <if test="clsId != null">
+                #{clsId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCode != null">
+                #{qrCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qrUrl != null">
+                #{qrUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="manNum != null">
+                #{manNum,jdbcType=VARCHAR},
+            </if>
+            <if test="openTime != null">
+                #{openTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="tableStatus != null">
+                #{tableStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="tempNum != null">
+                #{tempNum,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.Table">
+        update t_table_info
+        <set>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="seats != null">
+                seats = #{seats,jdbcType=INTEGER},
+            </if>
+            <if test="areaId != null">
+                area_id = #{areaId,jdbcType=VARCHAR},
+            </if>
+            <if test="clsId != null">
+                cls_id = #{clsId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCode != null">
+                qr_code = #{qrCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qrUrl != null">
+                qr_url = #{qrUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="manNum != null">
+                man_num = #{manNum,jdbcType=VARCHAR},
+            </if>
+            <if test="openTime != null">
+                open_time = #{openTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="tableStatus != null">
+                table_status = #{tableStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="tempNum != null">
+                temp_num = #{tempNum,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.Table">
+        update t_table_info
+        set code         = #{code,jdbcType=VARCHAR},
+            name         = #{name,jdbcType=VARCHAR},
+            seats        = #{seats,jdbcType=INTEGER},
+            area_id      = #{areaId,jdbcType=VARCHAR},
+            cls_id       = #{clsId,jdbcType=VARCHAR},
+            store_id     = #{storeId,jdbcType=VARCHAR},
+            qr_code      = #{qrCode,jdbcType=VARCHAR},
+            qr_url       = #{qrUrl,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            modify_time  = #{modifyTime,jdbcType=TIMESTAMP},
+            man_num      = #{manNum,jdbcType=VARCHAR},
+            open_time    = #{openTime,jdbcType=TIMESTAMP},
+            table_status = #{tableStatus,jdbcType=VARCHAR},
+            status       = #{status,jdbcType=VARCHAR},
+            temp_num     = #{tempNum,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.param.TableParam"
+            resultType="com.szhengzhu.bean.ordering.vo.TableVo">
+        SELECT t.mark_id as markId, t.code, t.name, t.seats, t.qr_code as qrCode, t.table_status as tableStatus,
+        a.`name` AS areaName, c.`name` AS clsName, s.`name` AS statusName, t.status
+        FROM t_table_info t LEFT JOIN t_table_area a ON t.area_id=a.mark_id LEFT JOIN t_table_cls c ON
+        t.cls_id=c.mark_id LEFT JOIN
+        t_table_status s ON t.table_status=s.`code`
+        WHERE t.status <![CDATA[<>]]> -1
+        <if test="code != null and code != ''">
+            and code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="clsId != null and clsId != ''">
+            and cls_id = #{clsId,jdbcType=VARCHAR}
+        </if>
+        <if test="areaId != null and areaId != ''">
+            and area_id = #{areaId,jdbcType=VARCHAR}
+        </if>
+        <if test="storeId != null and storeId != ''">
+            and t.store_id = #{storeId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <resultMap id="StoreResultMap" type="com.szhengzhu.bean.ordering.vo.TableBaseVo">
+        <id column="tableId" jdbcType="VARCHAR" property="tableId"/>
+        <result column="tableCode" jdbcType="VARCHAR" property="tableCode"/>
+        <result column="seats" jdbcType="INTEGER" property="seats"/>
+        <result column="manNum" jdbcType="VARCHAR" property="manNum"/>
+        <result column="openTime" jdbcType="VARCHAR" property="openTime"/>
+        <result column="tableStatus" jdbcType="VARCHAR" property="tableStatus"/>
+        <result column="statusName" jdbcType="VARCHAR" property="statusName"/>
+        <result column="tableColor" jdbcType="VARCHAR" property="tableColor"/>
+        <result column="indentTotal" jdbcType="TIMESTAMP" property="indentTotal"/>
+        <result column="booker" jdbcType="VARCHAR" property="booker"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <collection property="date" javaType="java.util.List" ofType="java.util.Date">
+            <result column="bookingTime" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+    <select id="selectResByStore" parameterType="com.szhengzhu.bean.ordering.TableReservation"
+            resultMap="StoreResultMap">
+        SELECT t.mark_id AS tableId, t.`code` AS tableCode, t.seats AS seats, t.man_num AS manNum, t.open_time AS
+               openTime, t.table_status AS tableStatus,ts.`name` AS statusName, ts.color AS tableColor,
+               (SELECT IFNULL(SUM(indent_total),0) FROM t_indent_info i WHERE i.table_id=t.mark_id AND t.temp_num=i.temp_num) AS indentTotal,
+               (SELECT booker FROM t_table_booking WHERE table_id=t.mark_id AND `status`=1 AND
+               TO_DAYS(booking_time) = TO_DAYS(NOW()) ORDER BY DATE_FORMAT(booking_time, '%H:%i') ASC LIMIT 1) AS booker,
+               (SELECT phone FROM t_table_booking WHERE table_id=t.mark_id AND `status`=1 AND
+               TO_DAYS(booking_time) = TO_DAYS(NOW()) ORDER BY DATE_FORMAT(booking_time, '%H:%i') ASC LIMIT 1) AS phone,
+               b.booking_time AS bookingTime
+        FROM t_table_info t INNER JOIN t_table_area a ON a.mark_id=t.area_id AND a.store_id=t.store_id INNER JOIN t_table_status ts ON t.table_status=ts.`code`
+        LEFT JOIN t_table_booking b ON b.table_id=t.mark_id AND b.`status`=1
+        WHERE t.store_id=#{storeId,jdbcType=VARCHAR}
+        <if test="areaId != null and areaId != ''">
+            AND t.area_id = #{areaId,jdbcType=VARCHAR}
+        </if>
+        <if test="name != null and name != ''">
+            AND t.table_status IN ('TS04', 'TS05') AND t.status = 1
+            AND t.temp_num IN (SELECT temp_num FROM t_indent_info WHERE indent_status IN ('IS01', 'IS02', 'IS03') AND
+            mark_id IN (SELECT indent_id FROM t_indent_detail WHERE commodity_name LIKE CONCAT('%',
+            #{name,jdbcType=VARCHAR}, '%')))
+        </if>
+        <if test="phone != null and phone != ''">
+            AND t.mark_id IN (SELECT table_id FROM t_table_booking WHERE `status` = 1 AND phone LIKE
+            CONCAT('%',#{phone,jdbcType=VARCHAR}, '%'))
+        </if>
+        <if test="dates != null and dates.length == 2">
+            AND t.mark_id IN (SELECT table_id FROM t_table_booking WHERE `status` = 1 AND
+            TO_DAYS(booking_time) BETWEEN TO_DAYS(#{dates[0],javaType=java.util.Date,jdbcType=TIMESTAMP})
+            AND TO_DAYS(#{dates[1],javaType=java.util.Date,jdbcType=TIMESTAMP}))
+        </if>
+        <if test="dates != null and dates.length == 1">
+            AND t.mark_id IN (SELECT table_id FROM t_table_booking WHERE `status` = 1 AND
+            TO_DAYS(booking_time)=TO_DAYS(#{dates[0],javaType=java.util.Date,jdbcType=TIMESTAMP}))
+        </if>
+        ORDER BY convert(a.name using gbk), t.`code`
+    </select>
+    <select id="selectByStoreCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_table_info
+        where store_id=#{storeId,jdbcType=VARCHAR} and code = #{tableCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

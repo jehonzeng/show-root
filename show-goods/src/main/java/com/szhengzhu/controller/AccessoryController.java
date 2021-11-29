@@ -1,19 +1,19 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.AccessoryInfo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.AccessoryService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "accessorys")
 public class AccessoryController {
@@ -21,23 +21,43 @@ public class AccessoryController {
     @Resource
     private AccessoryService accessoryService;
     
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> save(@RequestBody AccessoryInfo base) {
+    /**
+     * 添加附属品
+     * @param base
+     * @return
+     */
+    @PostMapping(value = "/add")
+    public AccessoryInfo save(@RequestBody @Validated AccessoryInfo base) {
         return accessoryService.addAccessory(base);
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<AccessoryInfo>> page(@RequestBody PageParam<AccessoryInfo> base) {
+    /**
+     * 获取附属品列表
+     * @param base
+     * @return
+     */
+    @PostMapping(value = "/page")
+    public PageGrid<AccessoryInfo> page(@RequestBody PageParam<AccessoryInfo> base) {
         return accessoryService.getAccessoryPage(base);
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<?> edit(@RequestBody AccessoryInfo base) {
+    /**
+     * 编辑附属品
+     * @param base
+     * @return
+     */
+    @PatchMapping(value = "/modify")
+    public AccessoryInfo edit(@RequestBody @Validated AccessoryInfo base) {
         return accessoryService.editAccessory(base);
     }
     
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<?> getAccessoryInfo(@PathVariable("markId") String markId) {
+    /**
+     * 根据id获取附属品信息
+     * @param markId
+     * @return
+     */
+    @GetMapping(value = "/{markId}")
+    public AccessoryInfo getAccessoryInfo(@PathVariable("markId") @NotBlank String markId) {
         return accessoryService.selectAccessoryById(markId);
     }
 

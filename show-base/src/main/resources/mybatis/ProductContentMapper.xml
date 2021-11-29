@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.ProductContentMapper" >
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.ProductContent" >
+    <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.szhengzhu.bean.base.ProductContent" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mark_id, product_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_product_content
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_product_content
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.base.ProductContent" >
+    insert into t_product_content (mark_id, product_id, content
+      )
+    values (#{markId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.ProductContent" >
+    insert into t_product_content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="markId != null" >
+        mark_id,
+      </if>
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="markId != null" >
+        #{markId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.ProductContent" >
+    update t_product_content
+    <set >
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.szhengzhu.bean.base.ProductContent" >
+    update t_product_content
+    set product_id = #{productId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.ProductContent" >
+    update t_product_content
+    set product_id = #{productId,jdbcType=VARCHAR}
+    where mark_id = #{markId,jdbcType=VARCHAR}
+  </update>
+</mapper>

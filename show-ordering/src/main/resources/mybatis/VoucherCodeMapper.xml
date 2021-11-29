@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.VoucherCodeMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.VoucherCode">
+        <id column="code" jdbcType="VARCHAR" property="code" />
+        <result column="use_time" jdbcType="TIMESTAMP" property="useTime" />
+        <result column="voucher_id" jdbcType="VARCHAR" property="voucherId" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    code, use_time, voucher_id, status
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_voucher_code
+        where code = #{code,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_voucher_code
+    where code = #{code,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.VoucherCode">
+    insert into t_voucher_code (code, use_time, voucher_id,
+      status)
+    values (#{code,jdbcType=VARCHAR}, #{useTime,jdbcType=TIMESTAMP}, #{voucherId,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.VoucherCode">
+        insert into t_voucher_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">
+                code,
+            </if>
+            <if test="useTime != null">
+                use_time,
+            </if>
+            <if test="voucherId != null">
+                voucher_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="useTime != null">
+                #{useTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="voucherId != null">
+                #{voucherId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.VoucherCode">
+        update t_voucher_code
+        <set>
+            <if test="useTime != null">
+                use_time = #{useTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="voucherId != null">
+                voucher_id = #{voucherId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where code = #{code,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.VoucherCode">
+    update t_voucher_code
+    set use_time = #{useTime,jdbcType=TIMESTAMP},
+      voucher_id = #{voucherId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where code = #{code,jdbcType=VARCHAR}
+  </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_voucher_code
+        (code, voucher_id, status)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.code,jdbcType=VARCHAR}, #{item.voucherId,jdbcType=VARCHAR},#{item.status,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+</mapper>

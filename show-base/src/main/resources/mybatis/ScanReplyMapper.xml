@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ScanReplyMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.ScanReply">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="scan_code" jdbcType="VARCHAR" property="scanCode" />
+        <result column="code_url" jdbcType="VARCHAR" property="codeUrl" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="server_type" jdbcType="INTEGER" property="serverType" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="template_mark" jdbcType="VARCHAR" property="templateMark" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="link_url" jdbcType="VARCHAR" property="linkUrl" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+        <result column="server_status" jdbcType="BIT" property="serverStatus" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, scan_code, code_url, description, server_type, content, template_mark, image_path,
+        title, link_url, start_time, stop_time, server_status, sort
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scan_reply
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_scan_reply
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.ScanReply">
+        insert into t_scan_reply (mark_id, scan_code, code_url,
+        description, server_type, content,
+        template_mark, image_path, title,
+        link_url, start_time, stop_time,
+        server_status, sort)
+        values (#{markId,jdbcType=VARCHAR}, #{scanCode,jdbcType=VARCHAR}, #{codeUrl,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR}, #{serverType,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR},
+        #{templateMark,jdbcType=VARCHAR}, #{imagePath,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+        #{linkUrl,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP},
+        #{serverStatus,jdbcType=BIT}, #{sort,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.ScanReply">
+        insert into t_scan_reply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="scanCode != null">
+                scan_code,
+            </if>
+            <if test="codeUrl != null">
+                code_url,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="serverType != null">
+                server_type,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="templateMark != null">
+                template_mark,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="linkUrl != null">
+                link_url,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="scanCode != null">
+                #{scanCode,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="templateMark != null">
+                #{templateMark,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="linkUrl != null">
+                #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.ScanReply">
+        update t_scan_reply
+        <set>
+            <if test="scanCode != null">
+                scan_code = #{scanCode,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                code_url = #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="templateMark != null">
+                template_mark = #{templateMark,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="linkUrl != null">
+                link_url = #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.ScanReply">
+        update t_scan_reply
+        set scan_code = #{scanCode,jdbcType=VARCHAR},
+        code_url = #{codeUrl,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        server_type = #{serverType,jdbcType=INTEGER},
+        content = #{content,jdbcType=VARCHAR},
+        template_mark = #{templateMark,jdbcType=VARCHAR},
+        image_path = #{imagePath,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        link_url = #{linkUrl,jdbcType=VARCHAR},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+        server_status = #{serverStatus,jdbcType=BIT},
+        sort = #{sort,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective"  parameterType="com.szhengzhu.bean.base.ScanReply" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scan_reply
+        <where>
+            <if test="scanCode != null">
+                scan_code = #{scanCode,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="serverType != null">
+                and server_type = #{serverType,jdbcType=INTEGER}
+            </if>
+            <if test="content != null">
+                and content = #{content,jdbcType=VARCHAR}
+            </if>
+            <if test="templateMark != null">
+                and template_mark = #{templateMark,jdbcType=VARCHAR}
+            </if>
+            <if test="imagePath != null">
+                and image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null">
+                and title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="linkUrl != null">
+                and link_url = #{linkUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="stopTime != null">
+                and stop_time = #{stopTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="serverStatus != null">
+                and server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scan_reply
+        where scan_code = #{scanCode,jdbcType=VARCHAR} and server_status=1 and 
+              (CASE WHEN start_time IS NOT NULL THEN
+                        start_time <![CDATA[ < ]]> NOW()
+                    ELSE
+                        1=1
+               END) AND
+               (CASE WHEN stop_time IS NOT NULL THEN
+                         stop_time > NOW()
+                     ELSE
+                         1=1
+                END)
+    </select>
+</mapper>

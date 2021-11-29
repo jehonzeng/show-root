@@ -1,31 +1,33 @@
 package com.szhengzhu.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.annotation.CheckGoodsChange;
 import com.szhengzhu.bean.goods.GoodsInfo;
 import com.szhengzhu.bean.goods.GoodsSpecification;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.SpecChooseBox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.GoodsInfoMapper;
 import com.szhengzhu.mapper.GoodsSpecificationMapper;
-import com.szhengzhu.mapper.GoodsStockMapper;
 import com.szhengzhu.mapper.SpecificationInfoMapper;
 import com.szhengzhu.service.GoodsSpecService;
-import com.szhengzhu.util.IdGenerator;
 import com.szhengzhu.util.ShowUtils;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 @Service("goodsSpecService")
 public class GoodsSpecServiceImpl implements GoodsSpecService {
 
@@ -37,93 +39,77 @@ public class GoodsSpecServiceImpl implements GoodsSpecService {
 
     @Resource
     private GoodsInfoMapper goodsInfoMapper;
-    
-    @Resource
-    private GoodsStockMapper goodsStockMapper;
 
     @Override
-    public Result<PageGrid<GoodsSpecification>> pageGoodsSpec(PageParam<GoodsSpecification> base) {
-        if (base == null || base.getData() == null
-                || StringUtils.isEmpty(base.getData().getGoodsId()))
-            return new Result<>(StatusCode._4004);
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<GoodsSpecification> pageGoodsSpec(PageParam<GoodsSpecification> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<GoodsSpecification> page = new PageInfo<>(
                 goodsSpecificationMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> add(GoodsSpecification base) {
-        if (base == null || StringUtils.isEmpty(base.getGoodsId()))
-            return new Result<>(StatusCode._4004);
+    public void add(GoodsSpecification base) {
         GoodsInfo goodsInfo = goodsInfoMapper.selectByPrimaryKey(base.getGoodsId());
-        if (goodsInfo == null || goodsInfo.getTypeId() == null)
-            return new Result<>(StatusCode._4004);
+        ShowAssert.checkNull(goodsInfo, StatusCode._4004);
+        ShowAssert.checkTrue(StrUtil.isEmpty(goodsInfo.getTypeId()), StatusCode._4004);
         List<SpecChooseBox> specs = specificationInfoMapper.selectNameByGoodsId(base.getGoodsId());
+        ShowAssert.checkTrue(specs.isEmpty(), StatusCode._4018);
         List<GoodsSpecification> newGoodsSpecList = new LinkedList<>();
         List<String> specIds = buildSpes(specs);
-        List<GoodsSpecification> goodsSpecifications = goodsSpecificationMapper
-                .selectByGoods(base.getGoodsId());
-        IdGenerator generator = IdGenerator.getInstance();
+        List<GoodsSpecification> goodsSpecifications = goodsSpecificationMapper.selectByGoods(base.getGoodsId());
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
         for (int index = 0; index < specIds.size(); index++) {
-            if (goodsSpecifications.size() == 0)
+            if (goodsSpecifications.isEmpty()) {
                 break;
-            for (int existIndex = 0; existIndex < goodsSpecifications.size(); existIndex++) {
-                if (specIds.get(index)
-                        .equals(goodsSpecifications.get(existIndex).getSpecificationIds()))
+            }
+            for (GoodsSpecification goodsSpecification : goodsSpecifications) {
+                if (specIds.get(index).equals(goodsSpecification.getSpecificationIds())) {
                     specIds.remove(index);
+                }
             }
         }
-        for (int index = 0; index < specIds.size(); index++) {
-            String markId = generator.nexId();
-            GoodsSpecification specification = create(markId, specIds.get(index), goodsInfo);
+        for (String specId : specIds) {
+            String markId = snowflake.nextIdStr();
+            GoodsSpecification specification = create(markId, specId, goodsInfo);
             newGoodsSpecList.add(specification);
         }
-        if (newGoodsSpecList.size() > 0)
+        if (!newGoodsSpecList.isEmpty()) {
             goodsSpecificationMapper.insertBatch(newGoodsSpecList);
-
-        return new Result<>();
+        }
     }
 
     private GoodsSpecification create(String markId, String specIds, GoodsInfo goodsInfo) {
-        GoodsSpecification specification = new GoodsSpecification();
-        specification.setMarkId(markId);
-        specification.setGoodsId(goodsInfo.getMarkId());
-        specification.setSpecificationIds(specIds);
-        specification.setBasePrice(goodsInfo.getBasePrice());
-        specification.setSalePrice(goodsInfo.getSalePrice());
-        specification.setServerStatus(false);
-        specification.setGoodsNo(ShowUtils.createGoodsNo(0, goodsInfo.getMarkId()));
-        return specification;
+        return GoodsSpecification.builder().markId(markId).goodsId(goodsInfo.getMarkId()).specificationIds(specIds)
+                .basePrice(goodsInfo.getBasePrice()).salePrice(goodsInfo.getSalePrice()).serverStatus(false).goodsNo(ShowUtils.createGoodsNo(0, goodsInfo.getMarkId())).build();
     }
 
     private List<String> buildSpes(List<SpecChooseBox> specs) {
-        List<String> spesList = new LinkedList<>();
-        for (int index = 0; index < specs.size(); index++) {
+        List<String> specsList = new LinkedList<>();
+        for (SpecChooseBox specChooseBox : specs) {
             List<String> result = new LinkedList<>();
-            List<Combobox> comboboxs = specs.get(index).getList();
-            if (spesList.size() > 0) {
-                for (int i = 0; i < spesList.size(); i++) {
-                    for (int j = 0; j < comboboxs.size(); j++) {
-                        result.add(spesList.get(i) + ',' + comboboxs.get(j).getCode());
+            List<Combobox> comboboxs = specChooseBox.getList();
+            if (!specsList.isEmpty()) {
+                for (String spec : specsList) {
+                    for (Combobox combobox : comboboxs) {
+                        result.add(spec + ',' + combobox.getCode());
                     }
                 }
             } else {
-                for (int i = 0; i < comboboxs.size(); i++) {
-                    result.add(comboboxs.get(i).getCode());
+                for (Combobox combobox : comboboxs) {
+                    result.add(combobox.getCode());
                 }
             }
-            spesList = result;
+            specsList = result;
         }
-        return spesList;
+        return specsList;
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> modify(GoodsSpecification base) {
-        if (base == null || StringUtils.isEmpty(base.getMarkId()))
-            return new Result<>(StatusCode._4004);
+    public void modify(GoodsSpecification base) {
         goodsSpecificationMapper.updateByPrimaryKeySelective(base);
-        return new Result<>();
     }
 }

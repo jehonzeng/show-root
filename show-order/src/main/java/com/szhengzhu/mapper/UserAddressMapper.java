@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Update;
 
 import com.szhengzhu.bean.order.UserAddress;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface UserAddressMapper {
     
     int deleteByPrimaryKey(String markId);

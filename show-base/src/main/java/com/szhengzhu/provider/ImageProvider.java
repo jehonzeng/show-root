@@ -38,7 +38,7 @@ public class ImageProvider {
             sql.append("AND ( ( g.server_type = 2 AND g.specification_ids IS NULL) ");
             sql.append("OR g.server_type = 0 ) ");
         }
-        sql.append("ORDER BY g.specification_ids DESC,g.server_type DESC ,g.sort LIMIT 1");
+        sql.append("ORDER BY g.specification_ids DESC,g.server_type DESC ,g.sort limit 1");
         return sql.toString();
     }
 
@@ -64,7 +64,7 @@ public class ImageProvider {
         sql.append("LEFT JOIN t_image_info i ON i.mark_id = g.image_path ");
         sql.append("WHERE g.meal_id = '" + mealId + "' ");
         sql.append("AND g.server_type = 0 ");
-        sql.append("ORDER BY g.sort limit 1 ");
+        sql.append("ORDER BY g.sort limit 1");
         return sql.toString();
     }
 

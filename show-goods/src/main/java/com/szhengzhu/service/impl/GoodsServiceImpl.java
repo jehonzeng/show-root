@@ -1,17 +1,15 @@
 package com.szhengzhu.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.annotation.CheckStatus;
 import com.szhengzhu.bean.goods.GoodsInfo;
 import com.szhengzhu.bean.goods.GoodsServer;
 import com.szhengzhu.bean.vo.BatchVo;
@@ -19,291 +17,345 @@ import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsVo;
 import com.szhengzhu.bean.wechat.vo.Cooker;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
-import com.szhengzhu.core.PageGrid;
-import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
-import com.szhengzhu.mapper.CookCertifiedMapper;
-import com.szhengzhu.mapper.GoodsImageMapper;
-import com.szhengzhu.mapper.GoodsInfoMapper;
-import com.szhengzhu.mapper.GoodsJudgeMapper;
-import com.szhengzhu.mapper.GoodsServerMapper;
-import com.szhengzhu.mapper.GoodsVoucherMapper;
-import com.szhengzhu.mapper.MealInfoMapper;
-import com.szhengzhu.mapper.ServerSupportMapper;
-import com.szhengzhu.mapper.TypeSpecMapper;
+import com.szhengzhu.code.GoodsStatus;
+import com.szhengzhu.core.*;
+import com.szhengzhu.exception.ShowAssert;
+import com.szhengzhu.mapper.*;
+import com.szhengzhu.redis.Redis;
 import com.szhengzhu.service.GoodsService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
-import com.szhengzhu.util.TimeUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service("goodsService")
 public class GoodsServiceImpl implements GoodsService {
 
-    @Autowired
+    @Resource
     private GoodsInfoMapper goodsInfoMapper;
 
-    @Autowired
+    @Resource
     private GoodsServerMapper goodsServerMapper;
 
-    @Autowired
+    @Resource
     private GoodsImageMapper goodsImageMapper;
 
-    @Autowired
+    @Resource
     private GoodsJudgeMapper goodsJudgeMapper;
 
-    @Autowired
+    @Resource
     private CookCertifiedMapper cookCertifiedMapper;
 
-    @Autowired
+    @Resource
     private ServerSupportMapper serverSupportMapper;
 
-    @Autowired
+    @Resource
     private TypeSpecMapper typeSpecMapper;
 
-    @Autowired
+    @Resource
     private GoodsVoucherMapper goodsVoucherMapper;
 
-    @Autowired
+    @Resource
     private MealInfoMapper mealInfoMapper;
 
+    @Resource
+    private Redis redis;
+
+    private final ConcurrentHashMap<String, Boolean> lockIdMap = new ConcurrentHashMap<>();
+
+    @CheckStatus
     @Override
-    public Result<?> addGoods(GoodsInfo base) {
-        if (base == null || StringUtils.isEmpty(base.getGoodsName())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public GoodsInfo addGoods(GoodsInfo base) {
         int count = goodsInfoMapper.repeatRecords(base.getGoodsName(), "");
-        if (count > 0) {
-            return new Result<>(StatusCode._4007);
-        }
-        base.setMarkId(IdGenerator.getInstance().nexId());
-        base.setServerStatus("ZT01");
-        base.setCreateTime(TimeUtils.today());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        base.setMarkId(snowflake.nextIdStr());
+        base.setServerStatus(GoodsStatus.NOT_ONLINE);
+        base.setCreateTime(DateUtil.date());
         goodsInfoMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
+    @Override
+    @CheckStatus
     @Transactional
-    public Result<?> editGoods(GoodsInfo base) {
-        if (base == null || base.getMarkId() == null)
-            return new Result<>(StatusCode._4008);
-        String goodsName = base.getGoodsName() == null ? "" : base.getGoodsName();
+    public GoodsInfo modifyGoods(GoodsInfo base) {
+        String goodsName = StrUtil.isEmpty(base.getGoodsName()) ? "" : base.getGoodsName();
         int count = goodsInfoMapper.repeatRecords(goodsName, base.getMarkId());
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         GoodsInfo preGoods = goodsInfoMapper.selectByPrimaryKey(base.getMarkId());
-        if (preGoods == null)
-            return new Result<>(StatusCode._4008);
         Date preUpperTime = preGoods.getPreUpperTime();
         Date preDownTime = preGoods.getPreDownTime();
-        // 未设置过时间
-        if (preUpperTime == null && preDownTime == null) {
-            if (base.getPreUpperTime() != null && base.getPreDownTime() != null) {
-                base.setServerStatus("ZT01");
-            }
+        if ((ObjectUtil.isNotNull(base.getPreUpperTime()) && base.getPreUpperTime().getTime() > DateTime.now().getTime()) ||
+                (ObjectUtil.isNotNull(base.getPreUpperTime()) && base.getPreUpperTime().getTime() < DateTime.now().getTime())) {
+            base.setServerStatus(GoodsStatus.NOT_ONLINE);
         }
-        // 已经设置过时间
-        if (preUpperTime != null && preDownTime != null) {
-            if (preUpperTime.compareTo(base.getPreUpperTime()) != 0
-                    || preDownTime.compareTo(base.getPreDownTime()) != 0) {
-                // 清空预上架时间
-                if (base.getPreDownTime() == null && base.getPreUpperTime() == null) {
-                    goodsInfoMapper.clearTime(base.getMarkId()); // 时间置空
-                }
-                base.setServerStatus("ZT01");// 设置为待上架
-            }
+        if (ObjectUtil.isNull(base.getPreDownTime()) && ObjectUtil.isNotNull(base.getPreUpperTime())
+                && ObjectUtil.isNotNull(preUpperTime) && ObjectUtil.isNotNull(preDownTime)) {
+            // 时间置空
+            goodsInfoMapper.clearTime(base.getMarkId());
+            // 设置为待上架
+            base.setServerStatus(GoodsStatus.NOT_ONLINE);
         }
-        base.setModifyTime(TimeUtils.today());
+        base.setModifyTime(DateUtil.date());
         goodsInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        goodsChange(base.getMarkId());
+        return base;
     }
 
+    private void goodsChange(String goodsId) {
+        redis.del("goods:goods:recommend");
+        redis.del("goods:goods:detail:" + goodsId);
+    }
+
+    @Override
+    @CheckStatus
     @Transactional
-    public Result<?> editGoodsStatus(GoodsInfo base) {
-        if (base == null || base.getMarkId() == null
-                || StringUtils.isEmpty(base.getServerStatus())) {
-            return new Result<>(StatusCode._4008);
-        }
+    public GoodsInfo modifyGoodsStatus(GoodsInfo base) {
         GoodsInfo previousGoods = goodsInfoMapper.selectByPrimaryKey(base.getMarkId());
-        if (previousGoods == null)
-            return new Result<>(StatusCode._4008);
         // 已做预处理设置时间无法手动更改状态
-        if (previousGoods.getPreUpperTime() != null || previousGoods.getPreDownTime() != null)
-            return new Result<>(StatusCode._5011);
+        ShowAssert.checkTrue(ObjectUtil.isNotNull(previousGoods.getPreUpperTime()), StatusCode._5011);
+        ShowAssert.checkTrue(ObjectUtil.isNotNull(previousGoods.getPreDownTime()), StatusCode._5011);
         String oldStatus = previousGoods.getServerStatus();
         String newStatus = base.getServerStatus();
         // 按一定顺序改变状态
-        if (oldStatus.equals("ZT01") && newStatus.equals("ZT02")) {
-            base.setUpperTime(TimeUtils.today());
-        } else if (oldStatus.equals("ZT02") && newStatus.equals("ZT03")) {
-            // 下架操作处理关联的商品券和套餐状态 
+        if (GoodsStatus.NOT_ONLINE.equals(oldStatus) && GoodsStatus.ONLINE.equals(newStatus)) {
+            base.setUpperTime(DateUtil.date());
+        } else if (GoodsStatus.ONLINE.equals(oldStatus) && GoodsStatus.OFFLINE.equals(newStatus)) {
+            // 下架操作处理关联的商品券和套餐状态
             goodsVoucherMapper.updateStatusByGoods(base.getMarkId());
             mealInfoMapper.updateStatusByGoods(base.getMarkId());
-            base.setDownTime(TimeUtils.today());
-        } else if (oldStatus.equals("ZT03") && newStatus.equals("ZT01")) {
-            
-        } else {
-            return new Result<>(StatusCode._5012);
+            base.setDownTime(DateUtil.date());
         }
-        base.setModifyTime(TimeUtils.today());
+        base.setModifyTime(DateUtil.date());
         goodsInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        goodsChange(base.getMarkId());
+        return base;
     }
 
     @Override
-    public Result<?> getGoodsInfo(String markId) {
-        GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(markId);
-        return new Result<>(info);
+    public GoodsInfo getGoodsInfo(String markId) {
+        return goodsInfoMapper.selectByPrimaryKey(markId);
+    }
+
+    @CheckStatus
+    @Override
+    public PageGrid<GoodsVo> getPage(PageParam<GoodsInfo> base) {
+        if ("goods_name".equals(base.getSidx())) {
+            base.setSidx("convert(goods_name using gbk)");
+        }
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
+        PageInfo<GoodsVo> page = new PageInfo<>(goodsInfoMapper.selectByExampleSelective(base.getData()));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<PageGrid<GoodsVo>> getPage(PageParam<GoodsInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
-        PageInfo<GoodsVo> page = new PageInfo<>(
-                goodsInfoMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public List<Combobox> listCombobox() {
+        return goodsInfoMapper.selectCombobox();
     }
 
     @Override
-    public Result<List<Combobox>> listCombobox() {
-        List<Combobox> comboboxs = goodsInfoMapper.selectCombobox();
-        return new Result<>(comboboxs);
+    public List<Combobox> getListNotColumn() {
+        return goodsInfoMapper.selectListNotInColumn();
     }
 
     @Override
-    public Result<List<Combobox>> getListNotColumn() {
-        List<Combobox> comboboxs = goodsInfoMapper.selectListNotInColumn();
-        return new Result<>(comboboxs);
+    public List<Combobox> getListNotLabel(String labelId) {
+        return goodsInfoMapper.selectListNotInLabel(labelId);
     }
 
     @Override
-    public Result<List<Combobox>> getListNotLabel(String labelId) {
-        List<Combobox> comboboxs = goodsInfoMapper.selectListNotInLabel(labelId);
-        return new Result<>(comboboxs);
-    }
-
-    @Override
-    public Result<?> addBatchServer(BatchVo base) {
+    public void addBatchServer(BatchVo base) {
         List<GoodsServer> list = new LinkedList<>();
         GoodsServer data;
-        IdGenerator generator = IdGenerator.getInstance();
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
         for (String serverId : base.getIds()) {
-            data = new GoodsServer();
-            data.setMarkId(generator.nexId());
-            data.setGoodsId(base.getCommonId());
-            data.setServerId(serverId);
+            data = GoodsServer.builder().markId(snowflake.nextIdStr()).goodsId(base.getCommonId()).serverId(serverId).build();
             list.add(data);
+            goodsChange(base.getCommonId());
         }
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             goodsServerMapper.insertBatch(list);
         }
-        return new Result<>();
     }
 
     @Override
-    public Result<?> moveBatchServer(BatchVo base) {
+    public void moveBatchServer(BatchVo base) {
         goodsServerMapper.deletetBatch(base);
-        return new Result<>();
     }
 
     @Override
-    public Result<?> listInnerServer(String goodsId) {
-        return new Result<>(goodsServerMapper.selectListByGoodsId(goodsId));
+    public List<String> listInnerServer(String goodsId) {
+        return goodsServerMapper.selectListByGoodsId(goodsId);
     }
 
     @Override
-    public Result<List<Combobox>> getListNotSpecial() {
-        List<Combobox> list = goodsInfoMapper.selectListNotSpecial();
-        return new Result<>(list);
+    public List<Combobox> getListNotSpecial() {
+        return goodsInfoMapper.selectListNotSpecial();
     }
 
     @Override
-    public Result<List<Combobox>> getListNotIcon() {
-        List<Combobox> list = goodsInfoMapper.selectListNotIcon();
-        return new Result<>(list);
+    public List<Combobox> getListNotIcon() {
+        return goodsInfoMapper.selectListNotIcon();
     }
 
     @Override
-    public Result<PageGrid<GoodsVo>> getPageByColumn(PageParam<GoodsInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("g." + base.getSidx() + " " + base.getSort());
-        PageInfo<GoodsVo> page = new PageInfo<>(
-                goodsInfoMapper.selectByExampleSelectiveNotColumn(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<GoodsVo> getPageByColumn(PageParam<GoodsInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("g." + base.getSidx() + " " + base.getSort());
+        PageInfo<GoodsVo> page = new PageInfo<>(goodsInfoMapper.selectByExampleSelectiveNotColumn(base.getData()));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<PageGrid<GoodsVo>> getPageByLabel(PageParam<GoodsInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("g." + base.getSidx() + " " + base.getSort());
-        PageInfo<GoodsVo> page = new PageInfo<>(
-                goodsInfoMapper.selectByExampleSelectiveNotLabel(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<GoodsVo> getPageByLabel(PageParam<GoodsInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("g." + base.getSidx() + " " + base.getSort());
+        PageInfo<GoodsVo> page = new PageInfo<>(goodsInfoMapper.selectByExampleSelectiveNotLabel(base.getData()));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<PageGrid<GoodsVo>> getPageByIcon(PageParam<GoodsInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("g." + base.getSidx() + " " + base.getSort());
-        PageInfo<GoodsVo> page = new PageInfo<>(
-                goodsInfoMapper.selectByExampleSelectiveNotIcon(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<GoodsVo> getPageByIcon(PageParam<GoodsInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("g." + base.getSidx() + " " + base.getSort());
+        PageInfo<GoodsVo> page = new PageInfo<>(goodsInfoMapper.selectByExampleSelectiveNotIcon(base.getData()));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<PageGrid<GoodsVo>> getPageBySpecial(PageParam<GoodsInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy("g." + base.getSidx() + " " + base.getSort());
-        PageInfo<GoodsVo> page = new PageInfo<>(
-                goodsInfoMapper.selectByExampleSelectiveNotSpecial(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+    public PageGrid<GoodsVo> getPageBySpecial(PageParam<GoodsInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy("g." + base.getSidx() + " " + base.getSort());
+        PageInfo<GoodsVo> page = new PageInfo<>(goodsInfoMapper.selectByExampleSelectiveNotSpecial(base.getData()));
+        return new PageGrid<>(page);
     }
 
+    @CheckStatus
+    @SuppressWarnings("unchecked")
     @Override
-    public Result<List<GoodsBase>> listRecommend(String userId) {
-        List<GoodsBase> goodsList = new ArrayList<>();
-        if (StringUtils.isEmpty(userId))
-            goodsList = goodsInfoMapper.selectRecommend(); // not log in
-        else
-            goodsList = goodsInfoMapper.selectRecommenByUser(userId); // log in
-        return new Result<>(goodsList);
-    }
-
-    @Override
-    public Result<GoodsInfoVo> getGoodsDetail(String goodsId, String userId) {
-        if (StringUtils.isEmpty(goodsId))
-            return new Result<>(StatusCode._4004);
-        GoodsInfoVo goods = goodsInfoMapper.selectById(goodsId); // goods info
-        if (goods == null)
-            return new Result<>(StatusCode._4004);
-        Map<String, String> defaultSpecMap = typeSpecMapper
-                .selectDefaultByGoods(goods.getGoodsId());
-        String specIds = null;
-        String specValues = null;
-        if (defaultSpecMap != null) {
-            specIds = defaultSpecMap.containsKey("specIds") ? defaultSpecMap.get("specIds") : null;
-            specValues = defaultSpecMap.containsKey("specValues") ? defaultSpecMap.get("specValues")
-                    : null;
+    public List<GoodsBase> listRecommend(String userId) {
+        List<GoodsBase> goodsList;
+        if (!StrUtil.isEmpty(userId)) {
+            // log in
+            goodsList = goodsInfoMapper.selectRecommenByUser(userId);
+            return goodsList;
         }
-        List<String> goodsImgs = goodsImageMapper.selectBigByGoodsId(goodsId); // goods images
-        List<Map<String, String>> servers = serverSupportMapper.selectByGoods(goodsId); // goods
-        // server
-        Cooker cooker = cookCertifiedMapper.selectByUser(goods.getCooker(), userId); // goods cooker
-        if (cooker != null) {
-            List<GoodsBase> cookerGoods = goodsInfoMapper.selectByCooker(goods.getCooker(), 4); // cooker
+        goodsList = (List<GoodsBase>) redis.get("goods:goods:recommend");
+        if (goodsList != null) {
+            return goodsList;
+        }
+        Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            // 防止第一个线程之后的线程获取到锁之后又连接数据库查询，此时缓存中已有数据
+            goodsList = (List<GoodsBase>) redis.get("goods:goods:recommend");
+            if (goodsList == null) {
+                // not log in
+                goodsList = goodsInfoMapper.selectRecommend();
+                redis.set("goods:goods:recommend", goodsList, 5 * 60 * 60L);
+            }
+        } finally {
+            lock.unlock();
+        }
+        return goodsList;
+    }
+
+    @CheckStatus
+    @Override
+    public GoodsDetail getGoodsDetail(String goodsId, String userId) {
+        GoodsDetail goods;
+        String cacheKey = "goods:goods:detail:" + goodsId;
+        try {
+            Object goodsObj = redis.get(cacheKey);
+            if (ObjectUtil.isNotNull(goodsObj)) {
+                goods = JSON.parseObject(JSON.toJSONString(goodsObj), GoodsDetail.class);
+                return goods;
+            }
+            // 防止数据库因请求量过大雪崩而做的拦截
+            boolean lock = lockIdMap.put(goodsId, true) == null;
+            ShowAssert.checkTrue(!lock, StatusCode._5010);
+            goodsObj = redis.get(cacheKey);
+            if (goodsObj != null) {
+                goods = JSON.parseObject(JSON.toJSONString(goodsObj), GoodsDetail.class);
+                return goods;
+            }
+            // goods info
+            goods = goodsInfoMapper.selectById(goodsId);
+            goods = getGoodsAttribute(goods, userId);
+            redis.set(cacheKey, goods, 2 * 60 * 60L);
+        } finally {
+            lockIdMap.remove(goodsId);
+        }
+        return goods;
+    }
+
+    /**
+     * 获取商品其他属性
+     *
+     * @param goods
+     * @param userId
+     * @return
+     * @date 2019年10月10日 上午10:38:27
+     */
+    private GoodsDetail getGoodsAttribute(GoodsDetail goods, String userId) {
+        try {
             // goods
-            cooker.setGoodsBases(cookerGoods);
-            goods.setCookerInfo(cooker);
+            FutureTask<Map<String, String>> defaultSpecTask = new FutureTask<>(
+                    () -> typeSpecMapper.selectDefaultByGoods(goods.getGoodsId()));
+            // images
+            FutureTask<List<String>> imgTask = new FutureTask<>(
+                    () -> goodsImageMapper.selectBigByGoodsId(goods.getGoodsId()));
+            // goods server
+            FutureTask<List<Map<String, String>>> serverTask = new FutureTask<>(
+                    () -> serverSupportMapper.selectByGoods(goods.getGoodsId()));
+            // goods judge;
+            FutureTask<List<JudgeBase>> judgeTask = new FutureTask<>(
+                    () -> goodsJudgeMapper.selectJudge(userId, goods.getGoodsId(), 3));
+            new Thread(defaultSpecTask).start();
+            new Thread(imgTask).start();
+            new Thread(serverTask).start();
+            new Thread(judgeTask).start();
+            Map<String, String> defaultSpecMap = defaultSpecTask.get();
+            String specIds = defaultSpecMap.getOrDefault("specIds", null);
+            String specValues = defaultSpecMap.getOrDefault("specValues", null);
+            goods.setDefSpecIds(specIds);
+            goods.setDefSpecValues(specValues);
+            goods.setImagePaths(imgTask.get());
+            goods.setServers(serverTask.get());
+            goods.setJudges(judgeTask.get());
+            goods.setCookerInfo(getCookerInfo(goods.getCooker(), userId));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        List<JudgeBase> judges = goodsJudgeMapper.selectJudge(userId, goodsId, 3); // goods judge
-        goods.setDefSpecIds(specIds);
-        goods.setDefSpecValues(specValues);
-        goods.setImagePaths(goodsImgs);
-        goods.setServers(servers);
-        goods.setJudges(judges);
-        return new Result<>(goods);
+        return goods;
+    }
+
+    /**
+     * 获取商品厨师信息 1、获取厨师信息 2、获取该厨师商品列表
+     *
+     * @param cookerId
+     * @param userId
+     * @return 厨师信息
+     * @date 2019年9月5日 上午11:00:29
+     */
+    private Cooker getCookerInfo(String cookerId, String userId) {
+        Cooker cooker = cookCertifiedMapper.selectByUser(cookerId, userId);
+        if (ObjectUtil.isNotNull(cooker)) {
+            List<GoodsBase> cookerGoods = goodsInfoMapper.selectByCooker(cookerId, 4);
+            cooker.setGoodsBases(cookerGoods);
+        }
+        return cooker;
     }
 }

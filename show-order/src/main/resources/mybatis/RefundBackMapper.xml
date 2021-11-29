@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.RefundBackMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.order.RefundBack">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="refund_no" jdbcType="VARCHAR" property="refundNo" />
+        <result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+        <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="orderRefund" jdbcType="INTEGER" property="orderRefund" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, order_no, refund_no, refund_status, total_fee, add_time, order_type, remark
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_refund_back
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_refund_back
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.order.RefundBack">
+        insert into t_refund_back (mark_id, order_no, refund_no,
+        refund_status, total_fee, add_time, order_type, remark)
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{refundNo,jdbcType=VARCHAR},
+        #{refundStatus,jdbcType=INTEGER}, #{totalFee,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP},
+        #{orderType,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.order.RefundBack">
+        insert into t_refund_back
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="refundNo != null">
+                refund_no,
+            </if>
+            <if test="refundStatus != null">
+                refund_status,
+            </if>
+            <if test="totalFee != null">
+                total_fee,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="orderType != null">
+                order_type,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundNo != null">
+                #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                #{refundStatus,jdbcType=INTEGER},
+            </if>
+            <if test="totalFee != null">
+                #{totalFee,jdbcType=DECIMAL},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.order.RefundBack">
+        update t_refund_back
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundNo != null">
+                refund_no = #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="refundStatus != null">
+                refund_status = #{refundStatus,jdbcType=INTEGER},
+            </if>
+            <if test="totalFee != null">
+                total_fee = #{totalFee,jdbcType=DECIMAL},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.order.RefundBack">
+        update t_refund_back
+        set order_no = #{orderNo,jdbcType=VARCHAR},
+        refund_no = #{refundNo,jdbcType=VARCHAR},
+        refund_status = #{refundStatus,jdbcType=INTEGER},
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        order_type = #{orderType,jdbcType=INTEGER},
+        remark = #{remark,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.order.RefundBack" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />,
+            (select b.refund_status from t_refund_back b where b.order_no=r.order_no and b.refund_status=1 LIMIT 1) AS orderRefund
+        from t_refund_back r
+        <where>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR}
+            </if>
+            <if test="refundNo != null">
+                AND refund_no = #{refundNo,jdbcType=VARCHAR}
+            </if>
+            <if test="refundStatus != null">
+                AND refund_status = #{refundStatus,jdbcType=INTEGER}
+            </if>
+            <if test="totalFee != null">
+                AND total_fee = #{totalFee,jdbcType=DECIMAL}
+            </if>
+            <if test="addTime != null">
+                AND add_time = #{addTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="orderType != null">
+                AND order_type = #{orderType,jdbcType=INTEGER}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

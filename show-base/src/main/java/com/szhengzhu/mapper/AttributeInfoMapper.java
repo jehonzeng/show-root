@@ -29,4 +29,10 @@ public interface AttributeInfoMapper {
     
     @Select("SELECT code, `name` FROM t_attribute_info WHERE server_status=1 AND type=#{type}")
     List<Combobox> selectCombobox(@Param("type") String type);
+    
+    @Select("SELECT `name` FROM t_attribute_info WHERE `code`='AV01'")
+    String selectVersion();
+
+    @Select("SELECT `code` FROM t_attribute_info WHERE type ='DT' AND `name`= #{name}")
+    String selectByName(String name);
 }    

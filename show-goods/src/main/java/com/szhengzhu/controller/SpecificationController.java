@@ -1,20 +1,25 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import cn.hutool.core.util.StrUtil;
 import com.szhengzhu.bean.goods.SpecificationInfo;
 import com.szhengzhu.bean.vo.SpecBatchVo;
+import com.szhengzhu.bean.vo.SpecChooseBox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.service.SpecificationService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "specifications")
 public class SpecificationController {
@@ -22,39 +27,43 @@ public class SpecificationController {
     @Resource
     private SpecificationService specificationService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> addSpecification(@RequestBody SpecificationInfo base) {
+    @PostMapping(value = "/add")
+    public SpecificationInfo addSpecification(@RequestBody @Validated SpecificationInfo base) {
         return specificationService.addSpecification(base);
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<?> modifySpecification(@RequestBody SpecificationInfo base) {
-        return specificationService.editSpecification(base);
+    @PatchMapping(value = "/modify")
+    public SpecificationInfo modifySpecification(@RequestBody @Validated SpecificationInfo base) {
+        return specificationService.modifySpecification(base);
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<SpecificationInfo>> getSpecificationPage(
+    @PostMapping(value = "/page")
+    public PageGrid<SpecificationInfo> getSpecificationPage(
             @RequestBody PageParam<SpecificationInfo> base) {
         return specificationService.getPage(base);
     }
     
-    @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public Result<?> listSpecification(@RequestParam("goodsId") String goodsId) {
+    @GetMapping(value = "/list")
+    public List<SpecChooseBox> listSpecification(@RequestParam("goodsId") @NotBlank String goodsId) {
         return specificationService.getSpecList(goodsId);
     }
     
-    @RequestMapping(value = "/addBatch",method = RequestMethod.POST)
-    public Result<?> addBatchSpecification(@RequestBody SpecBatchVo base) {
+    @PostMapping(value = "/addBatch")
+    public SpecBatchVo addBatchSpecification(@RequestBody SpecBatchVo base) {
         return specificationService.insertBatchSpec(base);
     }
     
-    @RequestMapping(value = "/page/in", method = RequestMethod.POST)
-    public Result<PageGrid<SpecificationInfo>> pageInByType(@RequestBody PageParam<SpecificationInfo> base) {
+    @PostMapping(value = "/page/in")
+    public PageGrid<SpecificationInfo> pageInByType(@RequestBody PageParam<SpecificationInfo> base) {
+        ShowAssert.checkTrue(base.getData() == null
+                || StrUtil.isEmpty(base.getData().getTypeId()), StatusCode._4004);
         return specificationService.pageInByType(base);
     }
     
-    @RequestMapping(value = "/page/notin", method = RequestMethod.POST)
-    public Result<PageGrid<SpecificationInfo>> pageSpecNotInByType(@RequestBody PageParam<SpecificationInfo> base) {
+    @PostMapping(value = "/page/notin")
+    public PageGrid<SpecificationInfo> pageSpecNotInByType(@RequestBody PageParam<SpecificationInfo> base) {
+        ShowAssert.checkTrue(base.getData() == null
+                || StrUtil.isEmpty(base.getData().getTypeId()), StatusCode._4004);
         return specificationService.pageNotInByType(base);
     }
 }

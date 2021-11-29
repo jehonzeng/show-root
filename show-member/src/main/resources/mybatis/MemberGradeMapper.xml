@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MemberGradeMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MemberGrade">
+        <!--@Table t_member_grade-->
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="gradeName" column="grade_name" jdbcType="VARCHAR"/>
+        <result property="imgId" column="image_id" jdbcType="VARCHAR"/>
+        <result property="imgUrl" column="imgUrl" jdbcType="VARCHAR"/>
+        <result property="consumeTotal" column="consume_total" jdbcType="INTEGER"/>
+        <result property="giveType" column="give_type" jdbcType="INTEGER"/>
+        <result property="giveIntegral" column="give_integral" jdbcType="INTEGER"/>
+        <result property="integralProportion" column="integral_proportion" jdbcType="DECIMAL"/>
+        <result property="memberDiscount" column="member_discount" jdbcType="DECIMAL"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="modifier" column="modifier" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="amount" column="amount" jdbcType="DECIMAL"/>
+        <collection property="tickets" ofType="com.szhengzhu.bean.member.GradeTicket">
+            <result property="gradeId" column="grade_id" jdbcType="VARCHAR"/>
+            <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+            <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+            <result property="templateName" column="templateName" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mark_id, grade_name, consume_total, give_type, give_integral, integral_proportion, member_discount,
+        creator, modifier, create_time, modify_time, remark, status, image_id
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select<include refid="Base_Column_List"/>,grade_id,template_id,quantity,
+        (select p.name from db_ordering.t_ticket_template p where p.mark_id=t.template_id) as templateName,
+        (select i.image_path from db_base.t_image_info i where m.image_id=i.mark_id) as imgUrl
+        from t_member_grade m left join t_grade_ticket t on t.grade_id=m.mark_id
+        where mark_id = #{markId}
+        ORDER BY consume_total
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select<include refid="Base_Column_List"/>,grade_id,template_id,quantity,
+        (select p.name from db_ordering.t_ticket_template p where p.mark_id=t.template_id) as templateName,
+        (select i.image_path from db_base.t_image_info i where m.image_id=i.mark_id) as imgUrl
+        from t_member_grade m left join t_grade_ticket t on t.grade_id=m.mark_id
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="gradeName != null and gradeName != ''">
+                and grade_name = #{gradeName}
+            </if>
+            <if test="imgId != null and imgId != ''">
+                and image_id = #{imgId}
+            </if>
+            <if test="consumeTotal != null">
+                and consume_total = #{consumeTotal}
+            </if>
+            <if test="giveType != null">
+                and give_type = #{giveType}
+            </if>
+            <if test="giveIntegral != null">
+                and give_integral = #{giveIntegral}
+            </if>
+            <if test="integralProportion != null">
+                and integral_proportion = #{integralProportion}
+            </if>
+            <if test="memberDiscount != null">
+                and member_discount = #{memberDiscount}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                and modifier = #{modifier}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        ORDER BY consume_total
+    </select>
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_member_grade
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="gradeName != null and gradeName != ''">
+                grade_name,
+            </if>
+            <if test="imgId != null and imgId != ''">
+                image_id,
+            </if>
+            <if test="consumeTotal != null">
+                consume_total,
+            </if>
+            <if test="giveType != null">
+                give_type,
+            </if>
+            <if test="giveIntegral != null">
+                give_integral,
+            </if>
+            <if test="integralProportion != null">
+                integral_proportion,
+            </if>
+            <if test="memberDiscount != null">
+                member_discount,
+            </if>
+            <if test="creator != null and creator != ''">
+                creator,
+            </if>
+            <if test="modifier != null and modifier != ''">
+                modifier,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="gradeName != null and gradeName != ''">
+                #{gradeName},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                #{imgId},
+            </if>
+            <if test="consumeTotal != null">
+                #{consumeTotal},
+            </if>
+            <if test="giveType != null">
+                #{giveType},
+            </if>
+            <if test="giveIntegral != null">
+                #{giveIntegral},
+            </if>
+            <if test="integralProportion != null">
+                #{integralProportion},
+            </if>
+            <if test="memberDiscount != null">
+                #{memberDiscount},
+            </if>
+            <if test="creator != null and creator != ''">
+                #{creator},
+            </if>
+            <if test="modifier != null and modifier != ''">
+                #{modifier},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_member_grade
+        <set>
+            <if test="gradeName != null and gradeName != ''">
+                grade_name = #{gradeName},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                image_id = #{imgId},
+            </if>
+            <if test="consumeTotal != null">
+                consume_total = #{consumeTotal},
+            </if>
+            <if test="giveType != null">
+                give_type = #{giveType},
+            </if>
+            <if test="giveIntegral != null">
+                give_integral = #{giveIntegral},
+            </if>
+            <if test="integralProportion != null">
+                integral_proportion = #{integralProportion},
+            </if>
+            <if test="memberDiscount != null">
+                member_discount = #{memberDiscount},
+            </if>
+            <if test="creator != null and creator != ''">
+                creator = #{creator},
+            </if>
+            <if test="modifier != null and modifier != ''">
+                modifier = #{modifier},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark= #{remark},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_member_grade
+        where mark_id = #{markId}
+    </delete>
+    <select id="memberGradeShow" resultType="com.szhengzhu.bean.member.MemberGradeShow">
+        select m.mark_id as gradeId,
+        give_integral as integral,
+        grade_name as gradeName,
+        if((consume_total - #{amount}) > 0,#{amount},null) as consumeTotal,
+        (select sum(quantity) from t_grade_ticket t where t.grade_id=m.mark_id group by t.grade_id)as ticket,
+        (select i.image_path from db_base.t_image_info i where m.image_id=i.mark_id) as imgUrl,
+        if((consume_total - #{amount}) > 0, consume_total - #{amount}, null) as amount
+        from t_member_grade m
+        where status = 1
+        <if test="amount != null">
+            and consume_total > #{amount,jdbcType=INTEGER}
+        </if>
+        ORDER BY m.consume_total
+    </select>
+    <select id="selectByGradeId" resultMap="BaseResultMap">
+        select<include refid="Base_Column_List"/>,grade_id,template_id,quantity,
+        (select p.name from db_ordering.t_ticket_template p where p.mark_id=t.template_id) as templateName,
+        (select i.image_path from db_base.t_image_info i where m.image_id=i.mark_id) as imgUrl
+        from t_member_grade m left join t_grade_ticket t on t.grade_id=m.mark_id
+        where consume_total <![CDATA[<=]]> #{amount}
+        ORDER BY consume_total DESC
+        LIMIT 1
+    </select>
+</mapper>

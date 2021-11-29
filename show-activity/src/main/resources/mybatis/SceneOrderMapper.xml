@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SceneOrderMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.activity.SceneOrder">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+        <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
+        <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+        <result column="statusDesc" jdbcType="VARCHAR" property="statusDesc" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, order_no, user_id, order_time, pay_amount, order_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_scene_order
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_scene_order
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.activity.SceneOrder">
+        insert into t_scene_order (mark_id, order_no, user_id,
+        order_time, use_time, quantity,
+        pay_amount, order_status)
+        values (#{markId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+        #{orderTime,jdbcType=TIMESTAMP},
+        #{payAmount,jdbcType=DECIMAL}, #{orderStatus,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.activity.SceneOrder">
+        insert into t_scene_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="orderTime != null">
+                order_time,
+            </if>
+            <if test="payAmount != null">
+                pay_amount,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null">
+                #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payAmount != null">
+                #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.activity.SceneOrder">
+        update t_scene_order
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null">
+                order_time = #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="orderStatus != null">
+                orderStatus = #{orderStatus,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.activity.SceneOrder">
+        update t_scene_order
+        set order_no = #{orderNo,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=VARCHAR},
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+        pay_amount = #{payAmount,jdbcType=DECIMAL},
+        orderStatus = #{orderStatus,jdbcType=VARCHAR},
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.activity.SceneOrder" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        (select u.nick_name from db_user.t_user_info u where u.mark_id=user_id) as nickName,
+        (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc
+        from t_scene_order
+        <where>
+            <if test="orderNo != null">
+                order_no like concat('%', #{orderNo,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null">
+                and to_days(order_time) = to_days(#{orderTime,jdbcType=TIMESTAMP})
+            </if>
+            <if test="payAmount != null">
+                and pay_amount = #{payAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="orderStatus != null">
+                and orderStatus = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectByNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+        (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc
+        from t_scene_order
+        where order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="userId != null">
+            and user_id=#{userId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectExpiredOrder" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_scene_order o
+        WHERE order_status='OT01' AND UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(order_time) > 90
+    </select>
+</mapper>

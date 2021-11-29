@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SignMemberMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.SignMember">
+        <!--@Table t_sign_member-->
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="year" column="year" jdbcType="INTEGER"/>
+        <result property="month" column="month" jdbcType="INTEGER"/>
+        <result property="continueSign" column="continue_sign" jdbcType="INTEGER"/>
+        <result property="sign" column="sign" jdbcType="VARCHAR"/>
+        <result property="signTime" column="sign_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="SignInfo" type="com.szhengzhu.bean.member.param.SignInfoParam">
+        <!--@Table t_sign_member-->
+        <id property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="year" column="year" jdbcType="INTEGER"/>
+        <result property="month" column="month" jdbcType="INTEGER"/>
+        <result property="continueSign" column="continue_sign" jdbcType="INTEGER"/>
+        <result property="sign" column="sign" jdbcType="VARCHAR"/>
+        <result property="signTime" column="sign_time" jdbcType="TIMESTAMP"/>
+        <collection property="signDetailList" ofType="com.szhengzhu.bean.member.SignDetail">
+            <!--@Table t_sign_detail-->
+            <result property="ruleId" column="rule_id" jdbcType="VARCHAR"/>
+            <result property="day" column="day" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        m.mark_id, m.user_id, m.`year`, m.`month`, m.continue_sign, m.sign, m.sign_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SignInfo">
+        select d.rule_id, d.create_time, DATE_FORMAT(d.create_time, '%m-%d') as day,
+        <include refid="Base_Column_List"/>
+        from t_sign_member m left join t_sign_detail d on d.sign_id=m.mark_id
+        where m.mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SignInfo">
+        select d.rule_id,d.create_time, DATE_FORMAT(d.create_time, '%m-%d') as day,
+        <include refid="Base_Column_List"/>
+        from t_sign_member m left join t_sign_detail d on d.sign_id=m.mark_id
+        <where>
+            <if test="markId != null and markId != ''">
+                and m.mark_id = #{markId}
+            </if>
+            <if test="userId != null and userId != ''">
+                and m.user_id = #{userId}
+            </if>
+            <if test="year != null">
+                and m.`year` = #{year}
+            </if>
+            <if test="month != null">
+                and m.`month` = #{month}
+            </if>
+            <if test="continueSign != null">
+                and m.continue_sign = #{continueSign}
+            </if>
+            <if test="sign != null and sign != ''">
+                and m.sign = #{sign}
+            </if>
+            <if test="signTime != null">
+                and m.sign_time = #{signTime}
+            </if>
+        </where>
+        order by sign_time desc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_sign_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id,
+            </if>
+            <if test="year != null">
+                `year`,
+            </if>
+            <if test="month != null">
+                `month`,
+            </if>
+            <if test="continueSign != null">
+                continue_sign,
+            </if>
+            <if test="sign != null and sign != ''">
+                sign,
+            </if>
+            <if test="signTime != null">
+                sign_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="userId != null and userId != ''">
+                #{userId},
+            </if>
+            <if test="year != null">
+                #{year},
+            </if>
+            <if test="month != null">
+                #{month},
+            </if>
+            <if test="continueSign != null">
+                #{continueSign},
+            </if>
+            <if test="sign != null and sign != ''">
+                #{sign},
+            </if>
+            <if test="signTime != null">
+                #{signTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_sign_member
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="year != null">
+                `year` = #{year},
+            </if>
+            <if test="month != null">
+                `month` = #{month},
+            </if>
+            <if test="continueSign != null">
+                continue_sign = #{continueSign},
+            </if>
+            <if test="sign != null and sign != ''">
+                sign = #{sign},
+            </if>
+            <if test="signTime != null">
+                sign_time = #{signTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_sign_member
+        where mark_id = #{markId}
+    </delete>
+
+    <select id="queryByUserId" resultMap="SignInfo">
+        select d.rule_id,d.create_time, DATE_FORMAT(d.create_time, '%m-%d') as day,
+        <include refid="Base_Column_List"/>
+        from t_sign_member m left join t_sign_detail d on d.sign_id=m.mark_id
+        <where>
+            <if test="userId != null and userId != ''">
+                and m.user_id = #{userId}
+            </if>
+            <if test="year != null">
+                and m.`year` = #{year}
+            </if>
+            <if test="month != null">
+                and m.`month` = #{month}
+            </if>
+        </where>
+    </select>
+</mapper>

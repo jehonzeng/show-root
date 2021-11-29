@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchResultMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchResult">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="stage_id" jdbcType="VARCHAR" property="stageId"/>
+        <result column="team_id" jdbcType="VARCHAR" property="teamId"/>
+        <result column="last_time" jdbcType="TIMESTAMP" property="lastTime"/>
+        <result column="team_status" jdbcType="INTEGER" property="teamStatus"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, stage_id, team_id, last_time, team_status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_result
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_result
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchResult">
+        insert into t_match_result (mark_id, stage_id, team_id,
+                                    last_time, team_status)
+        values (#{markId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR},
+                #{lastTime,jdbcType=TIMESTAMP}, #{teamStatus,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchResult">
+        insert into t_match_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="stageId != null">
+                stage_id,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="lastTime != null">
+                last_time,
+            </if>
+            <if test="teamStatus != null">
+                team_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageId != null">
+                #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTime != null">
+                #{lastTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teamStatus != null">
+                #{teamStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchResult">
+        update t_match_result
+        <set>
+            <if test="stageId != null">
+                stage_id = #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teamStatus != null">
+                team_status = #{teamStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchResult">
+        update t_match_result
+        set stage_id    = #{stageId,jdbcType=VARCHAR},
+            team_id     = #{teamId,jdbcType=VARCHAR},
+            last_time   = #{lastTime,jdbcType=TIMESTAMP},
+            team_status = #{teamStatus,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_match_result (mark_id, stage_id, team_id, last_time, team_status)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.stageId,jdbcType=VARCHAR}, #{item.teamId,jdbcType=VARCHAR},
+            #{item.lastTime,jdbcType=TIMESTAMP}, #{teamStatus,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <select id="selectByTeam" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_result
+        where stage_id = #{stageId,jdbcType=VARCHAR} and team_id=#{teamId,jdbcType=VARCHAR}
+    </select>
+    <!--<select id="selectStageStatusByTeamId" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.StageResultVo">
+        select s.mark_id as stageId, r.last_time as lastTime, r.team_status as teamStatus, s.start_time as stageStart
+        from t_match_stage s left join t_match_result r on s.mark_id = r.stage_id and r.team_id = #{teamId,jdbcType=VARCHAR}
+       where s.match_id = #{matchId,jdbcType=VARCHAR}
+        ORDER BY start_time, ISNULL(r.last_time)
+    </select>-->
+    <select id="selectStageStatusByTeamId" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.StageResultVo">
+        SELECT s.mark_id as stageId,
+        s.stage_name as stageName,
+        r.last_time as lastTime,
+        <if test="userId != null and userId != ''">
+            (select ifnull(sum(quantity), 0) from t_match_vote v where v.team_id=#{teamId,jdbcType=VARCHAR} and
+            v.stage_id=s.mark_id and
+            v.user_id=#{userId,jdbcType=VARCHAR}) as voteCount,
+        </if>
+        r.team_status as teamStatus, s.start_time as stageStart
+        FROM t_match_stage s left join t_match_result r on s.mark_id = r.stage_id and r.team_id =
+        #{teamId,jdbcType=VARCHAR}
+        WHERE s.match_id = #{matchId,jdbcType=VARCHAR}
+        order by s.start_time, ISNULL(r.last_time)
+    </select>
+    <!--<select id="selectTeamStageResultByUser" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.StageResultVo">
+        SELECT r.stage_id as stageId,
+            s.stage_name as stageName,
+            r.last_time as lastTime,
+            <if test="userId != null and userId != ''">
+                (select ifnull(sum(quantity), 0) from t_match_vote v where v.team_id=r.team_id and r.stage_id=s.mark_id and
+                v.user_id=#{userId,jdbcType=VARCHAR}) as voteCount,
+            </if>
+            r.team_status as teamStatus
+        FROM t_match_result r left join t_match_stage s on s.mark_id = r.stage_id
+        WHERE team_id = #{teamId,jdbcType=VARCHAR} AND match_id = #{matchId,jdbcType=VARCHAR}
+        order by r.last_time
+    </select>-->
+    <select id="selectLastByMatch" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.StageResultVo">
+        SELECT s.mark_id     as stageId,
+               s.stage_name  as stageName,
+               r.last_time   as lastTime,
+               r.team_status as teamStatus,
+               s.start_time  as stageStart
+        FROM t_match_stage s
+                     left join t_match_result r on s.mark_id = r.stage_id
+        WHERE s.match_id = #{matchId,jdbcType=VARCHAR}
+        order by s.start_time desc, r.last_time desc
+        limit 1
+    </select>
+</mapper>

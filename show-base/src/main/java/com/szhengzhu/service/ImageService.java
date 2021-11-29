@@ -1,44 +1,43 @@
 package com.szhengzhu.service;
 
 import com.szhengzhu.bean.base.ImageInfo;
-import com.szhengzhu.core.Result;
 
 public interface ImageService {
 
     /**
      * 添加图片信息
-     * 
+     *
      * @date 2019年5月5日 下午4:04:15
      * @param imageInfo
      * @return
      */
-    Result<ImageInfo> addImgInfo(ImageInfo imageInfo);
+    ImageInfo addImgInfo(ImageInfo imageInfo);
 
     /**
      * 删除图片路径信息
-     * 
+     *
      * @date 2019年3月8日 下午2:29:37
      * @param markId
      * @return
      */
-    Result<?> deleteImage(String markId);
+    void deleteImage(String markId);
 
     /**
      * 根据图片id获取图片缓冲流
-     * 
+     *
      * @date 2019年3月14日 下午2:24:41
      * @param markId
      * @return
      */
     ImageInfo getImage(String markId);
-    
-    
+
+
     /**
      * 根据商品id、商品图片类型和规格获取商品图片
      * @date 2019年3月14日 下午6:28:13
      * @param goodsId
      * @param type
-     * @param specList
+     * @param specIds
      * @return
      */
     ImageInfo getGoodsImage(String goodsId, Integer type,String specIds);

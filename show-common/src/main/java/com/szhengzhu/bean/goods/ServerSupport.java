@@ -1,8 +1,9 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * 服务支持信息
@@ -17,6 +18,7 @@ public class ServerSupport implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String theme;
 
     private String detailExplain;

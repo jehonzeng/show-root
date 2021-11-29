@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.SignRuleMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.SignRule">
+        <!--@Table t_sign_rule-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="imgId" column="img_id" jdbcType="VARCHAR"/>
+        <result property="imgPath" column="imgPath" jdbcType="VARCHAR"/>
+        <result property="giveType" column="give_type" jdbcType="INTEGER"/>
+        <result property="giveIntegral" column="give_integral" jdbcType="INTEGER"/>
+        <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+        <result property="templateName" column="templateName" jdbcType="VARCHAR"/>
+        <result property="days" column="days" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="BIT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mark_id, `name`, img_id, give_type, give_integral, template_id, days, create_time, modify_time, remark, `status`
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select (select i.image_path from db_base.t_image_info i where i.mark_id = img_id) as imgPath,
+        (select t.name from db_ordering.t_ticket_template t where t.mark_id=template_id) as templateName,
+        <include refid="Base_Column_List"/>
+        from t_sign_rule
+        where mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select (select i.image_path from db_base.t_image_info i where i.mark_id = img_id) as imgPath,
+        (select t.name from db_ordering.t_ticket_template t where t.mark_id=template_id) as templateName,
+        <include refid="Base_Column_List"/>
+        from t_sign_rule
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="name != null and name != ''">
+                and `name` = #{name}
+            </if>
+            <if test="imgId != null and imgId != ''">
+                and img_id = #{imgId}
+            </if>
+            <if test="giveType != null">
+                and give_type = #{giveType}
+            </if>
+            <if test="giveIntegral != null">
+                and give_integral = #{giveIntegral}
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and template_id = #{templateId}
+            </if>
+            <if test="days != null">
+                and days = #{days}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="status != null">
+                and `status` = #{status}
+            </if>
+        </where>
+        order by days
+        <if test="sort != null and sort != ''">
+            desc
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_sign_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
+            <if test="imgId != null and imgId != ''">
+                img_id,
+            </if>
+            <if test="giveType != null">
+                give_type,
+            </if>
+            <if test="giveIntegral != null">
+                give_integral ,
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id,
+            </if>
+            <if test="days != null">
+                days,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                #{imgId},
+            </if>
+            <if test="giveType != null">
+                #{giveType},
+            </if>
+            <if test="giveIntegral != null">
+                #{giveIntegral},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                #{templateId},
+            </if>
+            <if test="days != null">
+                #{days},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_sign_rule
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="imgId != null and imgId != ''">
+                img_id = #{imgId},
+            </if>
+            <if test="giveType != null">
+                give_type = #{giveType},
+            </if>
+            <if test="giveIntegral != null">
+                give_integral = #{giveIntegral},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id = #{templateId},
+            </if>
+            <if test="days != null">
+                days = #{days},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_sign_rule
+        where mark_id = #{markId}
+    </delete>
+</mapper>

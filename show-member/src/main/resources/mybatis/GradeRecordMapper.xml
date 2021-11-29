@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.GradeRecordMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.GradeRecord">
+        <!--@Table t_grade_record-->
+        <result property="markId" column="mark_id" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="indentId" column="indent_id" jdbcType="VARCHAR"/>
+        <result property="consumeAmount" column="consume_amount" jdbcType="DECIMAL"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="modify_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mark_id, member_id, indent_id, consume_amount, remark, create_time, modify_time
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_grade_record
+        where mark_id = #{markId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_grade_record
+        <where>
+            <if test="markId != null and markId != ''">
+                and mark_id = #{markId}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="indentId != null and indentId != ''">
+                and indent_id = #{indentId}
+            </if>
+            <if test="consumeAmount != null">
+                and consume_amount = #{consumeAmount}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="markId" useGeneratedKeys="true">
+        insert into t_grade_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                mark_id,
+            </if>
+            <if test="memberId != null and memberId != ''">
+                member_id,
+            </if>
+            <if test="indentId != null and indentId != ''">
+                indent_id,
+            </if>
+            <if test="consumeAmount != null">
+                consume_amount,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null and markId != ''">
+                #{markId},
+            </if>
+            <if test="memberId != null and memberId != ''">
+                #{memberId},
+            </if>
+            <if test="indentId != null and indentId != ''">
+                #{indentId},
+            </if>
+            <if test="consumeAmount != null">
+                #{consumeAmount},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_grade_record
+        <set>
+            <if test="memberId != null and memberId != ''">
+                member_id = #{memberId},
+            </if>
+            <if test="indentId != null and indentId != ''">
+                indent_id = #{indentId},
+            </if>
+            <if test="consumeAmount != null">
+                consume_amount = #{consumeAmount},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime},
+            </if>
+        </set>
+        where mark_id = #{markId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_grade_record
+        where mark_id = #{markId}
+    </delete>
+
+    <select id="consumeTotal" resultType="java.math.BigDecimal">
+        select IFNULL(SUM(consume_amount), 0) AS comsumeAmount
+        from t_grade_record
+        where member_id = #{memberId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectIndentId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_grade_record
+        where indent_id = #{indentId}
+        order by create_time desc LIMIT 1
+    </select>
+</mapper>

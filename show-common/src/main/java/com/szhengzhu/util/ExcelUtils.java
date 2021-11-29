@@ -1,43 +1,57 @@
 package com.szhengzhu.util;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.szhengzhu.annotation.Excel;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddressList;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ExcelUtils {
 
     private HSSFWorkbook wb;
 
     private HSSFFont font;
+    
+    private HSSFFont titleFont;
 
     private HSSFCellStyle style;
+
+    private HSSFCellStyle titleStyle;
 
     public ExcelUtils() {
         wb = new HSSFWorkbook();
         font = wb.createFont();
-        font.setFontHeightInPoints((short) 20);// 字体大小
+        font.setFontHeightInPoints((short) 12);// 字体大小
         font.setFontName("宋体");
         font.setColor(HSSFFont.COLOR_NORMAL);// 字体颜色
-        font.setBold(true);// 粗体
+//        font.setBold(true);// 粗体
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);// 水平居中
         style.setVerticalAlignment(VerticalAlignment.CENTER);// 垂直居中
         style.setFont(font);
+        // 第一行标题样式
+        titleFont = wb.createFont();
+        titleFont.setFontHeightInPoints((short) 15);// 字体大小
+        titleFont.setFontName("宋体");
+        titleFont.setColor(HSSFFont.COLOR_RED);// 字体颜色
+        titleFont.setBold(true);// 粗体
+        titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);// 垂直居中
+        titleStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());//添加颜色
+        titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        titleStyle.setFont(titleFont);
     }
 
     public void createSheet(List<?> list, String name, Class<?> clazz) {
@@ -54,9 +68,16 @@ public class ExcelUtils {
      */
     private void title(List<ExcelSort> _ex, HSSFSheet sheet) {
         HSSFRow row = sheet.createRow(0);
+        int width = 50;
         for (int i = 0, len = _ex.size(); i < len; i++) {
-            cell(row.createCell(i), _ex.get(i).excel.name());
+            sheet.setColumnWidth(i, 255 * width + 184);
+            cellHeader(row.createCell(i), _ex.get(i).excel.name());
         }
+    }
+
+    private void cellHeader(HSSFCell cell, String text) {
+        cell.setCellStyle(titleStyle);
+        cell.setCellValue(text);
     }
 
     private void cell(HSSFCell cell, String text) {
@@ -65,7 +86,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 创建标题
+     * 创建表格数据
      * 
      * @param _ex
      */
@@ -76,23 +97,27 @@ public class ExcelUtils {
             row = sheet.createRow(i + 1);
             text = value(_ex, list.get(i));
             for (int j = 0; j < text.length; j++) {
+                if (text[j] != null && text[j].contains(":")) {
+                    createColDownList(text[j], sheet, j, i);
+                    continue;
+                }
                 cell(row.createCell(j), text[j]);
             }
         }
     }
-
+    
     private String[] value(List<ExcelSort> excel, Object object) {
-        Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
         JSONObject json = JSONObject.parseObject(gson.toJson(object));
         String[] text = new String[excel.size()];
         String fomat;
         for (int i = 0, len = excel.size(); i < len; i++) {
             text[i] = json.getString(excel.get(i).field.getName());
-            // 价格处理
-//			if(excel.get(i).excel.price()) {
-//				text[i] = StringUtils.format(text[i]);
-//				continue;
-//			}
+            if (excel.get(i).excel.select()) {
+                text[i] = ":" + text[i];// 标记下拉数据
+                continue;
+            }
             if (excel.get(i).excel.format().equals("")) {
                 continue;
             }
@@ -116,7 +141,7 @@ public class ExcelUtils {
      */
     private List<ExcelSort> init(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
-        List<ExcelSort> field_list = new LinkedList<ExcelSort>();
+        List<ExcelSort> field_list = new LinkedList<>();
         for (int i = 0; i < fields.length; i++) {
             Excel excel = fields[i].getAnnotation(Excel.class);
             if (excel == null || excel.skip() == true) {
@@ -148,4 +173,28 @@ public class ExcelUtils {
         return wb;
     }
 
+    /**
+     * 创建某一列下拉框
+     *
+     * @date 2019年9月19日
+     */
+    private void createColDownList(String text, HSSFSheet sheet, int col, int row) {
+//        Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss")
+//                .create();
+//        String[] data = gson.fromJson(text, String[].class);
+        text = text.substring(text.indexOf("[") + 1,text.length() - 1 );
+        String[] data = text.split(",");
+        System.out.println(Arrays.toString(data));
+        // //生成一个工作簿对象
+        // HSSFWorkbook workbook = new HSSFWorkbook();
+        // //生成一个名称为Info的表单
+        // HSSFSheet sheet = workbook.createSheet("Info");
+        // 设置下拉列表作用的单元格(firstrow, lastrow, firstcol, lastcol)
+        CellRangeAddressList regions = new CellRangeAddressList(row + 1, row + 1, col, col);
+        // 生成并设置数据有效性验证
+        DVConstraint constraint = DVConstraint.createExplicitListConstraint(data);
+        HSSFDataValidation data_validation_list = new HSSFDataValidation(regions, constraint);
+        // 将有效性验证添加到表单
+        sheet.addValidationData(data_validation_list);
+    }
 }

@@ -1,9 +1,11 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
+import java.util.Date;
 
 @Data
 public class MealInfo implements Serializable{
@@ -12,13 +14,12 @@ public class MealInfo implements Serializable{
 
     private String markId;
 
+    @NotBlank
     private String theme;
 
     private BigDecimal basePrice;
 
     private BigDecimal salePrice;
-
-    private Integer stockSize;
 
     private Boolean serverStatus;
 
@@ -27,4 +28,6 @@ public class MealInfo implements Serializable{
     private Integer sort;
 
     private String mealNo;
+    
+    private Date createTime;
 }

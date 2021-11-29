@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.PayBackMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.PayBack">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="indent_id" jdbcType="VARCHAR" property="indentId" />
+        <result column="back_info" jdbcType="VARCHAR" property="backInfo" />
+        <result column="back_type" jdbcType="INTEGER" property="backType" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, indent_id, back_info, back_type, add_time, user_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_pay_back
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_pay_back
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.PayBack">
+        insert into t_pay_back (mark_id, indent_id, back_info,
+        back_type, add_time, user_id
+        )
+        values (#{markId,jdbcType=VARCHAR}, #{indentId,jdbcType=VARCHAR}, #{backInfo,jdbcType=VARCHAR},
+        #{backType,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.PayBack">
+        insert into t_pay_back
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="indentId != null">
+                indent_id,
+            </if>
+            <if test="backInfo != null">
+                back_info,
+            </if>
+            <if test="backType != null">
+                back_type,
+            </if>
+            <if test="addTime != null">
+                add_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="indentId != null">
+                #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="backInfo != null">
+                #{backInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="backType != null">
+                #{backType,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.PayBack">
+        update t_pay_back
+        <set>
+            <if test="indentId != null">
+                indent_id = #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="backInfo != null">
+                back_info = #{backInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="backType != null">
+                back_type = #{backType,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null">
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.PayBack">
+        update t_pay_back
+        set indent_id = #{indentId,jdbcType=VARCHAR},
+        back_info = #{backInfo,jdbcType=VARCHAR},
+        back_type = #{backType,jdbcType=INTEGER},
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+        user_id = #{userId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+</mapper>

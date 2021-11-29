@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Update;
 import com.szhengzhu.bean.order.UserCoupon;
 import com.szhengzhu.bean.wechat.vo.CouponBase;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface UserCouponMapper {
     
     int deleteByPrimaryKey(String markId);
@@ -29,9 +32,18 @@ public interface UserCouponMapper {
 
     int insertBatch(List<UserCoupon> base);
 
-    @Update("update t_user_coupon set server_status = -1 where server_status = 0 and stop_time < NOW()")
+    @Update("UPDATE t_user_coupon SET server_status = -1 WHERE server_status = 0 AND stop_time < NOW()")
     void updateOverdueCoupon();
+    
+    @Update("UPDATE t_user_coupon SET server_status = -1 WHERE server_status = 0 AND stop_time < NOW() AND user_id=#{userId}")
+    void updateOverdueCouponByUserId(@Param("userId") String userId);
     
     @Update("update t_user_coupon set server_status = 1, use_time = #{useTime} where mark_id=#{couponId}")
     void useCoupon(@Param("couponId") String couponId, @Param("useTime") Date useTime);
+
+    @Update("UPDATE t_user_coupon SET server_status = -1 WHERE server_status = 0 and stop_time < NOW() ")
+    int updateByEnd();
+    
+    @Update("UPDATE t_user_coupon SET server_status = 0, use_time = null WHERE mark_id=#{couponId}")
+    void backOrderCoupon(@Param("couponId") String couponId);
 }

@@ -1,17 +1,20 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.PurchaseInfo;
+import com.szhengzhu.bean.vo.FoodCount;
+import com.szhengzhu.bean.vo.PurchaseFood;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.szhengzhu.bean.goods.PurchaseInfo;
-import com.szhengzhu.bean.vo.FoodCount;
-import com.szhengzhu.bean.vo.PurchaseFood;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface PurchaseInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(PurchaseInfo record);
@@ -40,7 +43,7 @@ public interface PurchaseInfoMapper {
     @Delete("DELETE FROM t_purchase_info WHERE buy_time = #{buyTime}")
     int deletePurchaseOrders(@Param("buyTime") String buyTime);
 
-    @Select("SELECT foodId,SUM(IFNULL(count,0)) AS totalCount FROM v_purchase_base WHERE orderStatus IN('OT02','OT03') GROUP BY foodId ")
+    @Select("SELECT foodId,SUM(IFNULL(foodConsume,0)) AS totalCount FROM v_purchase_data GROUP BY foodId ")
     List<FoodCount> selectTodayList();
     
     @Delete("DELETE FROM t_purchase_info WHERE buy_time = #{buyTime} AND reflash_time != #{reflashTime} AND buy_total = 0")

@@ -1,15 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
-
 import com.szhengzhu.bean.goods.GoodsJudge;
 import com.szhengzhu.bean.vo.GoodsJudgeVo;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
 import com.szhengzhu.provider.JudgeProvider;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface GoodsJudgeMapper {
     
     int deleteByPrimaryKey(String markId);

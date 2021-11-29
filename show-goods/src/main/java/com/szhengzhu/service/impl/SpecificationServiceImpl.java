@@ -1,116 +1,102 @@
 package com.szhengzhu.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageHelper;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
+import com.szhengzhu.annotation.CheckGoodsChange;
 import com.szhengzhu.bean.goods.SpecificationInfo;
 import com.szhengzhu.bean.vo.SpecBatchVo;
 import com.szhengzhu.bean.vo.SpecChooseBox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.SpecificationInfoMapper;
 import com.szhengzhu.service.SpecificationService;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service("specificationService")
 public class SpecificationServiceImpl implements SpecificationService {
 
-    @Autowired
+    @Resource
     private SpecificationInfoMapper specificationInfoMapper;
 
+    @CheckGoodsChange
     @Override
-    public Result<?> addSpecification(SpecificationInfo base) {
-        if (base == null || StringUtils.isEmpty(base.getAttrName())
-                || StringUtils.isEmpty(base.getAttrValue())) {
-            return new Result<>(StatusCode._4004);
-        }
+    public SpecificationInfo addSpecification(SpecificationInfo base) {
         int count = specificationInfoMapper.repeatRecords(base.getAttrValue(), base.getAttrName(),
                 "");
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
-        base.setMarkId(IdGenerator.getInstance().nexId());
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        base.setMarkId(snowflake.nextIdStr());
         base.setServerStatus(false);
         specificationInfoMapper.insertSelective(base);
-        return new Result<>(base);
+        return base;
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> editSpecification(SpecificationInfo base) {
-        if (base == null || base.getMarkId() == null) {
-            return new Result<>(StatusCode._4004);
-        }
-        String attrValue = base.getAttrValue() == null ? "" : base.getAttrValue();
-        String attrName = base.getAttrName() == null ? "" : base.getAttrName();
+    public SpecificationInfo modifySpecification(SpecificationInfo base) {
+        String attrValue = StrUtil.isEmpty(base.getAttrValue()) ? "" : base.getAttrValue();
+        String attrName = StrUtil.isEmpty(base.getAttrName()) ? "" : base.getAttrName();
         int count = specificationInfoMapper.repeatRecords(attrValue, attrName, base.getMarkId());
-        if (count > 0)
-            return new Result<>(StatusCode._4007);
+        ShowAssert.checkTrue(count > 0, StatusCode._4007);
         specificationInfoMapper.updateByPrimaryKeySelective(base);
-        return new Result<>(base);
+        return base;
     }
 
     @Override
-    public Result<PageGrid<SpecificationInfo>> getPage(PageParam<SpecificationInfo> base) {
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<SpecificationInfo> getPage(PageParam<SpecificationInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<SpecificationInfo> page = new PageInfo<>(
                 specificationInfoMapper.selectByExampleSelective(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
+    @CheckGoodsChange
     @Override
-    public Result<?> insertBatchSpec(SpecBatchVo info) {
+    public SpecBatchVo insertBatchSpec(SpecBatchVo info) {
         List<SpecificationInfo> list = new LinkedList<>();
-        IdGenerator generator = IdGenerator.getInstance();
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
         for (String attrValue : info.getAttrValues()) {
-            SpecificationInfo base = new SpecificationInfo();
-            base.setMarkId(generator.nexId());
-            base.setAttrName(info.getAttrName());
-            base.setServerStatus(false);
-            base.setAttrValue(attrValue);
+            SpecificationInfo base = SpecificationInfo.builder().markId(snowflake.nextIdStr()).attrName(info.getAttrName())
+                    .serverStatus(false).attrValue(attrValue).build();
             list.add(base);
         }
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             specificationInfoMapper.insertBatch(list);
         }
-        return new Result<>(info);
+        return info;
     }
 
     @Override
-    public Result<?> getSpecList(String goodsId) {
-        List<SpecChooseBox> list = specificationInfoMapper.selectNameByGoodsId(goodsId);
-        return new Result<>(list);
+    public List<SpecChooseBox> getSpecList(String goodsId) {
+        return specificationInfoMapper.selectNameByGoodsId(goodsId);
     }
 
     @Override
-    public Result<PageGrid<SpecificationInfo>> pageInByType(PageParam<SpecificationInfo> base) {
-        if (base == null || base.getData() == null
-                || StringUtils.isEmpty(base.getData().getTypeId()))
-            return new Result<>(StatusCode._4004);
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+    public PageGrid<SpecificationInfo> pageInByType(PageParam<SpecificationInfo> base) {
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<SpecificationInfo> page = new PageInfo<>(
                 specificationInfoMapper.selectInByType(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 
     @Override
-    public Result<PageGrid<SpecificationInfo>> pageNotInByType(
+    public PageGrid<SpecificationInfo> pageNotInByType(
             PageParam<SpecificationInfo> base) {
-        if (base == null || base.getData() == null
-                || StringUtils.isEmpty(base.getData().getTypeId()))
-            return new Result<>(StatusCode._4004);
-        PageHelper.startPage(base.getPageIndex(), base.getPageSize());
-        PageHelper.orderBy(base.getSidx() + " " + base.getSort());
+        PageMethod.startPage(base.getPageIndex(), base.getPageSize());
+        PageMethod.orderBy(base.getSidx() + " " + base.getSort());
         PageInfo<SpecificationInfo> page = new PageInfo<>(
                 specificationInfoMapper.selectNotInByType(base.getData()));
-        return new Result<>(new PageGrid<>(page));
+        return new PageGrid<>(page);
     }
 }

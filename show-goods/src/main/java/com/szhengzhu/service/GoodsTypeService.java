@@ -1,13 +1,12 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.GoodsType;
 import com.szhengzhu.bean.goods.TypeSpec;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface GoodsTypeService {
 
@@ -18,7 +17,7 @@ public interface GoodsTypeService {
      * @param base
      * @return
      */
-    Result<?> addType(GoodsType base);
+    GoodsType addType(GoodsType base);
 
     /**
      * 修改商品类型
@@ -27,7 +26,7 @@ public interface GoodsTypeService {
      * @param base
      * @return
      */
-    Result<?> editType(GoodsType base);
+    GoodsType modifyGoodsType(GoodsType base);
 
     /**
      * 商品分页信息
@@ -36,7 +35,7 @@ public interface GoodsTypeService {
      * @param base
      * @return
      */
-    Result<PageGrid<GoodsType>> getPage(PageParam<GoodsType> base);
+    PageGrid<GoodsType> getPage(PageParam<GoodsType> base);
     
     /**
      * 获取类型下拉列表
@@ -44,7 +43,7 @@ public interface GoodsTypeService {
      * @date 2019年3月18日 下午4:03:15
      * @return
      */
-    Result<List<Combobox>> listCombobox();
+    List<Combobox> listCombobox();
     
     /**
      * 批量添加类型与规格关联关系
@@ -54,7 +53,7 @@ public interface GoodsTypeService {
      * @param typeId
      * @return
      */
-    Result<?> addTypeSpec(String[] specIds, String typeId);
+    void addTypeSpec(String[] specIds, String typeId);
     
     /**
      * 删除类型与规格关联关系
@@ -63,7 +62,7 @@ public interface GoodsTypeService {
      * @param typeId
      * @return
      */
-    Result<?> removeTypeSpec(String typeId, String specId);
+    void removeTypeSpec(String typeId, String specId);
     
     /**
      * 修改类型与规格关联关系
@@ -72,6 +71,6 @@ public interface GoodsTypeService {
      * @param typeSpec
      * @return
      */
-    Result<?> modifyTypeSpec(TypeSpec typeSpec);
+    void modifyTypeSpec(TypeSpec typeSpec);
 
 }

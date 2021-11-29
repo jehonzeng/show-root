@@ -1,7 +1,6 @@
 package com.szhengzhu.service;
 
 import com.szhengzhu.bean.goods.MealContent;
-import com.szhengzhu.core.Result;
 
 public interface MealContentService {
 
@@ -10,7 +9,7 @@ public interface MealContentService {
      * @date 2019年4月19日 下午4:04:23
      * @return
      */
-    Result<?> editContent(MealContent base);
+    MealContent modifyContent(MealContent base);
 
     /**
      * 获取套餐图文编辑信息
@@ -18,6 +17,6 @@ public interface MealContentService {
      * @param mealId
      * @return
      */
-    Result<?> getMealContent(String mealId);
+    MealContent getMealContent(String mealId);
 
 }

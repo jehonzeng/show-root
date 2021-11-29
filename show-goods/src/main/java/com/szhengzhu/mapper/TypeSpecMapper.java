@@ -1,12 +1,14 @@
 package com.szhengzhu.mapper;
 
-import java.util.Map;
-
+import com.szhengzhu.bean.goods.TypeSpec;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.TypeSpec;
+import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 public interface TypeSpecMapper {
     
     int deleteByPrimaryKey(@Param("typeId") String typeId, @Param("specificationId") String specificationId);

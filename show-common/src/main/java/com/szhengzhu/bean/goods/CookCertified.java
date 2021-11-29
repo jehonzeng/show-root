@@ -1,9 +1,13 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+
+/**
+ * @author Administrator
+ */
 @Data
 public class CookCertified implements Serializable {
 
@@ -13,11 +17,13 @@ public class CookCertified implements Serializable {
 
     private String userId;
 
+    @NotBlank
     private String shortName;
 
     private String cookStyle;
-    
-    private String cookLevel;//关联等级
+
+    /** 关联等级 */
+    private String cookLevel;
 
     private String phone;
 

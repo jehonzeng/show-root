@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 商品类型信息
  * 
@@ -24,6 +26,7 @@ public class GoodsType implements Serializable {
     @ApiModelProperty(value = "有效否（fasle:无效；true:有效）", name = "serverStatus",allowableValues="false,true")
     private Boolean serverStatus;
 
+    @NotBlank
     @ApiModelProperty(value = "类型名称", name = "typeName")
     private String typeName;
 

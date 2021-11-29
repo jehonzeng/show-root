@@ -2,6 +2,9 @@ package com.szhengzhu.provider;
 
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 public class StockProvider {
 
     public String selectInfos(Map<String, String> map) {

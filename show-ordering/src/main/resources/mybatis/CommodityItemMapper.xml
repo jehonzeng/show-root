@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.CommodityItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.CommodityItem">
+        <id column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+        <id column="specs_id" jdbcType="VARCHAR" property="specsId" />
+        <id column="item_id" jdbcType="VARCHAR" property="itemId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="markup_price" jdbcType="DECIMAL" property="markupPrice" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="checked" property="checked" jdbcType="BIT" />
+    </resultMap>
+    <!-- <resultMap id="ModelResultMap" type="com.szhengzhu.bean.xwechat.vo.SpecsModel">
+        <result column="specsName" jdbcType="VARCHAR" property="specsName" />
+        <result column="min_value" jdbcType="INTEGER" property="minValue" />
+        <result column="max_value" jdbcType="INTEGER" property="maxValue" />
+        <collection property="itemList" ofType="com.szhengzhu.bean.xwechat.vo.ItemModel">
+            <id column="itemId" jdbcType="VARCHAR" property="itemId" />
+            <result column="itemName" jdbcType="VARCHAR" property="itemName" />
+            <result column="markupPrice" jdbcType="DECIMAL" property="markupPrice" />
+        </collection>
+    </resultMap> -->
+    <sql id="Base_Column_List">
+        commodity_id, specs_id, item_id, name, markup_price, sort, checked
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_commodity_item
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and specs_id = #{specsId,jdbcType=VARCHAR}
+        and item_id = #{itemId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_commodity_item
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and specs_id = #{specsId,jdbcType=VARCHAR}
+        and item_id = #{itemId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.CommodityItem">
+        insert into t_commodity_item (commodity_id, specs_id, item_id,
+        name, markup_price, sort, checked
+        )
+        values (#{commodityId,jdbcType=VARCHAR}, #{specsId,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR}, #{markupPrice,jdbcType=DECIMAL}, #{sort,jdbcType=INTEGER}, #{checked,jdbcType=BIT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.CommodityItem">
+        insert into t_commodity_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="specsId != null">
+                specs_id,
+            </if>
+            <if test="itemId != null">
+                item_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="markupPrice != null">
+                markup_price,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="checked != null">
+                checked,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="specsId != null">
+                #{specsId,jdbcType=VARCHAR},
+            </if>
+            <if test="itemId != null">
+                #{itemId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="markupPrice != null">
+                #{markupPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="checked">
+                #{checked,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.CommodityItem">
+        update t_commodity_item
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="markupPrice != null">
+                markup_price = #{markupPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="checked != null">
+                checked = #{checked,jdbcType=BIT},
+            </if>
+        </set>
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and specs_id = #{specsId,jdbcType=VARCHAR}
+        and item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.CommodityItem">
+        update t_commodity_item
+        set name = #{name,jdbcType=VARCHAR},
+        markup_price = #{markupPrice,jdbcType=DECIMAL},
+        sort = #{sort,jdbcType=INTEGER}, 
+        checked = #{checked,jdbcType=BIT}
+        where commodity_id = #{commodityId,jdbcType=VARCHAR}
+        and specs_id = #{specsId,jdbcType=VARCHAR}
+        and item_id = #{itemId,jdbcType=VARCHAR}
+    </update>
+    <!-- <select id="selectLjsCommItem" parameterType="java.lang.String" resultMap="ModelResultMap">
+        SELECT s.`name` AS specsName,IFNULL(cs.min_value, 1) AS min_value, IFNULL(cs.max_value, 1) AS max_value, ci.item_id AS itemId, si.`name` AS itemName, ci.markup_price AS markupPrice 
+        FROM t_commodity_item ci LEFT JOIN t_commodity_specs cs ON ci.commodity_id=cs.commodity_id AND cs.specs_id=ci.specs_id LEFT JOIN t_specs_info s ON ci.specs_id=s.mark_id LEFT JOIN 
+             t_specs_item si ON ci.item_id=si.mark_id AND ci.item_id=si.mark_id
+        WHERE ci.checked=1 AND ci.commodity_id=#{commodityId,jdbcType=VARCHAR}
+    </select> -->
+</mapper>

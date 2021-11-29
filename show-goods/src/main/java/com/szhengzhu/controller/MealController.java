@@ -1,29 +1,25 @@
 package com.szhengzhu.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.MealInfo;
 import com.szhengzhu.bean.goods.MealItem;
 import com.szhengzhu.bean.vo.BatchVo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.MealVo;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
 import com.szhengzhu.service.MealService;
-import com.szhengzhu.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "/meals")
 public class MealController {
@@ -31,96 +27,89 @@ public class MealController {
     @Resource
     private MealService mealService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> save(@RequestBody MealInfo base) {
+    @PostMapping(value = "/add")
+    public MealInfo save(@RequestBody @Validated MealInfo base) {
         return mealService.addMeal(base);
     }
 
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealInfo>> page(@RequestBody PageParam<MealInfo> base) {
+    @PostMapping(value = "/page")
+    public PageGrid<MealInfo> page(@RequestBody PageParam<MealInfo> base) {
         return mealService.getPage(base);
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PATCH)
-    public Result<?> edit(@RequestBody MealInfo base) {
+    @PatchMapping(value = "/modify")
+    public MealInfo edit(@RequestBody @Validated MealInfo base) {
         return mealService.editMeal(base);
     }
 
-    @RequestMapping(value = "/item/add", method = RequestMethod.POST)
-    public Result<?> saveItem(@RequestBody MealItem base) {
+    @PostMapping(value = "/item/add")
+    public MealItem saveItem(@RequestBody @Validated MealItem base) {
         return mealService.addItem(base);
     }
 
-    @RequestMapping(value = "/item/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealVo>> itemPage(@RequestBody PageParam<MealItem> base) {
+    @PostMapping(value = "/item/page")
+    public PageGrid<MealVo> itemPage(@RequestBody PageParam<MealItem> base) {
         return mealService.getItemPage(base);
     }
 
-    @RequestMapping(value = "/item/modify", method = RequestMethod.PATCH)
-    public Result<?> edit(@RequestBody MealItem base) {
+    @PatchMapping(value = "/item/modify")
+    public MealItem edit(@RequestBody @Validated MealItem base) {
         return mealService.editMealItem(base);
     }
 
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<?> getMealById(@PathVariable("markId") String markId) {
+    @GetMapping(value = "/{markId}")
+    public MealInfo getMealById(@PathVariable("markId") @NotBlank String markId) {
         return mealService.getMealById(markId);
     }
 
-    @RequestMapping(value = "/item/{markId}", method = RequestMethod.GET)
-    public Result<?> getMealItemById(@PathVariable("markId") String markId) {
+    @GetMapping(value = "/item/{markId}")
+    public MealItem getMealItemById(@PathVariable("markId") @NotBlank String markId) {
         return mealService.getMealItemById(markId);
     }
 
-    @RequestMapping(value = "/combobox", method = RequestMethod.GET)
-    public Result<List<Combobox>> getMealList() {
+    @GetMapping(value = "/combobox")
+    public List<Combobox> getMealList() {
         return mealService.getMealList();
     }
 
-    @RequestMapping(value = "/column/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealInfo>> getPageByColumn(@RequestBody PageParam<MealInfo> base) {
+    @PostMapping(value = "/column/page")
+    public PageGrid<MealInfo> getPageByColumn(@RequestBody PageParam<MealInfo> base) {
         return mealService.getPageByColumn(base);
     }
 
-    @RequestMapping(value = "/label/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealInfo>> getPageByLabel(@RequestBody PageParam<MealInfo> base) {
+    @PostMapping(value = "/label/page")
+    public PageGrid<MealInfo> getPageByLabel(@RequestBody PageParam<MealInfo> base) {
         return mealService.getPageByLabel(base);
     }
 
-    @RequestMapping(value = "/special/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealInfo>> getMealPageBySpecial(@RequestBody PageParam<MealInfo> base) {
+    @PostMapping(value = "/special/page")
+    public PageGrid<MealInfo> getMealPageBySpecial(@RequestBody PageParam<MealInfo> base) {
         return mealService.getPageBySpecial(base);
     }
 
-    @RequestMapping(value = "/icon/page", method = RequestMethod.POST)
-    public Result<PageGrid<MealInfo>> getMealPageByIcon(PageParam<MealInfo> base) {
+    @PostMapping(value = "/icon/page")
+    public PageGrid<MealInfo> getMealPageByIcon(PageParam<MealInfo> base) {
         return mealService.getPageByIcon(base);
     }
 
-    @RequestMapping(value = "/fore/detail", method = RequestMethod.GET)
-    public Result<GoodsInfoVo> getMealDetail(@RequestParam("mealId") String mealId,
-            @RequestParam(value = "userId", required = false) String userId) {
+    @GetMapping(value = "/fore/detail")
+    public GoodsDetail getMealDetail(@RequestParam("mealId") @NotBlank String mealId,
+                                     @RequestParam(value = "userId", required = false) String userId) {
         return mealService.getMealDetail(mealId, userId);
     }
-    
-    @RequestMapping(value = "/servesIn", method = RequestMethod.GET)
-    public Result<List<String>> serverListInMeal(@RequestParam("mealId") String mealId){
+
+    @GetMapping(value = "/servesIn")
+    public List<String> serverListInMeal(@RequestParam("mealId") @NotBlank String mealId) {
         return mealService.getServerListInMeal(mealId);
     }
-    
-    @RequestMapping(value = "/addBatchServe", method = RequestMethod.POST)
-    public Result<?> addBatchMealServe(@RequestBody BatchVo base){
-        return mealService.addBatchMealServe(base);
+
+    @PostMapping(value = "/addBatchServe")
+    public void addBatchMealServe(@RequestBody BatchVo base) {
+        mealService.addBatchMealServe(base);
     }
 
-    @RequestMapping(value = "/deleteBatchServe", method = RequestMethod.POST)
-    public Result<?> deleteBatchMealServe(@RequestBody BatchVo base){
-        return mealService.deleteBatchMealServe(base);
-    }
-    
-    @RequestMapping(value = "/stock/info", method = RequestMethod.GET)
-    public Result<?> getStockInfo(@RequestParam("mealId") String mealId, @RequestParam(value = "addressId", required = false) String addressId) {
-        if (StringUtils.isEmpty(mealId))
-            return new Result<>(StatusCode._4004);
-        return mealService.getStockInfo(mealId, addressId);
+    @PostMapping(value = "/deleteBatchServe")
+    public void deleteBatchMealServe(@RequestBody BatchVo base) {
+        mealService.deleteBatchMealServe(base);
     }
 }

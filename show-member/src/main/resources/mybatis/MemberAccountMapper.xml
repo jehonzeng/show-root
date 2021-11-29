@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MemberAccountMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MemberAccount">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="account_no" jdbcType="VARCHAR" property="accountNo"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="gender" jdbcType="INTEGER" property="gender"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="birthday" jdbcType="DATE" property="birthday"/>
+        <result column="total_amount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="grade_id" jdbcType="VARCHAR" property="gradeId"/>
+    </resultMap>
+    <resultMap id="BaseVoResultMap" type="com.szhengzhu.bean.member.vo.MemberAccountVo">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="account_no" jdbcType="VARCHAR" property="accountNo"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="gender" jdbcType="INTEGER" property="gender"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="birthday" jdbcType="DATE" property="birthday"/>
+        <result column="total_amount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="consumptionAmount" jdbcType="DECIMAL" property="consumptionAmount"/>
+        <result column="rechargeAmount" jdbcType="DECIMAL" property="rechargeAmount"/>
+        <result column="integralTotal" jdbcType="INTEGER" property="integralTotal"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="grade_id" jdbcType="VARCHAR" property="gradeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, account_no, name, user_id, grade_id, gender, phone, birthday, ifnull(total_amount,0) as total_amount,
+        create_time, modify_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_account
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_member_account
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MemberAccount">
+        insert into t_member_account (mark_id, account_no, name, gender,
+                                      phone, birthday, total_amount,
+                                      create_time, modify_time, user_id, grade_id)
+        values (#{markId,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{gender,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE},
+                #{totalAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+                #{userId,jdbcType=VARCHAR}, #{gradeId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MemberAccount">
+        insert into t_member_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="accountNo != null">
+                account_no,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="totalAmount != null">
+                total_amount,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="gradeId != null">
+                grade_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNo != null">
+                #{accountNo,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=DATE},
+            </if>
+            <if test="totalAmount != null">
+                #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="gradeId != null">
+                #{gradeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MemberAccount">
+        update t_member_account
+        <set>
+            <if test="accountNo != null">
+                account_no = #{accountNo,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=DATE},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="gradeId != null">
+                grade_id = #{gradeId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MemberAccount">
+        update t_member_account
+        set account_no   = #{accountNo,jdbcType=VARCHAR},
+            name         = #{name,jdbcType=VARCHAR},
+            gender       = #{gender,jdbcType=INTEGER},
+            phone        = #{phone,jdbcType=VARCHAR},
+            birthday     = #{birthday,jdbcType=DATE},
+            total_amount = #{totalAmount,jdbcType=DECIMAL},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            modify_time  = #{modifyTime,jdbcType=TIMESTAMP},
+            user_id      = #{userId,jdbcType=VARCHAR},
+            grade_id= #{gradeId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.MemberByType"
+            resultMap="BaseResultMap">
+        SELECT (SELECT create_time FROM t_member_detail WHERE a.mark_id = account_id AND `status` = 1 AND type = 1 ORDER
+        BY create_time DESC LIMIT 1) AS time,
+        <include refid="Base_Column_List"/>
+        from t_member_account a
+        <where>
+            <if test="gradeId != null and gradeId != ''">
+                AND grade_id = #{gradeId,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="is_NewMember == true">
+                AND TO_DAYS(create_time) = TO_DAYS(NOW())
+            </if>
+            <if test="is_NowConsume == true and is_NowRecharge == false">
+                AND mark_id IN (SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND
+                TO_DAYS(d.create_time) = TO_DAYS(NOW()) AND d.`status` = 1 AND d.type = -1)
+            </if>
+            <if test="is_NowRecharge == true and is_NowConsume == false">
+                AND mark_id IN (SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND
+                TO_DAYS(d.create_time) = TO_DAYS(NOW()) AND d.`status` = 1 AND d.type = 1)
+            </if>
+            <if test="is_NowConsume == true and is_NowRecharge == true">
+                AND mark_id IN (SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND
+                TO_DAYS(d.create_time) = TO_DAYS(NOW()) AND d.`status` = 1 AND d.type = 1 UNION
+                SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND TO_DAYS(d.create_time) =
+                TO_DAYS(NOW()) AND d.`status` = 1 AND d.type = -1)
+            </if>
+            <if test="is_AmountTotal == true">
+                AND total_amount != 0
+            </if>
+            <if test="temp == 1 and dates != null and dates.length == 2">
+                AND TO_DAYS(create_time) BETWEEN TO_DAYS(#{dates[0],javaType=java.util.Date,jdbcType=TIMESTAMP})
+                AND TO_DAYS(#{dates[1],javaType=java.util.Date,jdbcType=TIMESTAMP})
+            </if>
+            <if test="temp == 2 and dates != null and dates.length == 2">
+                AND mark_id IN (SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND
+                TO_DAYS(d.create_time) BETWEEN TO_DAYS(#{dates[0],javaType=java.util.Date,jdbcType=TIMESTAMP}) AND
+                TO_DAYS(#{dates[1],javaType=java.util.Date,jdbcType=TIMESTAMP}) AND d.`status` = 1 AND d.type = 1)
+            </if>
+            <if test="temp == 3 and dates != null and dates.length == 2">
+                AND mark_id IN (SELECT d.account_id FROM t_member_detail d WHERE a.mark_id = d.account_id AND
+                TO_DAYS(d.create_time) BETWEEN TO_DAYS(#{dates[0],javaType=java.util.Date,jdbcType=TIMESTAMP}) AND
+                TO_DAYS(#{dates[1],javaType=java.util.Date,jdbcType=TIMESTAMP}) AND d.`status` = 1 AND d.type = -1)
+            </if>
+        </where>
+    </select>
+    <select id="selectByNoOrPhone" parameterType="java.lang.String" resultMap="BaseVoResultMap">
+        select
+        (SELECT d.create_time FROM t_member_detail d WHERE a.mark_id = d.account_id AND `status` = 1 AND
+        d.type = 1 ORDER BY d.create_time DESC LIMIT 1) AS time,
+        (select IFNULL(sum(amount),0) from t_member_detail where type=1 and account_id = a.mark_id and status=1) as
+        rechargeAmount,
+        (select IFNULL(sum(amount),0) from t_member_detail where type=-1 and account_id = a.mark_id and status=1) as
+        consumptionAmount,
+        <include refid="Base_Column_List"/>
+        from t_member_account a
+        <where>
+            <if test="phone != null">
+                and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="accountNo != null">
+                and account_no like concat('%', #{accountNo,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="selectVoById" parameterType="java.lang.String" resultMap="BaseVoResultMap">
+        select
+        (select IFNULL(sum(amount),0) from t_member_detail where type=1 and account_id=a.mark_id and status=1) as
+        rechargeAmount,
+        (select IFNULL(sum(amount),0) from t_member_detail where (type=-1 or type = 2) and account_id=a.mark_id and
+        status=1) as
+        consumptionAmount,
+        <include refid="Base_Column_List"/>
+        from t_member_account a
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <!-- <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_member_account
+        (mark_id, account_no, name, gender, phone, birthday, total_amount, create_time, modify_time, user_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.accountNo,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR}, #{item.gender,jdbcType=INTEGER},
+        #{item.phone,jdbcType=VARCHAR}, #{item.birthday,jdbcType=DATE}, #{item.totalAmount,jdbcType=DECIMAL},#{item.storeId,jdbcType=VARCHAR},
+        #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifyTime,jdbcType=TIMESTAMP},#{item.userId,jdbcType=VARCHAR})
+        </foreach>
+    </insert> -->
+    <select id="selectTicketVoById" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.MemberTicketVo">
+        SELECT mark_id      AS accountId,
+               user_id      as userId,
+               account_no   AS accountNo,
+               user_id      AS userId,
+               `name`,
+               gender,
+               phone,
+               birthday,
+               total_amount AS memberTotal
+        FROM t_member_account
+        WHERE mark_id = #{memberId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_member_account a
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+    <select id="birthdayTicket" resultType="java.util.Map">
+        SELECT user_id as userId, account_no as accountNo
+        from t_member_account
+        where DATE_FORMAT(NOW(), '%m-%d') =
+              DATE_FORMAT(DATE_SUB(birthday, INTERVAL #{days,jdbcType=INTEGER} DAY), '%m-%d')
+    </select>
+    <select id="selectMemberDiscount" resultType="java.math.BigDecimal">
+        SELECT ifnull(member_discount, 0)
+        FROM t_member_account a
+                     INNER JOIN t_member_grade g ON a.grade_id = g.mark_id
+        where a.mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+</mapper>

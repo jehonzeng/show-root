@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.IndentDetailMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.IndentDetail">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="indent_id" jdbcType="VARCHAR" property="indentId"/>
+        <result column="time_code" jdbcType="VARCHAR" property="timeCode"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="commodity_type" jdbcType="INTEGER" property="commodityType"/>
+        <result column="commodity_id" jdbcType="VARCHAR" property="commodityId"/>
+        <result column="commodity_name" jdbcType="VARCHAR" property="commodityName"/>
+        <result column="price_id" jdbcType="VARCHAR" property="priceId"/>
+        <result column="specs_items" jdbcType="VARCHAR" property="specsItems"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="cost_price" jdbcType="DECIMAL" property="costPrice"/>
+        <result column="price_type" jdbcType="INTEGER" property="priceType"/>
+        <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
+        <result column="member_price" jdbcType="DECIMAL" property="memberDiscountPrice"/>
+        <result column="integral_price" jdbcType="DECIMAL" property="integralPrice"/>
+        <result column="discount_id" jdbcType="VARCHAR" property="discountId"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <resultMap id="IndentTimeResultMap" type="com.szhengzhu.bean.xwechat.vo.IndentTimeModel">
+        <result column="time_code" jdbcType="VARCHAR" property="timeCode"/>
+        <result column="userIndent" jdbcType="BIT" property="userIndent"/>
+        <collection property="detailList" ofType="com.szhengzhu.bean.xwechat.vo.DetailModel">
+            <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+            <result column="commodity_type" jdbcType="INTEGER" property="commodityType"/>
+            <result column="commodity_id" jdbcType="VARCHAR" property="commodityId"/>
+            <result column="commodity_name" jdbcType="VARCHAR" property="commodityName"/>
+            <result column="price_id" jdbcType="VARCHAR" property="priceId"/>
+            <result column="unit" jdbcType="VARCHAR" property="unit"/>
+            <result column="specs_items" jdbcType="VARCHAR" property="specsItems"/>
+            <result column="specsNames" jdbcType="VARCHAR" property="specsNames"/>
+            <result column="cost_price" jdbcType="DECIMAL" property="costPrice"/>
+            <result column="price_type" jdbcType="INTEGER" property="priceType"/>
+            <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
+            <result column="member_price" jdbcType="DECIMAL" property="memberDiscountPrice"/>
+            <result column="integral_price" jdbcType="DECIMAL" property="integralPrice"/>
+            <result column="discount_id" jdbcType="VARCHAR" property="discountId"/>
+            <result column="discountName" jdbcType="VARCHAR" property="discountName"/>
+            <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="status" jdbcType="INTEGER" property="status"/>
+            <result column="userId" jdbcType="VARCHAR" property="userId"/>
+            <result column="nickName" jdbcType="VARCHAR" property="nickName"/>
+            <result column="headerImg" jdbcType="VARCHAR" property="headerImg"/>
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        d.mark_id, d.indent_id, d.time_code, d.user_id, d.commodity_type, d.commodity_id, d.commodity_name,d.price_id, d.specs_items,
+        d.quantity, d.cost_price, ifnull(d.price_type, 0) as price_type, d.sale_price, d.member_price,
+        ifnull(d.integral_price, 0) as integral_price, d.discount_id, d.creator, d.create_time, d.modifier, d.modify_time, d.status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_detail d
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_indent_detail
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.ordering.IndentDetail">
+        insert into t_indent_detail (mark_id, indent_id, time_code,
+                                     user_id, commodity_type, commodity_id,
+                                     commodity_name, price_id, specs_items,
+                                     quantity, cost_price, price_type, sale_price, member_price, integral_price,
+                                     discount_id, creator, create_time, modifier, modify_time, status)
+        values (#{markId,jdbcType=VARCHAR}, #{indentId,jdbcType=VARCHAR}, #{timeCode,jdbcType=VARCHAR},
+                #{userId,jdbcType=VARCHAR}, #{commodityType,jdbcType=INTEGER}, #{commodityId,jdbcType=VARCHAR},
+                #{commodityName,jdbcType=VARCHAR}, #{priceId,jdbcType=VARCHAR}, #{specsItems,jdbcType=VARCHAR},
+                #{quantity,jdbcType=INTEGER}, #{costPrice,jdbcType=DECIMAL}, #{priceType,jdbcType=INTEGER},
+                #{salePrice,jdbcType=DECIMAL}, #{memberDiscountPrice,jdbcType=DECIMAL},
+                #{integralPrice,jdbcType=DECIMAL},
+                #{discountId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.IndentDetail">
+        insert into t_indent_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="indentId != null">
+                indent_id,
+            </if>
+            <if test="timeCode != null">
+                time_code,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="commodityType != null">
+                commodity_type,
+            </if>
+            <if test="commodityId != null">
+                commodity_id,
+            </if>
+            <if test="commodityName != null">
+                commodity_name,
+            </if>
+            <if test="priceId != null">
+                price_id,
+            </if>
+            <if test="specsItems != null">
+                specs_items,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="costPrice != null">
+                cost_price,
+            </if>
+            <if test="priceType != null">
+                price_type,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="memberDiscountPrice != null">
+                member_price,
+            </if>
+            <if test="integralPrice != null">
+                integral_price,
+            </if>
+            <if test="discountId != null">
+                discount_id,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="indentId != null">
+                #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="timeCode != null">
+                #{timeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityType != null">
+                #{commodityType,jdbcType=INTEGER},
+            </if>
+            <if test="commodityId != null">
+                #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityName != null">
+                #{commodityName,jdbcType=VARCHAR},
+            </if>
+            <if test="priceId != null">
+                #{priceId,jdbcType=VARCHAR},
+            </if>
+            <if test="specsItems != null">
+                #{specsItems,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="costPrice != null">
+                #{costPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="priceType != null">
+                #{priceType,jdbcType=INTEGER},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="memberDiscountPrice != null">
+                #{memberDiscountPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="integralPrice != null">
+                #{integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="discountId != null">
+                #{discountId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.ordering.IndentDetail">
+        update t_indent_detail
+        <set>
+            <if test="indentId != null">
+                indent_id = #{indentId,jdbcType=VARCHAR},
+            </if>
+            <if test="timeCode != null">
+                time_code = #{timeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityType != null">
+                commodity_type = #{commodityType,jdbcType=INTEGER},
+            </if>
+            <if test="commodityId != null">
+                commodity_id = #{commodityId,jdbcType=VARCHAR},
+            </if>
+            <if test="commodityName != null">
+                commodity_name = #{commodityName,jdbcType=VARCHAR},
+            </if>
+            <if test="priceId != null">
+                price_id = #{priceId,jdbcType=VARCHAR},
+            </if>
+            <if test="specsItems != null">
+                specs_items = #{specsItems,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="costPrice != null">
+                cost_price = #{costPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="priceType != null">
+                price_type = #{priceType,jdbcType=INTEGER},
+            </if>
+            <if test="salePrice != null">
+                sale_price = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="memberDiscountPrice != null">
+                member_price = #{memberDiscountPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="integralPrice != null">
+                integral_price = #{integralPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="discountId != null">
+                discount_id = #{discountId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.IndentDetail">
+        update t_indent_detail
+        set indent_id      = #{indentId,jdbcType=VARCHAR},
+            time_code      = #{timeCode,jdbcType=VARCHAR},
+            user_id        = #{userId,jdbcType=VARCHAR},
+            commodity_type = #{commodityType,jdbcType=INTEGER},
+            commodity_id   = #{commodityId,jdbcType=VARCHAR},
+            commodity_name = #{commodityName,jdbcType=VARCHAR},
+            price_id       = #{priceId,jdbcType=VARCHAR},
+            specs_items    = #{specsItems,jdbcType=VARCHAR},
+            quantity       = #{quantity,jdbcType=INTEGER},
+            cost_price     = #{costPrice,jdbcType=DECIMAL},
+            price_type     = #{priceType,jdbcType=INTEGER},
+            sale_price     = #{salePrice,jdbcType=DECIMAL},
+            member_price   = #{memberDiscountPrice,jdbcType=DECIMAL},
+            integral_price = #{integralPrice,jdbcType=DECIMAL},
+            discount_id    = #{discountId,jdbcType=VARCHAR},
+            creator        = #{creator,jdbcType=VARCHAR},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            modify_time    = #{modifyTime,jdbcType=TIMESTAMP},
+            modify_time    = #{modifyTime,jdbcType=TIMESTAMP},
+            status         = #{status,jdbcType=INTEGER}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into t_indent_detail (mark_id, indent_id, time_code, user_id, commodity_type, commodity_id,
+        commodity_name,
+        price_id,specs_items, quantity, cost_price, price_type, sale_price, member_price, integral_price, discount_id,
+        creator, create_time, modifier, modify_time, status)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.markId,jdbcType=VARCHAR}, #{item.indentId,jdbcType=VARCHAR}, #{item.timeCode,jdbcType=VARCHAR},
+            #{item.userId,jdbcType=VARCHAR}, #{item.commodityType,jdbcType=INTEGER},
+            #{item.commodityId,jdbcType=VARCHAR},
+            #{item.commodityName,jdbcType=VARCHAR}, #{item.priceId,jdbcType=VARCHAR},
+            #{item.specsItems,jdbcType=VARCHAR},
+            #{item.quantity,jdbcType=INTEGER}, #{item.costPrice,jdbcType=DECIMAL}, #{item.priceType,jdbcType=INTEGER},
+            #{item.salePrice,jdbcType=DECIMAL}, #{item.memberDiscountPrice,jdbcType=DECIMAL},
+            #{item.integralPrice,jdbcType=DECIMAL},
+            #{item.discountId,jdbcType=VARCHAR}, #{item.creator,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.modifier,jdbcType=VARCHAR}, #{item.modifyTime,jdbcType=TIMESTAMP}, #{item.status,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <select id="selectByIndent" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_detail d
+        where indent_id = #{indentId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectVoByIndent" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.xwechat.vo.DetailModel">
+        SELECT d.mark_id                                                                                 AS markId,
+               d.commodity_type                                                                          AS commodityType,
+               d.commodity_id                                                                            AS commodityId,
+               d.commodity_name                                                                          AS commodityName,
+               d.price_id                                                                                AS priceId,
+               (SELECT unit FROM t_commodity_price WHERE mark_id = price_id)                             AS unit,
+               d.specs_items                                                                             AS specsItems,
+               (SELECT GROUP_CONCAT(`name`) FROM t_specs_item WHERE FIND_IN_SET(mark_id, d.specs_items)) AS specsNames,
+               d.create_time                                                                             as createTime,
+               d.`status`,
+               (SELECT di.theme
+                FROM t_discount_info di
+                WHERE di.mark_id = d.discount_id)                                                        AS discountName,
+               d.cost_price                                                                              as costPrice,
+               ifnull(d.price_type, 0)                                                                   as priceType,
+               d.sale_price                                                                              AS salePrice,
+               d.member_price,
+               ifnull(d.integral_price, 0)                                                               AS integralPrice,
+               d.discount_id                                                                             AS discountId,
+               d.quantity,
+               d.user_id                                                                                 AS userId,
+               u.nick_name                                                                               AS nickName,
+               u.header_img                                                                              AS headerImg
+        FROM t_indent_detail d
+                     LEFT JOIN db_user.t_user_info u ON d.user_id = u.mark_id
+                     LEFT JOIN t_indent_info i ON d.indent_id = i.mark_id
+        WHERE d.indent_id = #{indentId,jdbcType=VARCHAR}
+        order by time_code desc, d.create_time
+    </select>
+    <select id="selectIndentTime" parameterType="java.lang.String" resultMap="IndentTimeResultMap">
+        SELECT d.mark_id,
+               d.time_code,
+               d.commodity_type,
+               d.commodity_id,
+               IF(user_id IS NULL or user_id = '', FALSE, TRUE)                                          AS userIndent,
+               d.commodity_name,
+               d.price_id,
+               (SELECT unit FROM t_commodity_price WHERE mark_id = price_id)                             AS unit,
+               d.specs_items,
+               (SELECT GROUP_CONCAT(`name`) FROM t_specs_item WHERE FIND_IN_SET(mark_id, d.specs_items)) AS specsNames,
+               d.create_time,
+               (SELECT di.theme
+                FROM t_discount_info di
+                WHERE di.mark_id = d.discount_id)                                                        AS discountName,
+               d.cost_price,
+               ifnull(d.price_type, 0)                                                                   as price_type,
+               d.sale_price,
+               d.member_price,
+               ifnull(d.integral_price, 0)                                                               as integral_price,
+               d.discount_id,
+               d.quantity,
+               d.user_id                                                                                 AS userId,
+               u.nick_name                                                                               AS nickName,
+               u.header_img                                                                              AS headerImg,
+               d.`status`                                                                                as status
+        FROM t_indent_detail d
+                     LEFT JOIN db_user.t_user_info u ON d.user_id = u.mark_id
+                     LEFT JOIN t_indent_info i ON d.indent_id = i.mark_id
+        WHERE d.indent_id = #{indentId,jdbcType=VARCHAR}
+          AND d.`status` <![CDATA[ <>]]> -1
+        order by time_code, d.create_time
+    </select>
+    <select id="selectReturnByComm" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_indent_detail d
+        where indent_id = #{indentId,jdbcType=VARCHAR} and commodity_id = #{commodityId,jdbcType=VARCHAR} and
+        price_id=#{priceId,jdbcType=VARCHAR} and
+        <choose>
+            <when test="specsItems == null or specsItems == ''">
+                (specs_items is null or specs_items='')
+            </when>
+            <otherwise>
+                specs_items=#{specsItems}
+            </otherwise>
+        </choose>
+        and status=-1
+    </select>
+    <select id="selectMarketDetail" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_indent_detail d INNER JOIN t_market_commodity mc ON d.commodity_id=mc.commodity_id
+        WHERE d.indent_id=#{indentId,jdbcType=VARCHAR} AND mc.market_id=#{marketId,jdbcType=VARCHAR} AND mc.type=0
+        AND d.status <![CDATA[<>]]> -1
+        ORDER BY d.sale_price
+    </select>
+    <select id="selectDiscountProduct" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_indent_detail d
+        WHERE status = 1 AND indent_id = #{indentId,jdbcType=VARCHAR} AND discount_id is not null
+    </select>
+    <select id="selectDiscountPrice" resultType="java.math.BigDecimal">
+        SELECT SUM(IF(i.in_discount = 1, sale_price * d.quantity * #{discount,jdbcType=DECIMAL},
+                      sale_price * d.quantity)) as discountPrice
+        FROM t_indent_detail d
+                     INNER JOIN t_commodity_info i ON d.commodity_id = i.mark_id
+        WHERE d.status = 1
+          AND d.indent_id = #{indentId,jdbcType=VARCHAR}
+    </select>
+    <update id="updateMemberDiscount">
+        update t_indent_detail d
+        <set>
+            <if test="memberDiscount != null">
+                member_price = #{memberDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="modifyTime != null">
+                d.modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="discount != null">
+                member_price = IF((SELECT in_discount FROM t_commodity_info i where d.commodity_id =
+                i.mark_id) =1 ,sale_price * #{discount,jdbcType=DECIMAL} ,sale_price),
+            </if>
+        </set>
+        where d.indent_id = #{indentId,jdbcType=VARCHAR}
+    </update>
+</mapper>

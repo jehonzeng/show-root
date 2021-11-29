@@ -1,47 +1,37 @@
 package com.szhengzhu.controller;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.client.ShowGoodsClient;
 import com.szhengzhu.bean.base.ImageInfo;
-import com.szhengzhu.bean.goods.GoodsContent;
-import com.szhengzhu.bean.goods.GoodsImage;
-import com.szhengzhu.bean.goods.GoodsInfo;
-import com.szhengzhu.bean.goods.GoodsJudge;
-import com.szhengzhu.bean.goods.GoodsSpecification;
-import com.szhengzhu.bean.goods.GoodsType;
-import com.szhengzhu.bean.goods.TypeSpec;
+import com.szhengzhu.bean.goods.*;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.bean.vo.GoodsJudgeVo;
 import com.szhengzhu.bean.vo.GoodsVo;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.common.Commons;
-import com.szhengzhu.core.Contacts;
-import com.szhengzhu.core.PageGrid;
-import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
+import com.szhengzhu.config.FtpServer;
+import com.szhengzhu.core.*;
+import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.util.FileUtils;
-import com.szhengzhu.util.IdGenerator;
-import com.szhengzhu.util.TimeUtils;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@Api(tags = { "商品管理：GoodsController" })
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+@Validated
+@Api(tags = {"商品管理：GoodsController"})
 @RestController
 @RequestMapping(value = "/v1/goods")
 public class GoodsController {
@@ -52,207 +42,206 @@ public class GoodsController {
     @Resource
     private ShowBaseClient showBaseClient;
 
+    @Resource
+    private FtpServer ftpServer;
+
     @ApiOperation(value = "编辑商品信息", notes = "编辑商品信息")
-    @RequestMapping(value = "", method = RequestMethod.PATCH)
-    public Result<GoodsInfo> modifyGoods(HttpSession session, @RequestBody GoodsInfo goodsInfo) {
-        String userId = (String) session.getAttribute(Commons.SESSION);
+    @PatchMapping(value = "")
+    public Result<GoodsInfo> modifyGoods(HttpSession session, @RequestBody @Validated GoodsInfo goodsInfo) {
+        String userId = (String) session.getAttribute(Contacts.LJS_SESSION);
         goodsInfo.setModifier(userId);
         return showGoodsClient.modifyGoods(goodsInfo);
     }
 
     @ApiOperation(value = "修改商品上下架状态", notes = "修改商品上下架状态")
-    @RequestMapping(value = "/editStatus", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/editStatus")
     public Result<GoodsInfo> modifyGoodsStatus(HttpSession session, @RequestBody GoodsInfo base) {
-        String userId = (String) session.getAttribute(Commons.SESSION);
+        String userId = (String) session.getAttribute(Contacts.LJS_SESSION);
         base.setModifier(userId);
         return showGoodsClient.editGoodsStatus(base);
     }
 
     @ApiOperation(value = "添加商品信息", notes = "添加商品信息")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Result<GoodsInfo> addGoods(HttpSession session, @RequestBody GoodsInfo goodsInfo) {
-        String userId = (String) session.getAttribute(Commons.SESSION);
+    @PostMapping(value = "")
+    public Result<GoodsInfo> addGoods(HttpSession session, @RequestBody @Validated GoodsInfo goodsInfo) {
+        String userId = (String) session.getAttribute(Contacts.LJS_SESSION);
         goodsInfo.setCreator(userId);
         return showGoodsClient.addGoods(goodsInfo);
     }
 
     @ApiOperation(value = "商品基础信息分页", notes = "商品基础信息分页")
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
+    @PostMapping(value = "/page")
     public Result<PageGrid<GoodsVo>> goodsPage(@RequestBody PageParam<GoodsInfo> base) {
         return showGoodsClient.goodsPage(base);
     }
 
     @ApiOperation(value = "根据id商品基础信息", notes = "根据id商品基础信息")
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<GoodsInfo> goodsInfo(@PathVariable("markId") String markId) {
+    @GetMapping(value = "/{markId}")
+    public Result<GoodsInfo> goodsInfo(@PathVariable("markId") @NotBlank String markId) {
         return showGoodsClient.goodsInfo(markId);
     }
 
     @ApiOperation(value = "获取商品与规格组合价格分页列表", notes = "获取商品与规格组合价格分页列表")
-    @RequestMapping(value = "/specification/page", method = RequestMethod.POST)
+    @PostMapping(value = "/specification/page")
     public Result<PageGrid<GoodsSpecification>> pageGoodsSpec(
             @RequestBody PageParam<GoodsSpecification> base) {
         return showGoodsClient.pageGoodsSpec(base);
     }
 
     @ApiOperation(value = "添加商品与规格组合价格", notes = "添加商品与规格组合价格")
-    @RequestMapping(value = "/specification", method = RequestMethod.POST)
-    public Result<?> addGoodsSpec(@RequestBody GoodsSpecification base) {
-        return showGoodsClient.addGoosSpec(base);
+    @PostMapping(value = "/specification")
+    public Result addGoodsSpec(@RequestBody @Validated GoodsSpecification base) {
+        return showGoodsClient.addGoodsSpec(base);
     }
 
     @ApiOperation(value = "修改商品与规格组合价格", notes = "修改商品与规格组合价格")
-    @RequestMapping(value = "/specification", method = RequestMethod.PATCH)
-    public Result<?> modifyGoodsSpec(@RequestBody GoodsSpecification base) {
+    @PatchMapping(value = "/specification")
+    public Result modifyGoodsSpec(@RequestBody @Validated GoodsSpecification base) {
         return showGoodsClient.modifyGoodsSpec(base);
     }
 
     @ApiOperation(value = "获取商品下拉列表", notes = "获取商品下拉列表")
-    @RequestMapping(value = "/combobx", method = RequestMethod.GET)
+    @GetMapping(value = "/combobx")
     public Result<List<Combobox>> listGoodsCombobox() {
         return showGoodsClient.listGoodsCombobox();
     }
 
     @ApiOperation(value = "批量添加类型与规格关联关系", notes = "批量添加类型与规格关联关系")
-    @RequestMapping(value = "/type/specification", method = RequestMethod.POST)
-    public Result<?> addTypeSpec(@RequestParam("specIds") String[] specIds,
-            @RequestParam("typeId") String typeId) {
+    @PostMapping(value = "/type/specification")
+    public Result addTypeSpec(@RequestParam("specIds") @NotEmpty String[] specIds,
+                                 @RequestParam("typeId") @NotBlank String typeId) {
         return showGoodsClient.addTypeSpec(specIds, typeId);
     }
 
     @ApiOperation(value = "删除类型与规格关联关系", notes = "删除类型与规格关联关系")
-    @RequestMapping(value = "/type/specification", method = RequestMethod.DELETE)
-    public Result<?> removeTypeSpec(@RequestParam("typeId") String typeId,
-            @RequestParam("specId") String specId) {
+    @DeleteMapping(value = "/type/specification")
+    public Result removeTypeSpec(@RequestParam("typeId") @NotBlank String typeId,
+                                    @RequestParam("specId") @NotBlank String specId) {
         return showGoodsClient.removeTypeSpec(typeId, specId);
     }
 
     @ApiOperation(value = "修改类型与规格关联关系", notes = "修改类型与规格关联关系")
-    @RequestMapping(value = "/type/specification", method = RequestMethod.PATCH)
-    public Result<?> modifyTypeSpec(@RequestBody TypeSpec typeSpec) {
+    @PatchMapping(value = "/type/specification")
+    public Result modifyTypeSpec(@RequestBody @Validated TypeSpec typeSpec) {
         return showGoodsClient.modifyTypeSpec(typeSpec);
     }
 
     @ApiOperation(value = "编辑保存商品文字图片详情", notes = "编辑保存商品文字图片详情")
-    @RequestMapping(value = "/content", method = RequestMethod.PATCH)
-    public Result<GoodsContent> modifyContent(@RequestBody GoodsContent goodsContent) {
+    @PatchMapping(value = "/content")
+    public Result<GoodsContent> modifyContent(@RequestBody @Validated GoodsContent goodsContent) {
         return showGoodsClient.modifyContent(goodsContent);
     }
 
     @ApiOperation(value = "上传并显示商品详情图片", notes = "上传商品详情图片")
-    @RequestMapping(value = "/content", method = RequestMethod.POST)
+    @PostMapping(value = "/content")
     public Result<String> contentImage(
-            @RequestParam(value = "file", required = false) MultipartFile file) {
-        ImageInfo imageInfo = new ImageInfo();
-        imageInfo.setMarkId(IdGenerator.getInstance().nexId());
-        if (file != null && !file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
-            String fileType = fileName.substring(fileName.lastIndexOf("."));
-            if (FileUtils.isImgSuffix(fileType)) {
-                String savePath = TimeUtils.textDate() + File.separator + imageInfo.getMarkId()
-                        + fileType;
-                FileUtils.uploadImg(file, Contacts.BASE_IMG_PATH + File.separator + savePath);
-                imageInfo.setImagePath(savePath);
-                imageInfo.setFileType(fileType.substring(fileType.lastIndexOf(".") + 1));
-            } else {
-                return new Result<>(StatusCode._5005);
-            }
-        }
+            @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        ShowAssert.checkTrue((ObjectUtil.isNull(file) || file.isEmpty()), StatusCode._4009);
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        ImageInfo imageInfo = ImageInfo.builder().markId(snowflake.nextIdStr()).build();
+        String fileName = file.getOriginalFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."));
+        ShowAssert.checkTrue(!FileUtils.isImgSuffix(fileType), StatusCode._5005);
+        String savePath = "/" + DateUtil.today() + "/";
+        String newFileName = imageInfo.getMarkId() + fileType;
+        boolean flag = ftpServer.upload(savePath, newFileName, file.getInputStream());
+        ShowAssert.checkTrue(!flag, StatusCode._4008);
+        imageInfo.setImagePath(savePath);
+        imageInfo.setFileType(fileType.substring(fileType.lastIndexOf(".") + 1));
         showBaseClient.addImgInfo(imageInfo);
-        return new Result<String>(Contacts.IMAGE_SERVER + "/shows/" + imageInfo.getMarkId());
+        return new Result<>(Contacts.IMAGE_SERVER + "/shows/" + imageInfo.getMarkId());
     }
 
     @ApiOperation(value = "根据商品id显示商品图片文字详情", notes = "根据商品id显示商品图片文字详情")
-    @RequestMapping(value = "/content/{goodsId}", method = RequestMethod.GET)
-    public Result<GoodsContent> showContent(@PathVariable("goodsId") String goodsId) {
+    @GetMapping(value = "/content/{goodsId}")
+    public Result<GoodsContent> showContent(@PathVariable("goodsId") @NotBlank String goodsId) {
         return showGoodsClient.showContent(goodsId);
     }
 
     @ApiOperation(value = "添加商品图片信息", notes = "保存商品图片信息")
-    @RequestMapping(value = "/image", method = RequestMethod.POST)
-    public Result<GoodsImage> addGoodsImage(@RequestBody GoodsImage base) {
+    @PostMapping(value = "/image")
+    public Result<GoodsImage> addGoodsImage(@RequestBody @Validated GoodsImage base) {
         return showGoodsClient.addGoodsImage(base);
     }
 
     @ApiOperation(value = "修改商品图片信息", notes = "修改商品图片信息")
-    @RequestMapping(value = "/image", method = RequestMethod.PATCH)
-    public Result<GoodsImage> modifyGoodsImage(@RequestBody GoodsImage base) {
+    @PatchMapping(value = "/image")
+    public Result<GoodsImage> modifyGoodsImage(@RequestBody @Validated GoodsImage base) {
         return showGoodsClient.modifyGoodsImage(base);
     }
 
     @ApiOperation(value = "删除选定商品图片信息", notes = "删除选定商品图片信息")
-    @RequestMapping(value = "/image/{markId}", method = RequestMethod.DELETE)
-    public Result<GoodsImage> deleteGoodsImage(@PathVariable("markId") String markId) {
-        GoodsImage image = showGoodsClient.getImageInfo(markId);
-        if (image == null)
-            return new Result<>(StatusCode._4008);
-        showBaseClient.deleteImage(image.getImagePath());
+    @DeleteMapping(value = "/image/{markId}")
+    public Result deleteGoodsImage(@PathVariable("markId") @NotBlank String markId) {
+        Result<GoodsImage> result = showGoodsClient.getImageInfo(markId);
+        ShowAssert.checkResult(result);
+        showBaseClient.deleteImage(result.getData().getImagePath());
         return showGoodsClient.deleteGoodsImage(markId);
     }
 
     @ApiOperation(value = "获取不同类型的商品图片列表", notes = "获取不同类型的商品图片列表")
-    @RequestMapping(value = "/image/{goodsId}", method = RequestMethod.GET)
-    public Result<Map<String, Object>> showGoodsImage(@PathVariable("goodsId") String goodsId,
-            @RequestParam(defaultValue = "0") Integer serverType) {
+    @GetMapping(value = "/image/{goodsId}")
+    public Result<Map<String, Object>> showGoodsImage(@PathVariable("goodsId") @NotBlank String goodsId,
+                                                      @RequestParam(defaultValue = "0") @NotNull Integer serverType) {
         return showGoodsClient.showGoodsImage(goodsId, serverType);
     }
 
     @ApiOperation(value = "添加商品规格类型", notes = "添加商品规格类型")
-    @RequestMapping(value = "/type", method = RequestMethod.POST)
-    public Result<GoodsType> addGoodsType(@RequestBody GoodsType base) {
+    @PostMapping(value = "/type")
+    public Result<GoodsType> addGoodsType(@RequestBody @NotBlank GoodsType base) {
         return showGoodsClient.addGoodsType(base);
     }
 
     @ApiOperation(value = "修改商品规格类型", notes = "编辑商品规格类型")
-    @RequestMapping(value = "/type", method = RequestMethod.PATCH)
-    public Result<GoodsType> editGoodsType(@RequestBody GoodsType base) {
+    @PatchMapping(value = "/type")
+    public Result<GoodsType> editGoodsType(@RequestBody @NotBlank GoodsType base) {
         return showGoodsClient.modifyGoodsType(base);
     }
 
     @ApiOperation(value = "获取商品规格类型分页", notes = "获取商品规格类型分页")
-    @RequestMapping(value = "/type/page", method = RequestMethod.POST)
+    @PostMapping(value = "/type/page")
     public Result<PageGrid<GoodsType>> typePage(@RequestBody PageParam<GoodsType> base) {
         return showGoodsClient.getTypePage(base);
     }
 
     @ApiOperation(value = "获取商品规格类型下拉列表", notes = "获取商品规格类型下拉列表")
-    @RequestMapping(value = "/type/combobox", method = RequestMethod.GET)
+    @GetMapping(value = "/type/combobox")
     public Result<List<Combobox>> listTypeCombobox() {
         return showGoodsClient.listTypeCombobox();
     }
 
     @ApiOperation(value = "修改商品评论信息", notes = "修改商品评论信息")
-    @RequestMapping(value = "/judge", method = RequestMethod.PATCH)
-    public Result<GoodsJudge> modifyGoodsJudes(@RequestBody GoodsJudge base) {
+    @PatchMapping(value = "/judge")
+    public Result<GoodsJudge> modifyGoodsJudes(@RequestBody @NotBlank GoodsJudge base) {
         return showGoodsClient.modifyGoodsJudes(base);
     }
 
     @ApiOperation(value = "获取商品评论分页", notes = "根据不同条件获取商品评论分页")
-    @RequestMapping(value = "/judge/page", method = RequestMethod.POST)
+    @PostMapping(value = "/judge/page")
     public Result<PageGrid<GoodsJudgeVo>> judgePage(@RequestBody PageParam<GoodsJudge> base) {
         return showGoodsClient.judgePage(base);
     }
 
     @ApiOperation(value = "获取未加入栏目的商品下拉列表", notes = "获取没有加入栏目的商品列表")
-    @RequestMapping(value = "/listNotColumn", method = RequestMethod.GET)
+    @GetMapping(value = "/listNotColumn")
     public Result<List<Combobox>> listNotColumn() {
         return showGoodsClient.getListNotColumn();
     }
 
     @ApiOperation(value = "获取未加入某一标签的商品下拉列表", notes = "获取未加入某一标签的商品列表")
-    @RequestMapping(value = "/listNotLabel", method = RequestMethod.GET)
-    public Result<List<Combobox>> listNotLabel(@RequestParam("labelId") String labelId) {
+    @GetMapping(value = "/listNotLabel")
+    public Result<List<Combobox>> listNotLabel(@RequestParam("labelId") @NotBlank String labelId) {
         return showGoodsClient.getListNotLabel(labelId);
     }
 
     @ApiOperation(value = "获取没有设置图标的商品下拉列表", notes = "获取没有设置图标的商品列表")
-    @RequestMapping(value = "/listNotIcon", method = RequestMethod.GET)
+    @GetMapping(value = "/listNotIcon")
     public Result<List<Combobox>> listNotIcon() {
         return showGoodsClient.getListNotIcon();
     }
 
     @ApiOperation(value = "获取没有设置特价的商品下拉列表", notes = "获取没有设置特价的商品列表")
-    @RequestMapping(value = "/listNotSpecial", method = RequestMethod.GET)
+    @GetMapping(value = "/listNotSpecial")
     public Result<List<Combobox>> listNotSpecial() {
         return showGoodsClient.getListNotSpecial();
     }

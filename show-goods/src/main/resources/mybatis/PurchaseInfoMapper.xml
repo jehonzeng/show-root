@@ -168,8 +168,9 @@
         FROM t_purchase_info p INNER
         JOIN t_food_info f ON p.food_id = f.mark_id
         <where>
+            TO_DAYS(p.buy_time)= TO_DAYS(NOW())
             <if test="markId != null">
-                p.mark_id = #{markId,jdbcType=VARCHAR}
+                AND p.mark_id = #{markId,jdbcType=VARCHAR}
             </if>
             <if test="foodId != null">
                 AND p.food_id = #{foodId,jdbcType=VARCHAR}
@@ -181,11 +182,8 @@
             <if test="buyTotal != null">
                 AND p.buy_total = #{buyTotal,jdbcType=DECIMAL}
             </if>
-            <if test="buyTime != null">
-                AND p.buy_time = #{buyTime,jdbcType=DATE}
-            </if>
             <if test="serverStatus != null">
-                AND server_status =
+                AND p.server_status =
                 #{serverStatus,jdbcType=INTEGER}
             </if>
             <if test="reflashTime != null">
@@ -203,22 +201,23 @@
         p.buy_time,p.server_status,p.reflash_time,p.user_id,
         f.food_name,f.server_status,f.purchase_rate,f.image_path,
         (SELECT `name` FROM db_base.t_attribute_info where code = f.unit) AS unit,
-        (SELECT real_name FROM db_user.t_user_info WHERE mark_id = p.user_id) AS purchaser
+        (SELECT IF(real_name IS NULL || real_name = '', nick_name, real_name)
+        FROM db_user.t_user_info WHERE mark_id = p.user_id) AS purchaser
         FROM t_purchase_info p INNER JOIN t_food_info f ON p.food_id = f.mark_id
         WHERE TO_DAYS(p.buy_time)= TO_DAYS(NOW())
-         <choose>
-            <when test="status == 0">
-            AND p.user_id = #{userId}
-            AND p.server_status = 1 
-            AND <![CDATA[p.purchase_total > p.buy_total]]>
-            </when>
+        <choose>
             <when test="status == 1">
-            AND <![CDATA[p.purchase_total <= p.buy_total]]>
+                AND p.user_id = #{userId}
+                AND p.server_status = 1
+                AND <![CDATA[p.purchase_total > p.buy_total]]>
+            </when>
+            <when test="status == 2">
+                AND <![CDATA[p.purchase_total <= p.buy_total]]>
             </when>
             <otherwise>
-            AND p.server_status = 0 AND <![CDATA[p.purchase_total > p.buy_total]]>
+                AND p.server_status = 0 AND <![CDATA[p.purchase_total > p.buy_total]]>
             </otherwise>
-         </choose>
+        </choose>
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
         insert into t_purchase_info

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ActionItemMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.ActionItem">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="action_code" jdbcType="VARCHAR" property="actionCode" />
+        <result column="server_type" jdbcType="INTEGER" property="serverType" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="template_mark" jdbcType="VARCHAR" property="templateMark" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+        <result column="link_url" jdbcType="VARCHAR" property="linkUrl" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, sort, action_code, server_type, content, template_mark, image_path, title,
+        image_url, link_url, description
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_action_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_action_item
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.ActionItem">
+        insert into t_action_item (mark_id, sort, action_code,
+        server_type, content, template_mark,
+        image_path, title, image_url,
+        link_url, description)
+        values (#{markId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{actionCode,jdbcType=VARCHAR},
+        #{serverType,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{templateMark,jdbcType=VARCHAR},
+        #{imagePath,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR},
+        #{linkUrl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.ActionItem">
+        insert into t_action_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="actionCode != null">
+                action_code,
+            </if>
+            <if test="serverType != null">
+                server_type,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="templateMark != null">
+                template_mark,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="imageUrl != null">
+                image_url,
+            </if>
+            <if test="linkUrl != null">
+                link_url,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="actionCode != null">
+                #{actionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="templateMark != null">
+                #{templateMark,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null">
+                #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="linkUrl != null">
+                #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.ActionItem">
+        update t_action_item
+        <set>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="actionCode != null">
+                action_code = #{actionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="templateMark != null">
+                template_mark = #{templateMark,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null">
+                image_url = #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="linkUrl != null">
+                link_url = #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.ActionItem">
+        update t_action_item
+        set sort = #{sort,jdbcType=INTEGER},
+        action_code = #{actionCode,jdbcType=VARCHAR},
+        server_type = #{serverType,jdbcType=INTEGER},
+        content = #{content,jdbcType=VARCHAR},
+        template_mark = #{templateMark,jdbcType=VARCHAR},
+        image_path = #{imagePath,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+        link_url = #{linkUrl,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_action_item
+        where action_code = #{code,jdbcType=VARCHAR}
+        order by sort
+    </select>
+    <select id="selectByExampleSelective"  parameterType="com.szhengzhu.bean.base.ActionItem" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_action_item
+        <where>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="actionCode != null">
+                and action_code like concat('%', #{actionCode,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="serverType != null">
+                and server_type = #{serverType,jdbcType=INTEGER}
+            </if>
+            <if test="content != null">
+                and content like concat('%', #{content,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="templateMark != null">
+                and template_mark = #{templateMark,jdbcType=VARCHAR}
+            </if>
+            <if test="imagePath != null">
+                and image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null">
+                and title like concat('%', #{title,jdbcType=VARCHAR}, '%') 
+            </if>
+            <if test="imageUrl != null">
+                and image_url = #{imageUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="linkUrl != null">
+                and link_url = #{linkUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description like concat('%', #{description,jdbcType=VARCHAR}, '%') 
+            </if>
+        </where>
+    </select>
+</mapper>

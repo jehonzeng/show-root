@@ -5,8 +5,8 @@
         <id column="mark_id" jdbcType="VARCHAR" property="markId" />
         <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
         <result column="coupon_total" jdbcType="INTEGER" property="couponTotal" />
-        <result column="line_type" jdbcType="INTEGER" property="lineType" />
         <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
+        <result column="server_type" jdbcType="INTEGER" property="serverType" />
         <result column="coupon_price" jdbcType="DECIMAL" property="couponPrice" />
         <result column="coupon_discount" jdbcType="DECIMAL" property="couponDiscount" />
         <result column="limit_price" jdbcType="DECIMAL" property="limitPrice" />
@@ -19,14 +19,15 @@
         <result column="range_type" jdbcType="INTEGER" property="rangeType" />
         <result column="range_id" jdbcType="VARCHAR" property="rangeId" />
         <result column="limit_region" jdbcType="VARCHAR" property="limitRegion" />
+        <result column="limit_time" jdbcType="VARCHAR" property="limitTime" />
         <result column="description" jdbcType="VARCHAR" property="description" />
     </resultMap>
     <sql id="Base_Column_List">
-        mark_id, coupon_name, coupon_total, line_type, coupon_type, coupon_price,
+        mark_id, coupon_name, coupon_total, coupon_type, server_type, coupon_price,
         coupon_discount,
         limit_price, server_status, limit_count, validity_type, start_time, stop_time,
         validity_day,
-        range_type, range_id,limit_region, description
+        range_type, range_id,limit_region, description,limit_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -40,21 +41,21 @@
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.base.CouponTemplate">
         insert into t_coupon_template (mark_id, coupon_name, coupon_total,
-        line_type, coupon_type, coupon_price,
+        coupon_type, server_type, coupon_price,
         coupon_discount, limit_price, server_status,
         limit_count, validity_type, start_time,
         stop_time, validity_day, range_type,
         range_id,limit_region, description)
         values (#{markId,jdbcType=VARCHAR}, #{couponName,jdbcType=VARCHAR},
         #{couponTotal,jdbcType=INTEGER},
-        #{lineType,jdbcType=INTEGER}, #{couponType,jdbcType=INTEGER}, #{couponPrice,jdbcType=DECIMAL},
+        #{couponType,jdbcType=INTEGER}, #{serverType,jdbcType=INTEGER}, #{couponPrice,jdbcType=DECIMAL},
         #{couponDiscount,jdbcType=DECIMAL},
         #{limitPrice,jdbcType=DECIMAL}, #{serverStatus,jdbcType=BIT},
         #{limitCount,jdbcType=INTEGER},
         #{validityType,jdbcType=INTEGER},
         #{startTime,jdbcType=TIMESTAMP},
         #{stopTime,jdbcType=TIMESTAMP}, #{validityDay,jdbcType=INTEGER}, #{rangeType,jdbcType=INTEGER},
-        #{rangeId,jdbcType=VARCHAR}, #{limitRegion,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR})
+        #{rangeId,jdbcType=VARCHAR}, #{limitRegion,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{limitTime,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.CouponTemplate">
         insert into t_coupon_template
@@ -68,11 +69,11 @@
             <if test="couponTotal != null">
                 coupon_total,
             </if>
-            <if test="lineType != null">
-                line_type,
-            </if>
             <if test="couponType != null">
                 coupon_type,
+            </if>
+            <if test="serverType != null">
+                server_type,
             </if>
             <if test="couponPrice != null">
                 coupon_price,
@@ -113,6 +114,9 @@
             <if test="description != null">
                 description,
             </if>
+              <if test="limitTime != null">
+                limit_time,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="markId != null">
@@ -124,11 +128,11 @@
             <if test="couponTotal != null">
                 #{couponTotal,jdbcType=INTEGER},
             </if>
-            <if test="lineType != null">
-                #{lineType,jdbcType=INTEGER},
-            </if>
             <if test="couponType != null">
                 #{couponType,jdbcType=INTEGER},
+            </if>
+            <if test="serverType != null">
+                #{serverType,jdbcType=INTEGER},
             </if>
             <if test="couponPrice != null">
                 #{couponPrice,jdbcType=DECIMAL},
@@ -169,6 +173,9 @@
             <if test="description != null">
                 #{description,jdbcType=VARCHAR},
             </if>
+             <if test="limitTime != null">
+                #{limitTime,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.CouponTemplate">
@@ -180,11 +187,11 @@
             <if test="couponTotal != null">
                 coupon_total = #{couponTotal,jdbcType=INTEGER},
             </if>
-            <if test="lineType != null">
-                line_type = #{lineType,jdbcType=INTEGER},
-            </if>
             <if test="couponType != null">
                 coupon_type = #{couponType,jdbcType=INTEGER},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=INTEGER},
             </if>
             <if test="couponPrice != null">
                 coupon_price = #{couponPrice,jdbcType=DECIMAL},
@@ -225,6 +232,9 @@
             <if test="description != null">
                 description = #{description,jdbcType=VARCHAR},
             </if>
+             <if test="limitTime != null">
+                limit_time = #{limitTime,jdbcType=VARCHAR},
+            </if>
         </set>
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
@@ -232,8 +242,8 @@
         update t_coupon_template
         set coupon_name = #{couponName,jdbcType=VARCHAR},
         coupon_total = #{couponTotal,jdbcType=INTEGER},
-        line_type = #{lineType,jdbcType=INTEGER},
         coupon_type = #{couponType,jdbcType=INTEGER},
+        server_type = #{serverType,jdbcType=INTEGER},
         coupon_price = #{couponPrice,jdbcType=DECIMAL},
         coupon_discount = #{couponDiscount,jdbcType=DECIMAL},
         limit_price = #{limitPrice,jdbcType=DECIMAL},
@@ -247,7 +257,8 @@
         range_type = #{rangeType,jdbcType=INTEGER},
         range_id = #{rangeId,jdbcType=VARCHAR},
         limit_region = #{limitRegion,jdbcType=VARCHAR},
-        description = #{description,jdbcType=VARCHAR}
+        description = #{description,jdbcType=VARCHAR},
+        limit_time = #{limitTime,jdbcType=VARCHAR}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.CouponTemplate" resultMap="BaseResultMap">
@@ -264,11 +275,11 @@
             <if test="couponTotal != null">
                 AND coupon_total = #{couponTotal,jdbcType=INTEGER}
             </if>
-            <if test="lineType != null">
-                AND line_type = #{lineType,jdbcType=INTEGER}
-            </if>
             <if test="couponType != null">
                 AND coupon_type = #{couponType,jdbcType=INTEGER}
+            </if>
+            <if test="serverType != null">
+                AND server_type = #{serverType,jdbcType=INTEGER}
             </if>
             <if test="couponPrice != null">
                 AND coupon_price = #{couponPrice,jdbcType=DECIMAL}
@@ -306,9 +317,21 @@
             <if test="limitRegion != null">
                 AND limit_region = #{limitRegion,jdbcType=VARCHAR}
             </if>
+             <if test="limitTime != null">
+                AND limit_time = #{limitTime,jdbcType=VARCHAR}
+            </if>
             <if test="description != null">
                 AND description LIKE CONCAT(CONCAT('%', #{description,jdbcType=VARCHAR}), '%')
             </if>
         </where>
+    </select>
+    <select id="selectCouponTemplates" parameterType="java.util.List" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_coupon_template
+        where server_status = 1 and mark_id IN
+        <foreach collection="templates" index="index" item="markId" open="(" separator="," close=")">
+            #{markId}
+        </foreach>
     </select>
 </mapper>

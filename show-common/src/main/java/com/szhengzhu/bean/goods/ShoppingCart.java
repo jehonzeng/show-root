@@ -1,10 +1,12 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import lombok.Data;
 
 @Data
 public class ShoppingCart implements Serializable {
@@ -13,19 +15,22 @@ public class ShoppingCart implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String productId;
 
     private String userId;
 
+    @NotNull
     private Integer productType;
 
     private String productName;
 
     private String specificationIds;
 
+    @NotNull
     private Integer quantity;
 
-    private BigDecimal basePrice;
+    private BigDecimal basePrice;  
 
     private BigDecimal addPrice;
     

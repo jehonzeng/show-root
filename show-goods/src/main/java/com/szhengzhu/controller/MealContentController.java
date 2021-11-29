@@ -1,17 +1,17 @@
 package com.szhengzhu.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.MealContent;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.MealContentService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "mContents")
 public class MealContentController {
@@ -19,13 +19,13 @@ public class MealContentController {
     @Resource
     private MealContentService mealContentService;
 
-    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public Result<?> editMealContent(@RequestBody MealContent base) {
-        return mealContentService.editContent(base);
+    @PatchMapping(value = "/edit")
+    public MealContent modifyContent(@RequestBody @Validated MealContent base) {
+        return mealContentService.modifyContent(base);
     }
 
-    @RequestMapping(value = "/{mealId}", method = RequestMethod.GET)
-    public Result<?> getMealContent(@PathVariable("mealId") String mealId) {
+    @GetMapping(value = "/{mealId}")
+    public MealContent getMealContent(@PathVariable("mealId") @NotBlank String mealId) {
         return mealContentService.getMealContent(mealId);
     }
 

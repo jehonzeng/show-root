@@ -19,4 +19,5 @@ public class Combobox implements Serializable{
     
     private String name;
     
+    private Object other;
 }

@@ -1,12 +1,14 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.order.UserAddress;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 
+import java.util.List;
+
+/**
+ * @author Jehon Zeng
+ */
 public interface UserAddressService {
 
     /**
@@ -16,7 +18,7 @@ public interface UserAddressService {
      * @param addressPage
      * @return
      */
-    Result<PageGrid<UserAddress>> pageAddress(PageParam<UserAddress> addressPage);
+    PageGrid<UserAddress> pageAddress(PageParam<UserAddress> addressPage);
     
     /**
      * 获取用户地址列表
@@ -25,7 +27,7 @@ public interface UserAddressService {
      * @param userId
      * @return
      */
-    Result<List<UserAddress>> listByUser(String userId);
+    List<UserAddress> listByUser(String userId);
     
     /**
      * 用户添加配送地址
@@ -34,7 +36,7 @@ public interface UserAddressService {
      * @param address
      * @return
      */
-    Result<?> add(UserAddress address);
+    void add(UserAddress address);
     
     /**
      * 用户修改配送地址信息
@@ -43,7 +45,7 @@ public interface UserAddressService {
      * @param address
      * @return
      */
-    Result<?> modify(UserAddress address);
+    void modify(UserAddress address);
     
     /**
      * 获取用户默认地址
@@ -52,7 +54,7 @@ public interface UserAddressService {
      * @param userId
      * @return
      */
-    Result<UserAddress> getDefByUser(String userId);
+    UserAddress getDefByUser(String userId);
     
     /**
      * 获取地址详细信息
@@ -61,5 +63,5 @@ public interface UserAddressService {
      * @param addressId
      * @return
      */
-    Result<UserAddress> getInfo(String addressId);
+    UserAddress getInfo(String addressId);
 }

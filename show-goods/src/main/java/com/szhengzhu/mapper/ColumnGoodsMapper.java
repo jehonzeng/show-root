@@ -1,16 +1,16 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.goods.ColumnGoods;
+import com.szhengzhu.bean.vo.ColumnGoodsVo;
+import com.szhengzhu.bean.vo.ColumnMealVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.szhengzhu.bean.goods.ColumnGoods;
-import com.szhengzhu.bean.vo.ColumnGoodsVo;
-import com.szhengzhu.bean.vo.ColumnMealVo;
+import java.util.List;
 
 public interface ColumnGoodsMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(ColumnGoods record);

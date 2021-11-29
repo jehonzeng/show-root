@@ -159,7 +159,7 @@
             </if>
         </where>
     </select>
-    <select id="selectGoodsStocks" resultMap="BaseResultMapVo" parameterType="java.util.List">
+    <select id="selectGoodsStockByIds" resultMap="BaseResultMapVo" parameterType="java.util.List">
         select
         <include refid="Base_Column_List" /> ,
         (SELECT goods_name FROM t_goods_info WHERE mark_id = s.goods_id) AS goodsName,
@@ -192,5 +192,27 @@
             AND s.specification_ids = #{specIds,jdbcType=VARCHAR})
         WHERE a.mark_id=#{addressId,jdbcType=VARCHAR} AND d.server_status=1 AND h.server_status=1 AND s.server_status=1 
         ORDER BY s.goods_id DESC,s.current_stock DESC LIMIT 1
+    </select>
+    <select id="selectGoodsStock" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_goods_stock s LEFT JOIN t_storehouse_info i ON s.storehouse_id=i.mark_id
+        where s.goods_id=#{goodsId,jdbcType=VARCHAR} AND s.specification_ids=#{specificationIds,jdbcType=VARCHAR} AND 
+              s.server_status=1 AND i.server_status=1 AND s.total_stock> 0 AND s.current_stock > 0
+        order by s.current_stock desc
+        limit 1
+    </select>
+    <select id="selectGoodsStockByAddress" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from t_goods_stock s LEFT JOIN t_storehouse_info i ON s.storehouse_id=i.mark_id
+        where s.goods_id=#{goodsId,jdbcType=VARCHAR} AND s.specification_ids=#{specificationIds,jdbcType=VARCHAR} AND s.server_status=1 AND
+              i.server_status=1 AND s.total_stock>= 0 AND s.current_stock >= 0 AND
+              s.storehouse_id IN (SELECT d.storehouse_id
+                                      FROM t_delivery_area d LEFT JOIN 
+                                           db_order.t_user_address a ON (d.city=a.city AND d.province=a.province AND d.area=a.area)
+                                      WHERE a.mark_id=#{addressId,jdbcType=VARCHAR} AND d.server_status=1)
+        order by s.current_stock desc
+        limit  1
     </select>
 </mapper>

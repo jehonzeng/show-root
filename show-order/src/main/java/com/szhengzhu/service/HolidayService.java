@@ -1,13 +1,14 @@
 package com.szhengzhu.service;
 
-import java.text.ParseException;
+import com.szhengzhu.bean.order.HolidayInfo;
+import com.szhengzhu.bean.vo.DeliveryDate;
+
 import java.util.Date;
 import java.util.List;
 
-import com.szhengzhu.bean.order.HolidayInfo;
-import com.szhengzhu.bean.vo.DeliveryDate;
-import com.szhengzhu.core.Result;
-
+/**
+ * @author Jehon Zeng
+ */
 public interface HolidayService {
 
     /**
@@ -16,7 +17,7 @@ public interface HolidayService {
      * @date 2019年3月26日 下午5:08:47
      * @param holidayList
      */
-    Result<Integer> addHolidays(List<Date> holidayList);
+    Integer addHolidays(List<Date> holidayList);
     
     /**
      * 添加或刪除节假日
@@ -25,7 +26,7 @@ public interface HolidayService {
      * @param holiday
      * @return
      */
-    Result<?> operateHoliday(String holiday) throws ParseException;
+    void operateHoliday(String holiday);
     
     /**
      * 获取配送时间列表
@@ -33,7 +34,7 @@ public interface HolidayService {
      * @date 2019年3月26日 下午7:12:36
      * @return
      */
-    Result<List<DeliveryDate>> listDeliveryDate();
+    List<DeliveryDate> listDeliveryDate();
     
     /**
      * 获取某时间段的假期
@@ -43,7 +44,7 @@ public interface HolidayService {
      * @param end
      * @return
      */
-    Result<List<HolidayInfo>> listHoliday(String start, String end);
+    List<HolidayInfo> listHoliday(String start, String end);
     
     /**
      * 查询某一日期，作为判断该日期是否可配送
@@ -52,5 +53,5 @@ public interface HolidayService {
      * @param date
      * @return
      */
-    Result<HolidayInfo> getHoliday(Date date);
+    HolidayInfo getHoliday(Date date);
 }

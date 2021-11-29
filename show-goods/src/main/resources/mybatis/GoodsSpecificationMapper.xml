@@ -185,31 +185,26 @@
         </foreach>
     </insert>
     <select id="selectSpecGoodsInfo" resultType="com.szhengzhu.bean.wechat.vo.StockBase">
-        SELECT g.goods_id AS goodsId, g.specification_ids AS specificationIds, g.sale_price AS basePrice,g.goods_no AS goodsNo,
-               IF(s.promotion_mode IS NULL,g.sale_price,
+        SELECT g.mark_id AS goodsId, gs.specification_ids AS specificationIds, IFNULL(gs.sale_price,g.sale_price) AS basePrice,gs.goods_no AS goodsNo,
+               IF(s.promotion_mode IS NULL,gs.sale_price,
                        CASE WHEN s.promotion_mode=0 THEN 
-                                g.sale_price-s.price 
+                                IFNULL(gs.sale_price,g.sale_price)-s.price 
                             WHEN s.promotion_mode=1 THEN 
-                                g.sale_price * s.discount 
+                                IFNULL(gs.sale_price,g.sale_price) * s.discount 
                        END) AS salePrice,
                (SELECT GROUP_CONCAT(attr_value SEPARATOR ' ') 
-                FROM db_goods.t_specification_info WHERE FIND_IN_SET(mark_id, g.specification_ids)) AS specs
-               <!-- IFNULL((SELECT i.image_path 
-                     FROM t_goods_image i
-                     WHERE i.goods_id=g.goods_id AND i.specification_ids=g.specification_ids AND i.server_type=2 limit 1),(SELECT i.image_path 
-                     FROM t_goods_image i
-                     WHERE i.goods_id=g.goods_id AND i.server_type=0 limit 1)) AS goodsImage -->
-        FROM t_goods_specification g LEFT JOIN 
+                FROM t_specification_info WHERE FIND_IN_SET(mark_id, #{specIds,jdbcType=VARCHAR})) AS specs,
+                if(gs.sale_price IS NULL, 0, IF(g.server_status <![CDATA[ <> ]]> 'ZT02', 0, 100)) AS currentStock
+        FROM t_goods_info g LEFT JOIN t_goods_specification gs ON (g.mark_id=gs.goods_id AND gs.specification_ids=#{specIds,jdbcType=VARCHAR} AND gs.server_status=1) LEFT JOIN 
         (SELECT s.promotion_mode,s.price,s.discount,i.goods_id 
                  FROM t_special_info s LEFT JOIN t_special_item i ON s.mark_id=i.special_id 
                  WHERE s.server_status=1 AND s.promotion_type=1 AND 
                        (CASE WHEN s.start_time IS NOT NULL THEN  s.start_time <![CDATA[ < ]]> NOW() 
                              ELSE  1=1 
                         END) AND 
-                        (CASE WHEN s.end_time IS NOT NULL THEN s.end_time <![CDATA[ > ]]> NOW() 
+                       (CASE WHEN s.end_time IS NOT NULL THEN s.end_time <![CDATA[ > ]]> NOW() 
                               ELSE 1=1 
-                         END)) AS s ON g.goods_id=s.goods_id 
-        WHERE g.goods_id=#{goodsId,jdbcType=VARCHAR} AND g.specification_ids=#{specIds,jdbcType=VARCHAR} 
-        AND g.server_status=1
+                         END)) AS s ON g.mark_id=s.goods_id 
+        WHERE g.mark_id=#{goodsId,jdbcType=VARCHAR}
     </select>
 </mapper>

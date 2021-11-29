@@ -1,12 +1,11 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.goods.DeliveryArea;
 import com.szhengzhu.bean.vo.AreaVo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface DeliveryAreaService {
    
@@ -15,21 +14,21 @@ public interface DeliveryAreaService {
      * @param base
      * @return
      */
-    Result<?> addInfo(DeliveryArea base);
+    DeliveryArea addInfo(DeliveryArea base);
     
     /**修改配送区域信息
      * @date 2019年3月14日 下午6:35:58
      * @param base
      * @return
      */
-    Result<?> editInfo(DeliveryArea base);
+    DeliveryArea editInfo(DeliveryArea base);
     
     /**获取配送区域信息分页列表
      * @date 2019年3月14日 下午6:35:55
      * @param base
      * @return
      */
-    Result<PageGrid<DeliveryArea>> getPage(PageParam<DeliveryArea> base);
+    PageGrid<DeliveryArea> getPage(PageParam<DeliveryArea> base);
 
     /**
      * 根据id获取配送区域信息
@@ -38,7 +37,7 @@ public interface DeliveryAreaService {
      * @param markId
      * @return
      */
-    Result<?> getDeliveryInfo(String markId);
+    DeliveryArea getDeliveryInfo(String markId);
     
     /**
      * 删除配送信息
@@ -47,7 +46,7 @@ public interface DeliveryAreaService {
      * @param markId
      * @return
      */
-    Result<?> deleteDelivery(String markId);
+    void deleteDelivery(String markId);
 
     /**
      * 批量添加某个省份下的所有配送区域
@@ -57,6 +56,24 @@ public interface DeliveryAreaService {
      * @param list 
      * @return
      */
-    Result<?> addBatchByProvince(DeliveryArea base, List<AreaVo> list);
+    void addBatchByProvince(DeliveryArea base, List<AreaVo> list);
+    
+    /**
+     * 获取地址对应配送费信息
+     * 
+     * @date 2019年10月12日 下午2:53:38
+     * @param addressId
+     * @return
+     */
+    DeliveryArea getDeliveryPrice(String addressId);
+    
 
+    /**
+     * 在指定仓库下启用指定省份下的所有配送范围
+     * 
+     * @param base
+     * @return
+     */
+    void updateBatchStatus(DeliveryArea base);
+ 
 }

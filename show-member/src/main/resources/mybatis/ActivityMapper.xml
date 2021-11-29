@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.ActivityMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.Activity">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="theme" jdbcType="VARCHAR" property="theme"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="rule_id" jdbcType="VARCHAR" property="ruleId"/>
+        <result column="store_id" jdbcType="VARCHAR" property="storeId"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime"/>
+        <result column="award_url" jdbcType="VARCHAR" property="awardUrl"/>
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, theme, code, type, rule_id, store_id, start_time, stop_time, award_url, image_path, create_time,
+        modify_time, creator, modifier, status
+     </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_activity_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_activity_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.Activity">
+    insert into t_activity_info (mark_id, theme, code, type, rule_id, store_id,
+      start_time, stop_time, award_url,
+      image_path, create_time, modify_time,
+      creator, modifier, status
+      )
+    values (#{markId,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+      #{ruleId,jdbcType=VARCHAR}, #{storeId,jdbcType=VARCHAR},
+      #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP}, #{awardUrl,jdbcType=VARCHAR},
+      #{imagePath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+      #{creator,jdbcType=VARCHAR}, #{modifier,jdbcType=VARCHAR}, #{status,jdbcType=BIT}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.Activity">
+        insert into t_activity_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="theme != null">
+                theme,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="ruleId != null">
+                rule_id,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="awardUrl != null">
+                award_url,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="theme != null">
+                #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="ruleId != null">
+                #{ruleId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="awardUrl != null">
+                #{awardUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null">
+                #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.Activity">
+        update t_activity_info
+        <set>
+            <if test="theme != null">
+                theme = #{theme,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="ruleId != null">
+                rule_id = #{ruleId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="awardUrl != null">
+                award_url = #{awardUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null">
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.Activity">
+        update t_activity_info
+        set theme = #{theme,jdbcType=VARCHAR},
+          code = #{code,jdbcType=VARCHAR},
+          type = #{type,jdbcType=INTEGER},
+          rule_id = #{ruleId,jdbcType=VARCHAR},
+          store_id = #{storeId,jdbcType=VARCHAR},
+          start_time = #{startTime,jdbcType=TIMESTAMP},
+          stop_time = #{stopTime,jdbcType=TIMESTAMP},
+          award_url = #{awardUrl,jdbcType=VARCHAR},
+          image_path = #{imagePath,jdbcType=VARCHAR},
+          create_time = #{createTime,jdbcType=TIMESTAMP},
+          modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+          creator = #{creator,jdbcType=VARCHAR},
+          modifier = #{modifier,jdbcType=VARCHAR},
+          status = #{status,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.Activity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_activity_info
+        <where>
+            <if test="markId != null">
+                and mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="theme != null">
+                and theme like concat('%', #{theme,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="code != null">
+                and code = #{code,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+                and type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="ruleId != null">
+                and rule_id = #{ruleId,jdbcType=VARCHAR}
+            </if>
+            <if test="storeId != null">
+                and (store_id is null or store_id = #{storeId,jdbcType=VARCHAR})
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="stopTime != null">
+                and stop_time = #{stopTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="awardUrl != null">
+                and award_url = #{awardUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="imagePath != null">
+                and image_path = #{imagePath,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <select id="selectWellByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            mark_id, theme, code, type, rule_id, store_id, start_time, stop_time, award_url, create_time,status,
+            (select ii.image_path from  db_base.t_image_info ii where a.image_path = ii.mark_id) AS image_path
+        from t_activity_info a
+        where code = #{code,jdbcType=VARCHAR} AND status = 1
+            AND IF(start_time IS NULL, TRUE, start_time <![CDATA[<]]> NOW())
+            AND IF(stop_time IS NULL,TRUE,stop_time > NOW())
+    </select>
+</mapper>

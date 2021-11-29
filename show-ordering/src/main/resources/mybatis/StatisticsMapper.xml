@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.StatisticsMapper">
+    <select id="tableClsInfo" parameterType="com.szhengzhu.bean.ordering.TableInfo"
+            resultType="com.szhengzhu.bean.ordering.param.TableInfoParam">
+        SELECT c.`name` AS `name`,IFNULL(c.seats,0) AS seats,COUNT(t.seats) AS useNum,IFNULL(SUM(i.man_num),0)
+        AS peopleNum,CONVERT(SUM(i.indent_total)/SUM(i.man_num),DECIMAL(10,2)) AS avgPrice
+        ,CONVERT(SUM(TIMESTAMPDIFF(MINUTE,(DATE_FORMAT(i.indent_time,'%Y-%m-%d %H:%i')),
+        (DATE_FORMAT(i.bill_time, '%Y-%m-%d %H:%i'))))/SUM(i.man_num),DECIMAL(10,0)) AS avgMinute
+        FROM t_table_info t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        INNER JOIN t_table_cls c ON c.mark_id=t.cls_id
+        WHERE t.`status`=1 AND i.indent_status IN ('IS03','IS04', 'IS07') AND i.store_id=#{storeId,jdbcType=VARCHAR}
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(i.indent_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY c.`name`,c.seats
+        ORDER BY COUNT(t.seats) ASC
+    </select>
+    <select id="tableAreaInfo" parameterType="com.szhengzhu.bean.ordering.TableInfo"
+            resultType="com.szhengzhu.bean.ordering.param.TableInfoParam">
+        SELECT a.`name` AS `name`,any_value(t.seats) AS seats,COUNT(t.seats) AS useNum,IFNULL(SUM(i.man_num),0)
+        AS peopleNum,CONVERT(SUM(i.indent_total)/SUM(i.man_num),DECIMAL(10,2)) AS avgPrice
+        ,CONVERT(SUM(TIMESTAMPDIFF(MINUTE,(DATE_FORMAT(i.indent_time,'%Y-%m-%d %H:%i')),
+        (DATE_FORMAT(i.bill_time, '%Y-%m-%d %H:%i'))))/SUM(i.man_num),DECIMAL(10,0)) AS avgMinute
+        FROM t_table_info t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        INNER JOIN t_table_area a ON a.mark_id=t.area_id
+        WHERE t.`status`=1 AND i.indent_status IN ('IS03','IS04', 'IS07') AND i.store_id=#{storeId,jdbcType=VARCHAR}
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(i.indent_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY a.`name`
+        ORDER BY COUNT(t.seats) ASC
+    </select>
+    <select id="tableCls" parameterType="com.szhengzhu.bean.ordering.TableInfo"
+            resultType="com.szhengzhu.bean.ordering.param.TableUseParam">
+        SELECT a.times AS times,a.name AS name,a.seats AS seats,a.mark_id AS markId,
+        IFNULL(SUM(a.indent_total),0) AS total,COUNT(a.mark_id) AS useNum FROM(
+        SELECT CONCAT(DATE_FORMAT(indent_time, '%Y-%m-%d %H'),':',RPAD(FLOOR(DATE_FORMAT(i.indent_time,'%i')
+        /30) *30, 2,0)) AS times,c.`name` ,c.seats ,c.mark_id,i.indent_total
+        FROM t_table_info t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        INNER JOIN t_table_cls c ON c.mark_id=t.cls_id
+        WHERE t.`status`=1 AND i.indent_status IN ('IS03','IS04', 'IS07') AND i.store_id=#{storeId,jdbcType=VARCHAR}
+        <choose>
+            <when test="endDate != null">
+                AND TO_DAYS(i.indent_time) = TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        ) a
+        GROUP BY a.times,a.name,a.seats,a.mark_id
+    </select>
+    <select id="tableArea" parameterType="com.szhengzhu.bean.ordering.TableInfo"
+            resultType="com.szhengzhu.bean.ordering.param.TableUseParam">
+        SELECT a.times AS times,a.name AS name,a.seats AS seats,a.mark_id AS markId,
+        IFNULL(SUM(a.indent_total),0) AS total,COUNT(a.mark_id) AS useNum FROM(
+        SELECT CONCAT(DATE_FORMAT(indent_time, '%Y-%m-%d %H'),':',RPAD(FLOOR(DATE_FORMAT(i.indent_time,'%i')
+        /30) * 30,2,0)) AS times,a.`name`,t.seats,a.mark_id,i.indent_total
+        FROM t_table_info t
+        INNER JOIN t_indent_info i ON i.table_id=t.mark_id
+        INNER JOIN t_table_area a ON a.mark_id=t.area_id
+        WHERE t.`status`=1 AND i.indent_status IN ('IS03','IS04', 'IS07') AND a.`status`=1
+        AND i.store_id=#{storeId,jdbcType=VARCHAR}
+        <choose>
+            <when test="endDate != null">
+                AND TO_DAYS(i.indent_time) = TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(i.indent_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        ) a
+        GROUP BY a.times,a.name,a.seats,a.mark_id
+    </select>
+    <select id="income" parameterType="com.szhengzhu.bean.ordering.Income" resultType="java.util.Map">
+        SELECT IFNULL(SUM(a.netReceipts),0) AS netReceipts,IFNULL(SUM(a.indent_total),0) AS total FROM( SELECT
+        SUM(p.amount) AS netReceipts,i.indent_total FROM t_indent_info i LEFT JOIN t_indent_pay p ON p.indent_id =
+        i.mark_id
+        WHERE i.indent_status = 'IS04' AND p.`status` = 1 AND i.store_id = #{storeId,jdbcType=VARCHAR}
+        <if test="employeeId != null and employeeId != ''">
+            AND i.employee_id = #{employeeId,jdbcType=VARCHAR}
+        </if>
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(bill_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(bill_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY i.mark_id ) a
+    </select>
+    <select id="incomeByType" resultType="com.szhengzhu.bean.ordering.print.PrintIncome"
+            parameterType="com.szhengzhu.bean.ordering.Income">
+        SELECT IFNULL(SUM(a.quantity),0) AS quantity, IFNULL(SUM(a.paidIncome),0) AS paidIncome,IFNULL(SUM(a.total),0)
+        AS income FROM(SELECT SUM(quantity) AS quantity, SUM(p.amount) AS paidIncome,SUM(pay_amount) AS total FROM
+        t_indent_pay p LEFT JOIN t_indent_info i ON p.indent_id=i.mark_id LEFT JOIN t_pay_info pi ON p.pay_id=pi.mark_id
+        WHERE indent_status='IS04' AND p.`status`=1 AND pi.store_id=#{storeId,jdbcType=VARCHAR}
+        <if test="employeeId != null and employeeId != ''">
+            AND i.employee_id = #{employeeId,jdbcType=VARCHAR}
+        </if>
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(bill_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(bill_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="received == true">
+                AND pi.received = 1
+            </when>
+            <otherwise>
+                AND pi.received = 0
+            </otherwise>
+        </choose>
+        GROUP BY i.mark_id ) a
+    </select>
+    <select id="incomePayByType" resultType="com.szhengzhu.bean.ordering.print.PrintPay"
+            parameterType="com.szhengzhu.bean.ordering.Income">
+        SELECT pay_id AS payId,pay_name AS payName,IFNULL(SUM(quantity),0) AS quantity, IFNULL(SUM(amount),0) AS amount,
+        IFNULL(SUM(pay_amount),0) AS payAmount FROM t_indent_pay p LEFT JOIN t_indent_info i ON p.indent_id=i.mark_id
+        LEFT JOIN t_pay_info pi ON p.pay_id=pi.mark_id WHERE i.indent_status ='IS04' AND p.`status` = 1
+        AND i.store_id = #{storeId,jdbcType=VARCHAR}
+        <if test="employeeId != null and employeeId != ''">
+            AND i.employee_id = #{employeeId,jdbcType=VARCHAR}
+        </if>
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(bill_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(bill_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="received == true">
+                AND pi.received = 1
+            </when>
+            <otherwise>
+                AND pi.received = 0
+            </otherwise>
+        </choose>
+        GROUP BY pay_id, pay_name
+    </select>
+    <resultMap id="typeList" type="com.szhengzhu.bean.ordering.IncomeByType">
+        <id column="typeId" jdbcType="VARCHAR" property="typeId"/>
+        <result column="payType" jdbcType="VARCHAR" property="type"/>
+        <collection property="list" ofType="com.szhengzhu.bean.ordering.print.PrintPay">
+            <id column="payId" jdbcType="VARCHAR" property="payId"/>
+            <result column="payName" jdbcType="VARCHAR" property="payName"/>
+            <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+            <result column="amount" jdbcType="DECIMAL" property="amount"/>
+            <result column="payAmount" jdbcType="DECIMAL" property="payAmount"/>
+        </collection>
+    </resultMap>
+    <select id="type" resultMap="typeList"
+            parameterType="com.szhengzhu.bean.ordering.Income">
+        SELECT pt.mark_id AS typeId,pt.`name` AS payType,pay_id AS payId,pay_name AS payName,IFNULL(SUM(quantity),0) AS
+        quantity,IFNULL(SUM(amount),0) AS amount,IFNULL(SUM(pay_amount),0) AS payAmount FROM t_indent_pay p LEFT JOIN
+        t_indent_info i ON p.indent_id=i.mark_id LEFT JOIN t_pay_info pi ON p.pay_id=pi.mark_id LEFT JOIN t_pay_type pt
+        ON pt.mark_id=pi.type_id WHERE i.indent_status ='IS04' AND p.`status` = 1 AND
+        pi.store_id=#{storeId,jdbcType=VARCHAR}
+        <choose>
+            <when test="beginDate != null and endDate != null">
+                AND TO_DAYS(bill_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+            </when>
+            <otherwise>
+                AND TO_DAYS(bill_time)=TO_DAYS(NOW())
+            </otherwise>
+        </choose>
+        GROUP BY pt.`name`,pay_id, pay_name
+    </select>
+    <select id="amountCompare" resultType="com.szhengzhu.bean.ordering.AmountCompare">
+        SELECT a.time AS time,
+        SUM(a.amount) AS amount,
+        SUM(a.payAmount) as payAmount,
+        SUM(a.man_num) AS quantity,
+        CONVERT(SUM(a.amount) / SUM(a.man_num), DECIMAL(10, 2)) AS avgPrice
+        FROM (
+        SELECT SUM(p.amount) AS amount,
+        SUM(p.pay_amount) AS payAmount,
+        man_num,
+        DATE_FORMAT(indent_time, '%Y-%m') AS time
+        FROM t_indent_info i
+        INNER JOIN t_indent_pay p ON p.indent_id = i.mark_id
+        WHERE indent_status = 'IS04'
+        AND p.`status` = 1
+        AND i.store_id = #{storeId,jdbcType=VARCHAR}
+        <if test="beginDate != null and endDate != null">
+            AND TO_DAYS(indent_time) BETWEEN TO_DAYS(#{beginDate}) AND TO_DAYS(#{endDate})
+        </if>
+        GROUP BY i.mark_id
+        ) a
+        GROUP BY a.time
+    </select>
+</mapper>

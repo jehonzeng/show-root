@@ -4,8 +4,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class TeambuyOrder implements Serializable {
 
@@ -15,15 +21,13 @@ public class TeambuyOrder implements Serializable {
 
     private String orderNo;
 
-    private String productId;
+    private String goodsId;
     
-    private Integer productType;
-
     private String groupId;
 
     private String userId;
     
-    private String productName;
+    private String goodsName;
     
     private String specificationIds;
 
@@ -63,7 +67,9 @@ public class TeambuyOrder implements Serializable {
 
     private String theme;
     
-    private Integer teamStatus;
+    private String groupStatus;
+    
+    private String reason;
     
     private OrderDelivery orderDelivery;
 }

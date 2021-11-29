@@ -1,28 +1,31 @@
 package com.szhengzhu.aop;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import cn.hutool.core.util.StrUtil;
+import com.google.gson.Gson;
+import com.szhengzhu.core.Contacts;
+import com.szhengzhu.core.Result;
+import com.szhengzhu.core.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-import com.szhengzhu.common.Commons;
-import com.szhengzhu.core.Result;
-import com.szhengzhu.core.StatusCode;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ManageTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
-        String user = (String) req.getSession().getAttribute(Commons.SESSION);
-        if (user == null) {
-            Result<String> result = new Result<String>(StatusCode._4005);
-            res.setStatus(HttpStatus.UNAUTHORIZED.value()); // 设置状态码
-            res.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
-            res.setCharacterEncoding("UTF-8"); // 避免乱码
+        String user = (String) req.getSession().getAttribute(Contacts.LJS_SESSION);
+        if (StrUtil.isEmpty(user)) {
+            Result<String> result = new Result<>(StatusCode._4005);
+            // 设置状态码
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+            // 设置ContentType
+            res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            // 避免乱码
+            res.setCharacterEncoding("UTF-8");
             res.setHeader("Cache-Control", "no-cache, must-revalidate");
             res.getWriter().write(new Gson().toJson(result));
             res.getWriter().flush();

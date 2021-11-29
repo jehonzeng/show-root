@@ -1,12 +1,11 @@
 package com.szhengzhu.service;
 
-import java.util.List;
-
 import com.szhengzhu.bean.base.AttributeInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
+
+import java.util.List;
 
 public interface AttributeService {
 
@@ -17,7 +16,7 @@ public interface AttributeService {
      * @param attributeInfo
      * @return
      */
-    Result<AttributeInfo> saveAttribute(AttributeInfo attributeInfo);
+    AttributeInfo saveAttribute(AttributeInfo attributeInfo);
     
     /**
      * 修改系统属性
@@ -26,7 +25,7 @@ public interface AttributeService {
      * @param attributeInfo
      * @return
      */
-    Result<AttributeInfo> updateAttribute(AttributeInfo attributeInfo);
+    AttributeInfo updateAttribute(AttributeInfo attributeInfo);
     
     /**
      * 根据主键获取系统属性详情
@@ -35,7 +34,7 @@ public interface AttributeService {
      * @param markId
      * @return
      */
-    Result<AttributeInfo> getAttributeById(String markId);
+    AttributeInfo getAttributeById(String markId);
     
     /**
      * 获取系统属性分页列表
@@ -43,7 +42,7 @@ public interface AttributeService {
      * @param attrPage
      * @return
      */
-    Result<PageGrid<AttributeInfo>> pageAttribute(PageParam<AttributeInfo> attrPage);
+    PageGrid<AttributeInfo> pageAttribute(PageParam<AttributeInfo> attrPage);
     
     /**
      * 通过类型值代码获取下拉值
@@ -52,5 +51,14 @@ public interface AttributeService {
      * @param type
      * @return
      */
-    Result<List<Combobox>> listCombobox(String type);
+    List<Combobox> listCombobox(String type);
+
+    /**
+     *
+     * 获取编码
+     * @param name
+     * @return
+     * @date 2019年9月19日
+     */
+    String getCodeByName(String name);
 }

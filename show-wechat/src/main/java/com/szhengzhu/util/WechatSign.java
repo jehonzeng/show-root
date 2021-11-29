@@ -1,12 +1,13 @@
 package com.szhengzhu.util;
 
+import cn.hutool.crypto.digest.DigestUtil;
+import weixin.popular.bean.paymch.Unifiedorder;
+import weixin.popular.util.MapUtil;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import weixin.popular.bean.paymch.Unifiedorder;
-import weixin.popular.util.MapUtil;
 
 public class WechatSign {
 
@@ -34,7 +35,7 @@ public class WechatSign {
         }
         sb.append("key=" + key);
         System.out.println(sb.toString());
-        String sign = MD5Utils.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
+        String sign = DigestUtil.md5Hex(sb.toString(), characterEncoding).toUpperCase();
         return sign;
     }
 
@@ -54,15 +55,15 @@ public class WechatSign {
         }
         sb.append("key=" + key);
         System.out.println(sb.toString());
-        String sign = MD5Utils.MD5Encode(sb.toString(), characterEncoding)
+        String sign = DigestUtil.md5Hex(sb.toString(), characterEncoding)
                 .toUpperCase();
         return sign;
     }
 
     public static String getNonceStr() {
         Random random = new Random();
-        return MD5Utils.MD5Encode(String.valueOf(random.nextInt(10000)),
-                "UTF-8");
+        return DigestUtil.md5Hex(String.valueOf(random.nextInt(10000)),
+                characterEncoding);
     }
 
     public static String getTimeStamp() {

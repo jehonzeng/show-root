@@ -1,66 +1,79 @@
 package com.szhengzhu.controller;
 
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.szhengzhu.bean.goods.GoodsStock;
+import com.szhengzhu.bean.vo.GoodsBaseVo;
+import com.szhengzhu.bean.vo.ProductInfo;
 import com.szhengzhu.bean.vo.StockVo;
 import com.szhengzhu.bean.wechat.vo.StockBase;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
-import com.szhengzhu.core.Result;
 import com.szhengzhu.service.GoodsStockService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * @author Administrator
+ */
+@Validated
 @RestController
 @RequestMapping(value = "/stocks")
 public class StockController {
-    
+
     @Resource
     private GoodsStockService goodsStockService;
-    
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<?> addGoodsStock(@RequestBody GoodsStock goodsStock) {
-        return goodsStockService.addGoodsStock(goodsStock);
+    @PostMapping(value = "/add")
+    public GoodsStock addGoodsStock(@RequestBody @Validated GoodsStock base) {
+        return goodsStockService.addGoodsStock(base);
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public Result<?> modifyGoodsStock(@RequestBody GoodsStock goodsStock) {
-        return goodsStockService.editGoodsStock(goodsStock);
+    @PatchMapping(value = "/edit")
+    public GoodsStock modifyGoodsStock(@RequestBody @Validated GoodsStock goodsStock) {
+        return goodsStockService.modifyGoodsStock(goodsStock);
     }
-    
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public Result<PageGrid<StockVo>> page(@RequestBody PageParam<GoodsStock> base) {
+
+    @PostMapping(value = "/page")
+    public PageGrid<StockVo> page(@RequestBody PageParam<GoodsStock> base) {
         return goodsStockService.getPage(base);
     }
-    
-    @RequestMapping(value = "/details/{markId}", method = RequestMethod.GET)
-    public Result<?> details(@PathVariable(value = "markId") String markId) {
-        return goodsStockService.getDetailedInfos(markId);
+
+    @GetMapping(value = "/details/{markId}")
+    public GoodsBaseVo details(@PathVariable("markId") @NotBlank String markId) {
+        return goodsStockService.getDetailInfos(markId);
     }
-    
-    @RequestMapping(value = "/{markId}", method = RequestMethod.GET)
-    public Result<?> srtockInfo(@PathVariable(value = "markId") String markId) {
+
+    @GetMapping(value = "/{markId}")
+    public GoodsStock stockInfo(@PathVariable("markId") @NotBlank String markId) {
         return goodsStockService.getGoodsStockInfo(markId);
     }
-    
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public Result<StockBase> getStockInfo(@RequestParam("goodsId") String goodsId,
-            @RequestParam("specIds") String specIds, @RequestParam(value = "addressId", required = false) String addressId) {
+
+    @GetMapping(value = "/info")
+    public StockBase getStockInfo(@RequestParam("goodsId") @NotBlank String goodsId,
+                                  @RequestParam("specIds") @NotBlank String specIds,
+                                  @RequestParam(value = "addressId", required = false) String addressId) {
         return goodsStockService.getStockInfo(goodsId, specIds, addressId);
     }
 
-//    
-//    @RequestMapping(value = "/list/ids", method = RequestMethod.GET)
-//    public Result<List<StockVo>> listGoodsStocks(@RequestParam("markIds") List<String> markIds) {
-//        return goodsStockService.listGoodsStock(markIds);
-//    }
+    @PostMapping(value = "/current/sub")
+    public void subCurrentStock(@RequestBody ProductInfo productInfo) {
+        goodsStockService.subCurrentStock(productInfo);
+    }
 
+    @PostMapping(value = "/total/sub")
+    public void subTotalStock(@RequestBody ProductInfo productInfo) {
+        goodsStockService.subTotalStock(productInfo);
+    }
+
+    @PostMapping(value = "/current/add")
+    public void addCurrentStock(@RequestBody ProductInfo productInfo) {
+        goodsStockService.addCurrentStock(productInfo);
+    }
+
+    @PostMapping(value = "/total/add")
+    public void addTotalStock(@RequestBody ProductInfo productInfo) {
+        goodsStockService.addTotalStock(productInfo);
+    }
 }

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchPrizeMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchPrize">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="stage_id" jdbcType="VARCHAR" property="stageId"/>
+        <result column="prizeName" jdbcType="VARCHAR" property="prizeName"/>
+        <result column="img_id" jdbcType="VARCHAR" property="imgId"/>
+        <result column="template_id" jdbcType="VARCHAR" property="templateId"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, stage_id, prize_name, img_id, template_id, sort, create_time, modify_time, remark, status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_prize
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_prize
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchPrize">
+        insert into t_match_prize (mark_id, stage_id, prize_name, img_id,
+                                   template_id, sort, create_time,
+                                   modify_time, remark, status)
+        values (#{markId,jdbcType=VARCHAR}, #{stageId,jdbcType=VARCHAR}, #{prizeName,jdbcType=VARCHAR},#{imgId,jdbcType=VARCHAR},
+                #{templateId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+                #{modifyTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchPrize">
+        insert into t_match_prize
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="stageId != null">
+                stage_id,
+            </if>
+            <if test="prizeName != null">
+                prize_name,
+            </if>
+            <if test="imgId != null">
+                img_id,
+            </if>
+            <if test="templateId != null">
+                template_id,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="stageId != null">
+                #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeName != null">
+                #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgId != null">
+                #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchPrize">
+        update t_match_prize
+        <set>
+            <if test="stageId != null">
+                stage_id = #{stageId,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeName != null">
+                prize_name = #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgId != null">
+                img_id = #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="templateId != null">
+                template_id = #{templateId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchPrize">
+        update t_match_prize
+        set stage_id    = #{stageId,jdbcType=VARCHAR},
+            prize_name  = #{prizeName,jdbcType=VARCHAR},
+            img_id = #{imgId,jdbcType=VARCHAR},
+            template_id = #{templateId,jdbcType=VARCHAR},
+            sort        = #{sort,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            remark = #{remark,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.MatchPrize"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_prize
+        <where>
+            <if test="stageId != null">
+                stage_id = #{stageId,jdbcType=VARCHAR}
+            </if>
+            <if test="prizeName != null">
+                AND prize_name = #{prizeName,jdbcType=VARCHAR}
+            </if>
+            <if test="templateId != null">
+                AND template_id = #{templateId,jdbcType=VARCHAR}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifyTime != null">
+                AND modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+</mapper>

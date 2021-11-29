@@ -2,6 +2,9 @@ package com.szhengzhu.provider;
 
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 public class JudgeProvider {
     
     public String selectByGoodsId(Map<String ,String> map) {

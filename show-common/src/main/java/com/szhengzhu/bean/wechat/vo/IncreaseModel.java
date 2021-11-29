@@ -1,9 +1,9 @@
 package com.szhengzhu.bean.wechat.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
 
 @Data
 public class IncreaseModel implements Serializable {
@@ -21,4 +21,6 @@ public class IncreaseModel implements Serializable {
     private BigDecimal salePrice;
     
     private Integer status = 0;// 0:正常  1：不可配送  2：库存不足  3：该商品已下架 4: 未达到购买门槛
+    
+    private String storehouseId;
 }

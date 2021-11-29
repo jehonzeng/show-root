@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchVoteMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchVote">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="team_id" jdbcType="VARCHAR" property="teamId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="stage_id" jdbcType="VARCHAR" property="stageId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, user_id, team_id, quantity, create_time, stage_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_vote
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_vote
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchVote">
+        insert into t_match_vote (mark_id, user_id, team_id,
+                                  quantity, create_time, stage_id)
+        values (#{markId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR},
+                #{quantity,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{stageId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchVote">
+        insert into t_match_vote
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="stageId != null">
+                stage_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stageId != null">
+                #{stageId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchVote">
+        update t_match_vote
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stageId != null">
+                stage_id = #{stageId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchVote">
+        update t_match_vote
+        set user_id     = #{userId,jdbcType=VARCHAR},
+            team_id     = #{teamId,jdbcType=VARCHAR},
+            quantity    = #{quantity,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            stage_id    = #{stageId,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectVoteInfo" resultType="com.szhengzhu.bean.member.VoteInfo">
+        SELECT s.stage_name AS stageName,
+        t.team_name AS teamName,
+        user_id AS userId,
+        (SELECT phone FROM t_member_account a WHERE a.user_id = v.user_id) AS phone,
+        SUM(quantity) AS quantity,
+        v.create_time AS voteTime
+        FROM t_match_vote v
+        INNER JOIN t_match_team t ON v.team_id = t.mark_id
+        INNER JOIN t_match_stage s ON v.stage_id = s.mark_id
+        <where>
+            <if test="matchId != null and matchId != ''">
+                AND s.match_id = #{matchId,jdbcType=VARCHAR}
+            </if>
+            <if test="teamId != null and teamId != ''">
+                AND v.team_id = #{teamId,jdbcType=VARCHAR}
+            </if>
+            <if test="stageId != null and stageId != ''">
+                AND v.stage_id = #{stageId,jdbcType=VARCHAR}
+            </if>
+        </where>
+        GROUP BY v.create_time, user_id, stage_id, team_id
+    </select>
+</mapper>

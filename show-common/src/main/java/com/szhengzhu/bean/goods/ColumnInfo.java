@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 栏目信息
- * 
+ *
  * @author Administrator
  * @date 2019年3月27日
  */
@@ -17,10 +19,11 @@ public class ColumnInfo implements Serializable {
 
     private String markId;
 
+    @NotBlank
     private String theme;
 
     private Boolean serverStatus;
-    
+
     private Integer serverType;
 
     private String imagePath;

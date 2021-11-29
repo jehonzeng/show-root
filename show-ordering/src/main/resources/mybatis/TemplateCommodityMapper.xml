@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.TemplateCommodityMapper" >
+  <resultMap id="BaseResultMap" type="com.szhengzhu.bean.ordering.TemplateCommodityKey" >
+    <id column="template_id" property="templateId" jdbcType="VARCHAR" />
+    <id column="commodity_id" property="commodityId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.szhengzhu.bean.ordering.TemplateCommodityKey" >
+    delete from t_template_commodity
+    where template_id = #{templateId,jdbcType=VARCHAR}
+      and commodity_id = #{commodityId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.szhengzhu.bean.ordering.TemplateCommodityKey" >
+    insert into t_template_commodity (template_id, commodity_id)
+    values (#{templateId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szhengzhu.bean.ordering.TemplateCommodityKey" >
+    insert into t_template_commodity
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="templateId != null" >
+        template_id,
+      </if>
+      <if test="commodityId != null" >
+        commodity_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="templateId != null" >
+        #{templateId,jdbcType=VARCHAR},
+      </if>
+      <if test="commodityId != null" >
+        #{commodityId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatchCommodity" parameterType="java.util.List">
+        insert ignore into t_template_commodity (template_id, commodity_id)
+        values
+        <foreach collection="commodityIds" item="commodityId" index="index" separator=",">
+            (#{templateId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

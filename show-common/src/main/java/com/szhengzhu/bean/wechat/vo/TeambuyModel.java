@@ -5,6 +5,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 public class TeambuyModel implements Serializable {
 
@@ -12,12 +14,11 @@ public class TeambuyModel implements Serializable {
 
     private String markId;
     
-    private String specIds;
+    private String groupId;
     
     private Date deliveryDate;
-    
-    private String groupNo;
-    
+
+    @NotBlank
     private String addressId;
     
     private String remark;

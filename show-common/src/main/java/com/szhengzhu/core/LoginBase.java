@@ -1,33 +1,43 @@
 package com.szhengzhu.core;
 
-import com.szhengzhu.util.ShowUtils;
-import com.szhengzhu.util.TimeUtils;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author Administrator
+ */
 @Data
 public class LoginBase implements Serializable {
 
     private static final long serialVersionUID = -5759222392746110829L;
 
-    private int over_time = 10 * 60 * 1000;// 过期时间
+    /** 过期时间 */
+    private int overTime = 1 * 60 * 1000;
 
     private String phone;
     
     private String markId;
-
+    
     private String code;
 
-    private int count = 0;// 用来计数的，防止用户胡乱请求短信验证码
+    /** 验证码位数*/
+    private int digit = 6;
 
-    private Date create_time = TimeUtils.today();
+    /** 用来计数的，防止用户胡乱请求短信验证码 */
+    private int count = 0;
 
-    public LoginBase(String phone, int digit) {
+    private Date createTime = DateUtil.date();
+
+    public LoginBase() {}
+
+    public LoginBase(String phone) {
         this.phone = phone;
-        this.code = ShowUtils.random(digit).toString();
+        this.code = RandomUtil.randomNumbers(digit);
     }
 
     /**
@@ -37,7 +47,7 @@ public class LoginBase implements Serializable {
      * @return
      */
     public boolean isOver() {
-        return System.currentTimeMillis() - create_time.getTime() >= over_time;
+        return System.currentTimeMillis() - createTime.getTime() >= overTime;
     }
 
     /**
@@ -49,18 +59,18 @@ public class LoginBase implements Serializable {
      * @return
      */
     public boolean equals(String phone, String code) {
-        return phone.equals(this.phone) && code.equals(this.code);
+        return !StrUtil.isBlank(phone) && !StrUtil.isBlank(code) && phone.equals(this.phone) && code.equals(this.code);
     }
 
     /**
      * 判断是否频繁请求
      * 
      * @date 2019年2月21日 上午11:51:00
-     * @param digit
+     * @param times
      * @return
      */
-    public boolean isOften(int digit) {
-        return count > digit;
+    public boolean isOften(int times) {
+        return count > times;
     }
 
     /**
@@ -70,11 +80,12 @@ public class LoginBase implements Serializable {
      * @param phone
      */
     public void refresh(String phone) {
-        if (!this.phone.equals(phone) || isOver()) { // 手机号码换了或者过期了短信验证码刷新
+        // 手机号码换了或者过期了短信验证码刷新
+        if (!this.phone.equals(phone) || isOver()) {
             this.phone = phone;
-            this.code = ShowUtils.random(code.length()).toString();
+            this.code = RandomUtil.randomNumbers(this.digit);
         }
-        create_time = TimeUtils.today();
+        createTime = DateUtil.date();
         count++;
     }
 

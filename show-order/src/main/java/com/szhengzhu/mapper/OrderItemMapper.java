@@ -9,6 +9,9 @@ import com.szhengzhu.bean.order.OrderItem;
 import com.szhengzhu.bean.wechat.vo.Judge;
 import com.szhengzhu.bean.wechat.vo.OrderItemDetail;
 
+/**
+ * @author Jehon Zeng
+ */
 public interface OrderItemMapper {
 
     int deleteByPrimaryKey(String markId);
@@ -33,7 +36,7 @@ public interface OrderItemMapper {
     
     List<OrderItemDetail> selectItemDetail(@Param("orderId") String orderId);
     
-    List<Judge> selectItemJudge(@Param("orderId") String orderId);
+    List<Judge> selectItemJudge(@Param("orderNo") String orderNo, @Param("userId") String userId);
     
     @Select("SELECT GROUP_CONCAT(mark_id SEPARATOR ',') AS specIds FROM db_goods.t_specification_info " + 
             "WHERE mark_id in (SELECT s.specification_id FROM db_goods.t_type_specification s LEFT JOIN db_goods.t_goods_info g ON g.type_id=s.type_id WHERE g.mark_id=#{goodsId} AND s.default_or=1) " + 

@@ -1,8 +1,12 @@
 package com.szhengzhu.bean.goods;
 
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * 商品栏目基础信息
@@ -10,6 +14,9 @@ import lombok.Data;
  * @author Administrator
  * @date 2019年3月27日
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ColumnGoods implements Serializable {
 

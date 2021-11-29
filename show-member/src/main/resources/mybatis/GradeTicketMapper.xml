@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.GradeTicketMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.GradeTicket">
+        <!--@Table t_grade_ticket-->
+        <result property="gradeId" column="grade_id" jdbcType="VARCHAR"/>
+        <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        grade_id, template_id, quantity
+    </sql>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_grade_ticket
+        where grade_id = #{gradeId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_grade_ticket
+        <where>
+            <if test="gradeId != null and gradeId != ''">
+                and grade_id = #{gradeId}
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and template_id = #{templateId}
+            </if>
+            <if test="quantity != null">
+                and quantity = #{quantity}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="add" keyProperty="gradeId" useGeneratedKeys="true">
+        insert into t_grade_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gradeId != null and gradeId != ''">
+                grade_id,
+            </if>
+            <if test="templateId != null and templateId != ''">
+                template_id,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gradeId != null and gradeId != ''">
+                #{gradeId},
+            </if>
+            <if test="templateId != null and templateId != ''">
+                #{templateId},
+            </if>
+            <if test="quantity != null">
+                #{quantity},
+            </if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="modify">
+        update t_grade_ticket
+        <set>
+            <if test="templateId != null and templateId != ''">
+                template_id = #{templateId},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity},
+            </if>
+        </set>
+        where grade_id = #{gradeId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from t_grade_ticket
+        where grade_id = #{gradeId}
+    </delete>
+
+    <insert id="addBatchGradeTicket" parameterType="java.util.List">
+        insert ignore into t_grade_ticket (grade_id, template_id,quantity)
+        values
+        <foreach collection="tickets" item="ticket" index="index" separator=",">
+            (#{gradeId,jdbcType=VARCHAR}, #{ticket.templateId,jdbcType=VARCHAR}, #{ticket.quantity,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+</mapper>

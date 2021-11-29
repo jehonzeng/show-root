@@ -5,6 +5,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 public class SeckillModel implements Serializable {
 
@@ -13,7 +15,8 @@ public class SeckillModel implements Serializable {
     private String markId;
     
     private Date deliveryDate;
-    
+
+    @NotBlank
     private String addressId;
     
     private String remark;

@@ -1,14 +1,17 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.szhengzhu.bean.goods.MealJudge;
 import com.szhengzhu.bean.vo.MealJudgeVo;
 import com.szhengzhu.bean.wechat.vo.JudgeBase;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface MealJudgeMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(MealJudge record);

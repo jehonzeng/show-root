@@ -1,8 +1,10 @@
 package com.szhengzhu.bean.base;
 
-import java.io.Serializable;
-
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 图片信息
@@ -10,6 +12,8 @@ import lombok.Data;
  * @author Administrator
  * @date 2019年3月5日
  */
+@Builder
+@NoArgsConstructor
 @Data
 public class ImageInfo implements Serializable {
 
@@ -21,11 +25,9 @@ public class ImageInfo implements Serializable {
 
     private String fileType;
     
-    public ImageInfo() {}
-    
     public ImageInfo(String markId, String imagePath, String fileType) {
         this.markId = markId;
         this.imagePath = imagePath;
-        this.fileType = fileType.substring(1, fileType.length());//移除文件类型前面的.号
+        this.fileType = fileType.substring(1);//移除文件类型前面的.号
     }
 }

@@ -1,9 +1,13 @@
 package com.szhengzhu.bean.goods;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * 套餐评论信息表
@@ -11,6 +15,9 @@ import lombok.Data;
  * @author Administrator
  * @date 2019年4月22日
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class MealJudge implements Serializable {
 
@@ -20,6 +27,7 @@ public class MealJudge implements Serializable {
 
     private String orderId;
 
+    @NotBlank
     private String mealId;
     
     private String userId;
@@ -36,4 +44,5 @@ public class MealJudge implements Serializable {
 
     private Integer sort;
 
+    private String mealName;
 }

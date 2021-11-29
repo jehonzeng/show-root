@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.CounselInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.CounselInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+        <result column="user_advise" property="userAdvise" jdbcType="VARCHAR" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, nick_name, user_advise, email, phone
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_counsel_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_counsel_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.CounselInfo">
+        insert into t_counsel_info (mark_id, nick_name, user_advise,
+        email, phone)
+        values (#{markId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{userAdvise,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.CounselInfo">
+        insert into t_counsel_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="userAdvise != null">
+                user_advise,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="userAdvise != null">
+                #{userAdvise,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.CounselInfo">
+        update t_counsel_info
+        <set>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="userAdvise != null">
+                user_advise = #{userAdvise,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.CounselInfo">
+        update t_counsel_info
+        set nick_name = #{nickName,jdbcType=VARCHAR},
+        user_advise = #{userAdvise,jdbcType=VARCHAR},
+        email = #{email,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.CounselInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_counsel_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+             <if test="nickName != null">
+                AND nick_name LIKE CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userAdvise != null">
+                AND user_advise = #{userAdvise,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null">
+                AND email = #{email,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

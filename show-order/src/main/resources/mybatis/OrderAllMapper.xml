@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.OrderAllMapper">
+    <select id="selectAll" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, o.order_status AS orderStatus, o.statusDesc, o.type
+        FROM ((SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, 1 AS type,
+                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity, o.order_status,
+                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS statusDesc
+               FROM t_order_info o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status <![CDATA[<>]]> 'OT11')
+               UNION ALL 
+              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,2 AS type,o.order_status,
+                     (CASE WHEN (g.group_status='GT01' AND o.order_status='OT02') OR g.group_status=3 THEN 
+                            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=g.group_status)
+                           ELSE (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) 
+                      END) AS statusDesc
+               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status <![CDATA[<>]]> 'OT11')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,3 AS type,o.order_status,
+                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS statusDesc
+               FROM t_seckill_order o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status <![CDATA[<>]]> 'OT11')) o
+    </select>
+    <select id="selectUnpaid" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, o.order_status AS orderStatus, o.statusDesc, o.type
+        FROM ((SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, 1 AS type,
+                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity, o.order_status,
+                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS statusDesc
+               FROM t_order_info o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status = 'OT01')
+               UNION ALL 
+              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,2 AS type,o.order_status,
+                     (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS statusDesc
+               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status = 'OT01')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_time, o.pay_amount, o.quantity,3 AS type,o.order_status,
+                      (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=o.order_status) AS statusDesc
+               FROM t_seckill_order o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status = 'OT01')) o
+    </select>
+    <select id="selectUngroup" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=g.group_status) AS statusDesc, 
+               o.order_status AS orderStatus, 3 AS type
+        FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+        WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status = 'OT02' AND g.group_status=1 AND g.mark_id IS NOT NULL
+    </select>
+    <select id="selectUndelivery" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, o.order_status AS orderStatus, (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc, o.type
+        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, 
+                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
+               FROM t_order_info o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND (o.order_status='OT03' OR o.order_status='OT02'))
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
+               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.group_status=2 AND o.order_status in ('OT03','OT02'))
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
+               FROM t_seckill_order o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND (o.order_status='OT03' OR o.order_status='OT02'))) o
+    </select>
+    <select id="selectUnReceive" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, o.order_status AS orderStatus,(SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc, o.type
+        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount,  
+                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
+               FROM t_order_info o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT04')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
+               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.group_status=2 AND o.order_status='OT04')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
+               FROM t_seckill_order o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT04')) o
+    </select>
+    <select id="selectUnjudge" parameterType="java.lang.String" resultType="com.szhengzhu.bean.wechat.vo.OrderBase">
+        SELECT o.mark_id AS orderId, o.order_no AS orderNo, o.order_time AS orderTime, o.pay_amount AS payAmount,  
+               o.quantity AS count, o.order_status AS orderStatus, (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=order_status) AS statusDesc, o.type
+        FROM ((SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount,  
+                      (SELECT SUM(oi.quantity) FROM t_order_item oi WHERE oi.order_id=o.mark_id) AS quantity,1 AS type
+               FROM t_order_info o
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT05')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,2 AS type
+               FROM t_teambuy_group g LEFT JOIN t_teambuy_order o ON g.mark_id=o.group_id 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND g.group_status=2 AND o.order_status='OT05')
+               UNION ALL
+              (SELECT o.mark_id, o.order_no, o.order_status, o.order_time, o.pay_amount, o.quantity,3 AS type
+               FROM t_seckill_order o 
+               WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status='OT05')) o
+    </select>
+    <select id="selectTodayItemList" resultType="com.szhengzhu.bean.vo.TodayProductVo">
+        SELECT i.product_id AS productId,i.product_name AS productName,i.product_type AS productType,i.quantity 
+        FROM t_order_info o LEFT JOIN t_order_item i ON i.order_id = o.mark_id 
+        WHERE o.order_status IN ('OT02','OT03') AND i.product_type = 0
+            AND ( ISNULL(o.delivery_date) OR TO_DAYS(o.delivery_date) <![CDATA[ <= ]]> TO_DAYS(NOW()) )
+        UNION ALL
+        SELECT i.product_id AS productId,i.product_name AS productName,i.product_type AS productType,i.quantity 
+        FROM t_order_info o LEFT JOIN t_order_item i ON i.order_id = o.mark_id 
+        WHERE o.order_status IN ('OT02','OT03') AND i.product_type = 2 
+            AND ( ISNULL(o.delivery_date) OR TO_DAYS(o.delivery_date) <![CDATA[ <= ]]> TO_DAYS(NOW()) )
+        UNION ALL
+        SELECT goods_id AS productId,goods_name AS productName,0 AS productType,quantity 
+        FROM t_seckill_order o
+        WHERE order_status IN ('OT02','OT03')
+            AND ( ISNULL(o.delivery_date) OR TO_DAYS(o.delivery_date) <![CDATA[ <= ]]> TO_DAYS(NOW()) )
+        UNION ALL
+        SELECT o.goods_id AS productId,o.goods_name AS productName,0 AS productType,o.quantity 
+        FROM t_teambuy_order o LEFT JOIN t_teambuy_group g ON o.group_id = g.mark_id
+        WHERE g.group_status = 'GT02' AND o.order_status IN ('OT02','OT03')
+            AND ( ISNULL(o.delivery_date) OR TO_DAYS(o.delivery_date) <![CDATA[ <= ]]> TO_DAYS(NOW()) )
+    </select>
+    <select id="selectStatusCount" parameterType="java.lang.String" resultType="Map">
+        SELECT o.order_status AS orderStatus, COUNT(*) AS count
+        FROM (
+            SELECT IF(o.order_status='OT02', 'OT03', o.order_status) AS order_status FROM t_order_info o 
+            WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status IN ('OT01','OT02','OT03','OT04','OT05')
+            UNION ALL
+            SELECT IF(o.order_status='OT02', IF(g.group_status='GT01', g.group_status, 'OT03'), o.order_status) AS orderStatus  
+            FROM t_teambuy_order o LEFT JOIN t_teambuy_group g ON o.group_id=g.mark_id 
+            WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status IN ('OT01','OT02','OT03','OT04','OT05')
+            UNION ALL
+            SELECT IF(o.order_status='OT02', 'OT03', o.order_status) AS order_status FROM t_seckill_order o 
+            WHERE o.user_id=#{userId,jdbcType=VARCHAR} AND o.order_status IN ('OT01','OT02','OT03','OT04','OT05')) o
+        GROUP BY o.order_status
+    </select>
+    <select id="selectSendInfo" resultType="com.szhengzhu.bean.excel.OrderSendModel"> 
+        SELECT (SELECT GROUP_CONCAT(CONCAT(i.product_name,'x', i.quantity)) FROM t_order_item i WHERE i.order_id=o.mark_id GROUP BY i.order_id) AS goodsQuantity, 
+               (SELECT CONCAT(d.contact,'，',d.phone, '，',d.delivery_area,d.delivery_address) FROM t_order_delivery d WHERE d.order_id=o.mark_id) AS deliveryInfo, o.remark AS remark
+        FROM t_order_info o
+        WHERE o.order_status='OT03'
+    </select>
+    <select id="selectTodayProductQuantity" resultType="com.szhengzhu.bean.excel.ProductModel">
+        SELECT product_id as productId,product_name as productName, SUM(quantity) as productCount
+        from t_order_item
+        where order_id in (SELECT mark_id from t_order_info where order_status='OT03') GROUP BY product_id, product_name
+    </select>
+</mapper>

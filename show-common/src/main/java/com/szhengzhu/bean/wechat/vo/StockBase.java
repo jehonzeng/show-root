@@ -1,10 +1,16 @@
 package com.szhengzhu.bean.wechat.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import lombok.Data;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class StockBase implements Serializable {
 
@@ -22,9 +28,9 @@ public class StockBase implements Serializable {
     
     private BigDecimal salePrice;
     
-//    private String goodsImage;
-    
     private Boolean isDelivery = false;
     
     private Integer currentStock = 100;
+    
+    private String storehouseId;
 }

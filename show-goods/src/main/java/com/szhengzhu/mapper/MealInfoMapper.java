@@ -1,17 +1,22 @@
 package com.szhengzhu.mapper;
 
-import java.util.List;
-
+import com.szhengzhu.bean.excel.MealGoodsModel;
+import com.szhengzhu.bean.goods.MealInfo;
+import com.szhengzhu.bean.vo.Combobox;
+import com.szhengzhu.bean.wechat.vo.GoodsBase;
+import com.szhengzhu.bean.wechat.vo.GoodsDetail;
+import com.szhengzhu.bean.wechat.vo.StockBase;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.szhengzhu.bean.goods.MealInfo;
-import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.bean.wechat.vo.GoodsBase;
-import com.szhengzhu.bean.wechat.vo.GoodsInfoVo;
+import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface MealInfoMapper {
+
     int deleteByPrimaryKey(String markId);
 
     int insert(MealInfo record);
@@ -45,7 +50,7 @@ public interface MealInfoMapper {
     
     List<GoodsBase> selectLabelMeal(@Param("labelId") String labelId);
     
-    GoodsInfoVo selectById(@Param("mealId") String mealId);
+    GoodsDetail selectById(@Param("mealId") String mealId);
     
     @Select("SELECT m.mark_id AS goodsId, m.theme AS goodsName,m.base_price AS basePrice,m.sale_price AS salePrice,m.server_status AS goodsStatus," + 
             "  (SELECT i.image_path FROM t_meal_image i WHERE i.meal_id=m.mark_id AND i.server_type=0 LIMIT 1) AS goodsImage " + 
@@ -54,4 +59,12 @@ public interface MealInfoMapper {
     
     @Update("update t_meal_info set server_status = 0 where mark_id in (select meal_id from t_meal_item where goods_id = #{goodsId}) ")
     int updateStatusByGoods(@Param("goodsId") String goodsId);
+    
+    StockBase selectMealInfo(@Param("mealId") String mealId);
+    
+    @Select("SELECT mark_id FROM t_meal_info")
+    List<String> selectMealIds();
+
+    @Select("SELECT g.goods_name AS productName,m.quantity AS quantity,0 AS productType from t_meal_item m left join t_goods_info g on m.goods_id = g.mark_id WHERE m.meal_id = #{mealId}")
+    List<MealGoodsModel> selectGoodsByMealId(@Param("mealId") String mealId);
 }

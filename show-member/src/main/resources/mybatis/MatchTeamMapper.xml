@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szhengzhu.mapper.MatchTeamMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.member.MatchTeam">
+        <id column="mark_id" jdbcType="VARCHAR" property="markId"/>
+        <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
+        <result column="img_id" jdbcType="VARCHAR" property="imgId"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="imgPath" jdbcType="VARCHAR" property="imgPath"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, team_name, img_id, sort, create_time, modify_time, remark, status
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_match_team
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_match_team
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.member.MatchTeam">
+        insert into t_match_team (mark_id, team_name, img_id,
+                                  sort, create_time, modify_time,
+                                  remark, status)
+        values (#{markId,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR}, #{imgId,jdbcType=VARCHAR},
+                #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+                #{remark,jdbcType=VARCHAR}, #{status,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.member.MatchTeam">
+        insert into t_match_team
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="teamName != null">
+                team_name,
+            </if>
+            <if test="imgId != null">
+                img_id,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="teamName != null">
+                #{teamName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgId != null">
+                #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.member.MatchTeam">
+        update t_match_team
+        <set>
+            <if test="teamName != null">
+                team_name = #{teamName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgId != null">
+                img_id = #{imgId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.member.MatchTeam">
+        update t_match_team
+        set team_name   = #{teamName,jdbcType=VARCHAR},
+            img_id      = #{imgId,jdbcType=VARCHAR},
+            sort        = #{sort,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            remark      = #{remark,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=BIT}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.member.MatchTeam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        (select i.image_path from db_base.t_image_info i where i.mark_id = t.img_id) as imgPath
+        from t_match_team t
+        <where>
+            <if test="teamName != null">
+                team_name = #{teamName,jdbcType=VARCHAR}
+            </if>
+            <if test="imgId != null">
+                AND img_id = #{imgId,jdbcType=VARCHAR}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifyTime != null">
+                AND modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <select id="selectList" resultMap="BaseResultMap">
+        select mark_id,
+               team_name,
+               img_id,
+               remark,
+               (select i.image_path from db_base.t_image_info i where i.mark_id = img_id) as imgPath
+        from t_match_team
+        where status = 1
+        order by sort, create_time
+    </select>
+    <select id="selectBaseListByMatch" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.MatchTeamVo">
+        select a.markId, a.teamName, a.remark, a.weedOut, a.imgPath
+        from (select mark_id                                                                    as markId,
+                     team_name                                                                  as teamName,
+                     remark,
+                     if((select count(1) from t_match_result r where r.team_id = t.mark_id and r.team_status = -1) > 0,
+                        true,
+                        false)                                                                  as weedOut,
+                     (select i.image_path from db_base.t_image_info i where i.mark_id = img_id) as imgPath,
+                     t.sort,
+                     t.create_time
+              from t_match_item i
+                       LEFT JOIN t_match_team t on t.mark_id = i.team_id
+              where status = 1
+                AND i.match_id = #{matchId,jdbcType=VARCHAR}) a
+        ORDER BY a.weedOut, a.sort, a.create_time
+    </select>
+
+    <select id="selectVoteTeamByUserId" parameterType="java.lang.String"
+            resultType="com.szhengzhu.bean.member.vo.MatchTeamVo">
+        SELECT DISTINCT t.mark_id                    as markId,
+                        team_name                    as teamName,
+                        (select image_path
+                         from db_base.t_image_info i
+                         where t.img_id = i.mark_id) as imgPath,
+                        if((select count(1)
+                            from t_match_result r
+                            where r.team_id = t.mark_id and r.team_status = -1) > 0, true,
+                           false)                    as weedOut
+        FROM t_match_vote v
+                 INNER JOIN t_match_team t ON v.team_id = t.mark_id
+                 left join t_match_stage s on s.mark_id = v.stage_id
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+          AND match_id = #{matchId,jdbcType=VARCHAR}
+    </select>
+</mapper>

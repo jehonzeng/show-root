@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szhengzhu.mapper.StoreInfoMapper">
+    <resultMap id="BaseResultMap" type="com.szhengzhu.bean.base.StoreInfo">
+        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
+        <result column="store_name" property="storeName" jdbcType="VARCHAR" />
+        <result column="server_status" property="serverStatus" jdbcType="BIT" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="scavenger" property="scavenger" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        mark_id, store_name,server_status, address, scavenger
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_store_info
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_store_info
+        where mark_id =
+        #{markId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.szhengzhu.bean.base.StoreInfo">
+        insert into t_store_info (mark_id,
+        store_name,server_status, address,
+        scavenger)
+        values
+        (#{markId,jdbcType=VARCHAR}, #{storeName,jdbcType=VARCHAR},
+        #{serverStatus,jdbcType=BIT},#{address,jdbcType=VARCHAR},
+        #{scavenger,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.szhengzhu.bean.base.StoreInfo">
+        insert into t_store_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                mark_id,
+            </if>
+            <if test="storeName != null">
+                store_name,
+            </if>
+            <if test="serverStatus != null">
+                server_status,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="scavenger != null">
+                scavenger,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="markId != null">
+                #{markId,jdbcType=VARCHAR},
+            </if>
+            <if test="storeName != null">
+                #{storeName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="scavenger != null">
+                #{scavenger,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szhengzhu.bean.base.StoreInfo">
+        update t_store_info
+        <set>
+            <if test="storeName != null">
+                store_name = #{storeName,jdbcType=VARCHAR},
+            </if>
+            <if test="serverStatus != null">
+                server_status = #{serverStatus,jdbcType=BIT},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="scavenger != null">
+                scavenger = #{scavenger,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.base.StoreInfo">
+        update t_store_info
+        set store_name = #{storeName,jdbcType=VARCHAR},
+            server_status = #{serverStatus,jdbcType=BIT},
+            address = #{address,jdbcType=VARCHAR},
+            scavenger = #{scavenger,jdbcType=VARCHAR}
+        where mark_id = #{markId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.base.StoreInfo" resultMap="BaseResultMap">
+        SELECT mark_id, store_name, address,server_status,
+               (SELECT GROUP_CONCAT(real_name SEPARATOR ',') FROM db_user.t_user_info WHERE FIND_IN_SET(mark_id,scavenger) ) AS scavenger
+        FROM t_store_info
+        <where>
+            <if test="markId != null">
+                mark_id = #{markId,jdbcType=VARCHAR}
+            </if>
+            <if test="storeName != null">
+                AND store_name LIKE CONCAT('%',#{storeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="serverStatus != null">
+                AND server_status = #{serverStatus,jdbcType=BIT}
+            </if>
+            <if test="address != null">
+                AND address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="scavenger != null">
+                AND scavenger = #{scavenger,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>
