@@ -37,6 +37,7 @@
 		<module>show-restaurant</module>
 		<module>show-xwechat</module>
 		<module>show-ordering</module>
+		<module>show-auth</module>
 	</modules>
     <dependencies>
         <dependency>

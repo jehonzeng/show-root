@@ -33,8 +33,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -70,6 +69,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Resource
     private Redis redis;
+
+    @Resource
+    private ThreadPoolExecutor executor;
 
     private final ConcurrentHashMap<String, Boolean> lockIdMap = new ConcurrentHashMap<>();
 
@@ -310,32 +312,32 @@ public class GoodsServiceImpl implements GoodsService {
      * @date 2019年10月10日 上午10:38:27
      */
     private GoodsDetail getGoodsAttribute(GoodsDetail goods, String userId) {
+
         try {
-            // goods
-            FutureTask<Map<String, String>> defaultSpecTask = new FutureTask<>(
-                    () -> typeSpecMapper.selectDefaultByGoods(goods.getGoodsId()));
-            // images
-            FutureTask<List<String>> imgTask = new FutureTask<>(
-                    () -> goodsImageMapper.selectBigByGoodsId(goods.getGoodsId()));
-            // goods server
-            FutureTask<List<Map<String, String>>> serverTask = new FutureTask<>(
-                    () -> serverSupportMapper.selectByGoods(goods.getGoodsId()));
-            // goods judge;
-            FutureTask<List<JudgeBase>> judgeTask = new FutureTask<>(
-                    () -> goodsJudgeMapper.selectJudge(userId, goods.getGoodsId(), 3));
-            new Thread(defaultSpecTask).start();
-            new Thread(imgTask).start();
-            new Thread(serverTask).start();
-            new Thread(judgeTask).start();
-            Map<String, String> defaultSpecMap = defaultSpecTask.get();
-            String specIds = defaultSpecMap.getOrDefault("specIds", null);
-            String specValues = defaultSpecMap.getOrDefault("specValues", null);
-            goods.setDefSpecIds(specIds);
-            goods.setDefSpecValues(specValues);
-            goods.setImagePaths(imgTask.get());
-            goods.setServers(serverTask.get());
-            goods.setJudges(judgeTask.get());
+            CompletableFuture<Void> defaultFuture = CompletableFuture.runAsync(() -> {
+                final Map<String, String> defaultSpecMap = typeSpecMapper.selectDefaultByGoods(goods.getGoodsId());
+                String specIds = defaultSpecMap.getOrDefault("specIds", null);
+                String specValues = defaultSpecMap.getOrDefault("specValues", null);
+                goods.setDefSpecIds(specIds);
+                goods.setDefSpecValues(specValues);
+            }, executor);
+
+            CompletableFuture<Void> imageFuture = CompletableFuture.runAsync(() -> {
+                goods.setImagePaths(goodsImageMapper.selectBigByGoodsId(goods.getGoodsId()));
+            }, executor);
+
+            CompletableFuture<Void> serverFuture = CompletableFuture.runAsync(() -> {
+                goods.setServers(serverSupportMapper.selectByGoods(goods.getGoodsId()));
+            }, executor);
+
+            CompletableFuture<Void> judgeFuture = CompletableFuture.runAsync(() -> {
+                goods.setJudges(goodsJudgeMapper.selectJudge(userId, goods.getGoodsId(), 3));
+            }, executor);
+
             goods.setCookerInfo(getCookerInfo(goods.getCooker(), userId));
+
+            //等到所有任务都完成
+            CompletableFuture.allOf(defaultFuture, imageFuture, serverFuture, imageFuture, judgeFuture).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
