@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.bean.base.CounselInfo;
 import com.szhengzhu.bean.base.ProductInfo;
 import com.szhengzhu.bean.vo.NewsVo;

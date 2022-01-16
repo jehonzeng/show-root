@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.PendDishes;
 import com.szhengzhu.bean.member.ReceiveDishes;
 import com.szhengzhu.bean.member.ReceiveRecord;

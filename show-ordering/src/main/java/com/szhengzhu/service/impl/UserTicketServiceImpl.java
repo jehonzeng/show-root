@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Administrator
@@ -81,5 +82,10 @@ public class UserTicketServiceImpl implements UserTicketService {
     @Override
     public void deleteMemberTicket(String markId) {
         userTicketMapper.deleteMemberTicket(markId);
+    }
+
+    @Override
+    public Integer queryTicketQuantity(String userId, String templateId) {
+        return userTicketMapper.queryTicketQuantity(userId, templateId);
     }
 }

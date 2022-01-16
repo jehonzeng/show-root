@@ -72,7 +72,5 @@ public class GoodsRunner implements ApplicationRunner {
 //            long offset = (labelId.hashCode() & Integer.MAX_VALUE) % 0x7fff;
 //            redisTemplate.opsForValue().setBit("goods:label:ids", offset, true);
 //        }
-
-
     }
 }

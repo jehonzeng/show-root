@@ -10,7 +10,7 @@ import com.szhengzhu.bean.ordering.vo.PayBaseVo;
 import com.szhengzhu.bean.xwechat.vo.CalcVo;
 import com.szhengzhu.bean.xwechat.vo.PayTypeModel;
 import com.szhengzhu.bean.xwechat.vo.UnifiedIndent;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.code.IndentStatus;
 import com.szhengzhu.code.PayBaseCode;
 import com.szhengzhu.code.PayTypeCode;
@@ -426,7 +426,7 @@ public class IndentPayServiceImpl implements IndentPayService {
         indent.setMemberId(unifiedIndent.getMemberId());
         indentMapper.updateByPrimaryKeySelective(indent);
         tableMapper.updateTableStatus(indent.getTableId(), TableStatus.BILL.code);
-//        sender.sendMatchChance(null, indent.getMemberId(), indent.getIndentTotal());
+        sender.sendMatchChance(null, indent.getMemberId(), indent.getIndentTotal());
     }
 
     @Override
@@ -438,7 +438,7 @@ public class IndentPayServiceImpl implements IndentPayService {
             indentMapper.updateIndentStatus(indentId, IndentStatus.BILL.code);
             tableMapper.updateTableStatus(indent.getTableId(), TableStatus.BILL.code);
             indentPayMapper.updateStatusByUser(indentId, (String) userId, 1);
-//            sender.sendMatchChance((String) userId, null, indent.getIndentTotal());
+            sender.sendMatchChance((String) userId, null, indent.getIndentTotal());
         }
         redis.del(payKey);
     }

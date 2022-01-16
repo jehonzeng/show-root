@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.DeliveryArea;
 import com.szhengzhu.bean.goods.StoreHouseInfo;
 import com.szhengzhu.bean.vo.Combobox;

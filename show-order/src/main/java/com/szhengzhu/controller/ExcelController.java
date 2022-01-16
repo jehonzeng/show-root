@@ -4,7 +4,7 @@ import com.szhengzhu.bean.excel.DeliveryModel;
 import com.szhengzhu.bean.excel.ProductModel;
 import com.szhengzhu.bean.excel.SauceVo;
 import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.service.ExcelService;
 import org.springframework.web.bind.annotation.GetMapping;

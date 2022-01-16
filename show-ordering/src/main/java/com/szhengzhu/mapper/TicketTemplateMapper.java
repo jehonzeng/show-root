@@ -20,12 +20,12 @@ public interface TicketTemplateMapper {
     int updateByPrimaryKeySelective(TicketTemplate record);
 
     int updateByPrimaryKey(TicketTemplate record);
-    
+
     List<TicketTemplate> selectByExampleSelective(TicketTemplate data);
 
     int updateBatchStatus(@Param("templateIds") String[] templateIds,@Param("status") Integer status);
 
-    @Update("update t_ticket_template set status = #{status} where mark_id = #{markId}") 
+    @Update("update t_ticket_template set status = #{status} where mark_id = #{markId}")
     int updateByTempalteId(@Param("markId") String markId, @Param("status") int status);
 
     @Select("select mark_id as templateId, name, description from t_ticket_template where status = 1 AND (CASE WHEN start_time IS NOT NULL THEN start_time < NOW() ELSE 1 = 1 END) " +

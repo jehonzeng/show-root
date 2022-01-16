@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.szhengzhu.annotation.SystemLog;
 import com.szhengzhu.bean.ordering.Employee;
 import com.szhengzhu.bean.ordering.vo.StoreMapVo;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.LoginBase;
 import com.szhengzhu.core.Result;

@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.bean.base.LogInfo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

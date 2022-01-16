@@ -4,9 +4,11 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rabbitmq.client.Channel;
+import com.szhengzhu.bean.member.ComboBuy;
 import com.szhengzhu.bean.member.MatchTeam;
 import com.szhengzhu.bean.member.PrizeInfo;
-import com.szhengzhu.client.*;
+import com.szhengzhu.bean.ordering.TicketTemplate;
+import com.szhengzhu.feign.*;
 import com.szhengzhu.bean.base.ScanReply;
 import com.szhengzhu.bean.member.MemberAccount;
 import com.szhengzhu.bean.member.vo.MemberAccountVo;
@@ -752,6 +754,77 @@ public class Receiver {
                 miniprogram.setPagepath("/pages/ticket/list/index?userId=" + map.get("userId"));
                 templateMessage.setMiniprogram(miniprogram);
                 WechatUtils.messageSend(config, templateMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        } finally {
+            if (channel.isOpen()) {
+                onMessage(msg, channel);
+            }
+        }
+    }
+
+    /**
+     * 购买成功通知
+     */
+    @RabbitHandler
+    @RabbitListener(queues = RabbitQueue.MEMBER_COMBO, containerFactory = "containerFactory")
+    public void memberCombo(Map<String, String> map, Message msg, Channel channel) throws IOException {
+        log.info("received:member-combo:{}", map);
+        try {
+            String userId = map.get("userId");
+            Result<UserInfo> userResult = showUserClient.getUserById(userId);
+            if (!userResult.isSuccess()) {
+                return;
+            }
+            ComboBuy combo = showMemberClient.queryByComboId(map.get("markId")).getData();
+            String wopenId = userResult.getData().getWopenId();
+            if (!StrUtil.isEmpty(wopenId)) {
+                TemplateMessage templateMessage = WechatUtils.comboBuy(combo.getName(), map.get("quantity"),
+                        combo.getComboEnd(), combo.getEffectiveDays());
+                templateMessage.setTouser(wopenId);
+                TemplateMessageMiniProgram miniprogram = new TemplateMessageMiniProgram();
+                miniprogram.setAppid(config.getXappid());
+                miniprogram.setPagepath("/pages/ticket/list/index?userId=" + map.get("userId"));
+                templateMessage.setMiniprogram(miniprogram);
+                WechatUtils.messageSend(config, templateMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        } finally {
+            if (channel.isOpen()) {
+                onMessage(msg, channel);
+            }
+        }
+    }
+
+    /**
+     * 预约通知
+     */
+    @RabbitHandler
+    @RabbitListener(queues = RabbitQueue.RESERVATION_NOTIFY, containerFactory = "containerFactory")
+    public void reservation(String comboId, Message msg, Channel channel) throws IOException {
+        log.info("received:reservation-notify:{}", comboId);
+        try {
+            ComboBuy combo = showMemberClient.queryByComboId(comboId).getData();
+            BigDecimal discount = combo.getMemberPrice().divide(combo.getPrice(), 2, BigDecimal.ROUND_HALF_UP).
+                    multiply(BigDecimal.valueOf(10));
+            Result<List<UserInfo>> userResult = showUserClient.selectFocusUser();
+            if (!userResult.isSuccess()) {
+                return;
+            }
+            for (UserInfo userInfo : userResult.getData()) {
+                String wopenId = userInfo.getWopenId();
+                if (!StrUtil.isEmpty(wopenId)) {
+                    TemplateMessage templateMessage = WechatUtils.reservation(combo.getName(),
+                            combo.getStartTime(), combo.getEndTime(), discount);
+                    templateMessage.setTouser(wopenId);
+                    TemplateMessageMiniProgram miniprogram = new TemplateMessageMiniProgram();
+                    miniprogram.setAppid(config.getXappid());
+                    WechatUtils.messageSend(config, templateMessage);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

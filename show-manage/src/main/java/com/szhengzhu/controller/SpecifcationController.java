@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.SpecificationInfo;
 import com.szhengzhu.bean.vo.SpecBatchVo;
 import com.szhengzhu.bean.vo.SpecChooseBox;

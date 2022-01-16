@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.AmountCompare;
 import com.szhengzhu.bean.ordering.Income;
 import com.szhengzhu.bean.ordering.IncomeByType;

@@ -153,4 +153,9 @@ public class UserController {
     public List<String> listWopenIdsByUserIds(@RequestBody @NotEmpty List<String> userIds) {
         return userService.listWopenIdByUserId(userIds);
     }
+
+    @GetMapping(value = "/focus")
+    public List<UserInfo> selectFocusUser() {
+        return userService.selectFocusUser();
+    }
 }

@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.wechat.vo.ActRelation;
 import com.szhengzhu.core.Result;

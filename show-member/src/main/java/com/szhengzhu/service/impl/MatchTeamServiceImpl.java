@@ -12,6 +12,7 @@ import com.szhengzhu.bean.member.MatchInfo;
 import com.szhengzhu.bean.member.MatchTeam;
 import com.szhengzhu.bean.member.vo.MatchTeamVo;
 import com.szhengzhu.bean.member.vo.StageResultVo;
+import com.szhengzhu.code.MatchTypeCode;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.StatusCode;
@@ -100,8 +101,8 @@ public class MatchTeamServiceImpl implements MatchTeamService {
 
     public void getChance(String userId, String matchId) {
         MatchInfo matchInfo = matchInfoMapper.selectMatchInfo(matchId);
-        MatchChance matchChance = matchChanceMapper.selectByPrimaryKey(userId);
-        if (ObjectUtil.isNotEmpty(memberAccountMapper.selectByUserId(userId)) && matchInfo.getGiveChance().equals(1)) {
+        if (ObjectUtil.isNotEmpty(memberAccountMapper.selectByUserId(userId)) && matchInfo.getGiveChance().equals(MatchTypeCode.AUTOMATIC_CHANCE.code)) {
+            MatchChance matchChance = matchChanceMapper.selectByPrimaryKey(userId);
             if (ObjectUtil.isEmpty(matchChance)) {
                 matchChanceMapper.insertSelective(MatchChance.builder().userId(userId).matchId(matchId).totalCount(1).usedCount(0).createTime(DateUtil.date()).build());
             } else if (StrUtil.isEmpty(matchChance.getMatchId())) {

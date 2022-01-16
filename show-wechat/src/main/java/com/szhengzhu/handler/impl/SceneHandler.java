@@ -2,8 +2,8 @@ package com.szhengzhu.handler.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.szhengzhu.annotation.OrderType;
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.activity.SceneOrder;
 import com.szhengzhu.bean.order.BackHistory;
 import com.szhengzhu.bean.wechat.vo.Judge;

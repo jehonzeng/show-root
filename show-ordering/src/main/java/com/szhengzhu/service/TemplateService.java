@@ -59,5 +59,4 @@ public interface TemplateService {
      * @return
      */
     List<Map<String, String>> combobox();
-
 }

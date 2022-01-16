@@ -3,7 +3,7 @@ package com.szhengzhu.controller;
 import cn.hutool.core.util.StrUtil;
 import com.szhengzhu.bean.goods.DeliveryArea;
 import com.szhengzhu.bean.vo.AreaVo;
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;

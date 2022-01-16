@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.Activity;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;

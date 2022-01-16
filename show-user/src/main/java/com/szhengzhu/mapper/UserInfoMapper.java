@@ -69,4 +69,6 @@ public interface UserInfoMapper {
     List<UserInfo> selectOutMember();
 
     List<String> selectWopenIdsByUserId(List<String> userIds);
+
+    List<UserInfo> selectFocusUser();
 }

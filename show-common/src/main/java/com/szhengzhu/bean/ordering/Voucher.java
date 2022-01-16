@@ -1,6 +1,9 @@
 package com.szhengzhu.bean.ordering;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +15,9 @@ import java.util.Date;
  * @author Administrator
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Voucher implements Serializable {
 
     private static final long serialVersionUID = 5472344185378693856L;

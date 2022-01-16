@@ -2,7 +2,7 @@ package com.szhengzhu.controller;
 
 import com.szhengzhu.bean.goods.CategoryInfo;
 import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;

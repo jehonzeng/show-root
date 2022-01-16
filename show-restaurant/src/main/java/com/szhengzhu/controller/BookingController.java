@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.Booking;
 import com.szhengzhu.bean.ordering.param.BookingParam;
 import com.szhengzhu.core.Contacts;

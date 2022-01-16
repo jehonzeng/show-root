@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.bean.ordering.Specs;
 import com.szhengzhu.bean.ordering.SpecsItem;
 import com.szhengzhu.bean.ordering.vo.SpecsVo;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

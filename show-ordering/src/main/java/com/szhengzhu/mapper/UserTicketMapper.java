@@ -1,6 +1,7 @@
 package com.szhengzhu.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.szhengzhu.bean.member.GradeTicket;
 import com.szhengzhu.bean.member.MemberTicket;
@@ -49,5 +50,7 @@ public interface UserTicketMapper {
 
     List<TicketExpire> ticketExpire();
 
-    List<String> selectUserGradeTicket(@Param("userId") String userId, @Param("templateId") String templateId);
+    List<String> queryUserTicket(@Param("userId") String userId, @Param("templateId") String templateId);
+
+    Integer queryTicketQuantity(@Param("userId") String userId, @Param("templateId") String templateId);
 }

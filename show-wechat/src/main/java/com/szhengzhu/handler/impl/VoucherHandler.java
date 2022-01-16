@@ -1,7 +1,7 @@
 package com.szhengzhu.handler.impl;
 
 import com.szhengzhu.annotation.ProductType;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.wechat.vo.*;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.Result;

@@ -5,7 +5,7 @@ import com.szhengzhu.bean.ordering.Pay;
 import com.szhengzhu.bean.ordering.PayType;
 import com.szhengzhu.bean.ordering.vo.PayBaseVo;
 import com.szhengzhu.bean.vo.Combobox;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

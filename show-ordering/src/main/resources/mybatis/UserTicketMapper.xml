@@ -364,19 +364,29 @@
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <select id="ticketExpire" resultType="com.szhengzhu.bean.ordering.TicketExpire">
-        SELECT any_value(user_id) as userId, any_value(u.stop_time) as expireTime, SUM(u.discount) as total,
-        COUNT(u.mark_id) as num, t.name as name
-        FROM t_user_ticket u INNER JOIN t_ticket_template t ON t.mark_id = template_id
+        SELECT any_value(user_id)     as userId,
+               any_value(u.stop_time) as expireTime,
+               SUM(u.discount)        as total,
+               COUNT(u.mark_id)       as num,
+               t.name                 as name
+        FROM t_user_ticket u
+                     INNER JOIN t_ticket_template t ON t.mark_id = template_id
         WHERE u.`status` = 1
-        and DATEDIFF(u.stop_time, DATE_FORMAT(NOW(), '%Y-%m-%d')) = 4
+          and DATEDIFF(u.stop_time, DATE_FORMAT(NOW(), '%Y-%m-%d')) = 4
         GROUP BY u.template_id
     </select>
-    <select id="selectUserGradeTicket" resultType="java.lang.String">
+    <select id="queryUserTicket" resultType="java.lang.String">
         select mark_id
         from t_user_ticket
         where `status` = 1
           and user_id = #{userId,jdbcType=VARCHAR}
           and template_id = #{templateId,jdbcType=VARCHAR}
         ORDER BY create_time
+    </select>
+    <select id="queryTicketQuantity" resultType="java.lang.Integer">
+        select count(mark_id) as quantity
+        from t_user_ticket
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and template_id = #{templateId,jdbcType=VARCHAR}
     </select>
 </mapper>

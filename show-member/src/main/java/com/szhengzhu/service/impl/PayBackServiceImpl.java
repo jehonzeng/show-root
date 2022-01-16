@@ -7,22 +7,26 @@ import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.bean.member.*;
 import com.szhengzhu.code.MemberCode;
 import com.szhengzhu.mapper.*;
+import com.szhengzhu.rabbitmq.Sender;
 import com.szhengzhu.service.PayBackService;
 import com.szhengzhu.service.base.MemberRechargeBase;
+import com.szhengzhu.util.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author jehon
  */
 @Service("payBackService")
 public class PayBackServiceImpl extends MemberRechargeBase implements PayBackService {
+
+    @Resource
+    private Sender sender;
 
     @Resource
     private PayBackMapper payBackMapper;
@@ -46,13 +50,19 @@ public class PayBackServiceImpl extends MemberRechargeBase implements PayBackSer
     private ExchangeDetailMapper exchangeDetailMapper;
 
     @Resource
-    private MatchInfoMapper matchInfoMapper;
-
-    @Resource
     private MatchChanceMapper matchChanceMapper;
 
     @Resource
     private MemberRechargeBase memberRechargeBase;
+
+    @Resource
+    private ComboPayMapper comboPayMapper;
+
+    @Resource
+    private ComboReceiveMapper comboReceiveMapper;
+
+    @Resource
+    private ComboBuyMapper comboBuyMapper;
 
     @Transactional
     @Override
@@ -67,6 +77,9 @@ public class PayBackServiceImpl extends MemberRechargeBase implements PayBackSer
                 break;
             case 2:
                 memberMatchPayBack(payId, back.getUserId());
+                break;
+            case 3:
+                memberComboPayBack(payId, back.getUserId());
                 break;
             default:
                 break;
@@ -120,23 +133,47 @@ public class PayBackServiceImpl extends MemberRechargeBase implements PayBackSer
                 .quantity(matchPay.getQuantity()).createTime(DateUtil.date()).build();
         exchangeDetailMapper.insertSelective(detail);
         MatchChance chance = matchChanceMapper.selectByPrimaryKey(userId);
-        List<Map<String, Object>> mapList = matchInfoMapper.selectList();
-        for (Map<String, Object> StringMap : mapList) {
-            if (StringMap.get("giveChance").equals("0")) {
-                if (ObjectUtil.isNull(chance)) {
-                    chance = MatchChance.builder().userId(userId).totalCount(matchPay.getQuantity()).usedCount(0).createTime(DateUtil.date()).build();
-                    matchChanceMapper.insertSelective(chance);
-                    return;
-                }
-                chance.setTotalCount(chance.getTotalCount() + matchPay.getQuantity());
-                chance.setModifyTime(DateUtil.date());
-                matchChanceMapper.updateByPrimaryKeySelective(chance);
-            }
+        if (ObjectUtil.isNull(chance)) {
+            chance = MatchChance.builder().userId(userId).totalCount(matchPay.getQuantity()).usedCount(0).createTime(DateUtil.date()).build();
+            matchChanceMapper.insertSelective(chance);
+            return;
         }
+        chance.setTotalCount(chance.getTotalCount() + matchPay.getQuantity());
+        chance.setModifyTime(DateUtil.date());
+        matchChanceMapper.updateByPrimaryKeySelective(chance);
+    }
+
+    /**
+     * 支付返回
+     * 1、给会员添加已购买套餐
+     * 2、更新套餐数量
+     * 3、给购买套餐的会员推送信息
+     *
+     * @param payId
+     * @param userId
+     */
+    private void memberComboPayBack(String payId, String userId) {
+        ComboPay comboPay = comboPayMapper.queryById(payId);
+        comboPay.setModifyTime(DateUtil.date());
+        comboPay.setStatus(true);
+        comboPayMapper.modify(comboPay);
+        ComboBuy combo = comboBuyMapper.queryById(comboPay.getComboId());
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        for (int i = 0; i < comboPay.getQuantity(); i++) {
+            comboReceiveMapper.add(ComboReceive.builder().markId(snowflake.nextIdStr()).comboId(combo.getMarkId()).startTime(combo.getComboStart())
+                    .endTime(combo.getComboEnd()).userId(userId).code(StringUtils.getNumber(18)).build());
+        }
+        //修改数量
+        ComboBuy comboBuy = ComboBuy.builder().markId(combo.getMarkId()).quantity(combo.getQuantity() - comboPay.getQuantity()).build();
+        if (combo.getQuantity() - comboPay.getQuantity() == 0) {
+            comboBuy.setStatus(false);
+        }
+        comboBuyMapper.modify(comboBuy);
+        sender.memberCombo(combo.getMarkId(), userId, comboPay.getQuantity());
     }
 
     @Override
-    public void matchPayBack(PayBack payBack) {
+    public void payBack(PayBack payBack) {
         Snowflake snowflake = IdUtil.getSnowflake(1, 1);
         payBack.setMarkId(snowflake.nextIdStr());
         payBack.setBackType(-1);

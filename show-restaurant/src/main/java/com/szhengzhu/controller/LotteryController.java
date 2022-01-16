@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.szhengzhu.bean.member.*;
 import com.szhengzhu.bean.ordering.Offset;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.code.LotteryTypeCode;
 import com.szhengzhu.core.*;
 import com.szhengzhu.exception.ShowAssert;

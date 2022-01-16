@@ -1,5 +1,7 @@
 package com.szhengzhu.rabbitmq;
 
+import java.util.Date;
+
 /**
  * @author jehon
  * <p>
@@ -82,6 +84,9 @@ public class RabbitQueue {
     /* 会员消费 等级 */
     public static final String MEMBER_CONSUME = "member-consume";
 
+    /* 会员套餐购买通知 */
+    public static final String MEMBER_COMBO = "member-combo";
+
     /* 会员订单消费 等级 */
     public static final String MEMBER_INDENT_CONSUME = "member-indent-consume";
 
@@ -153,6 +158,9 @@ public class RabbitQueue {
 
     /* 领取礼物 */
     public static final String RECEIVE_GIFT = "gift-receive";
+
+    /* 预约提醒 */
+    public static final String RESERVATION_NOTIFY = "reservation-notify";
 
     /* 领取商品 */
     public static final String RECEIVE_GOODS = "receive-goods";

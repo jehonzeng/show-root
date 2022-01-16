@@ -3,7 +3,7 @@ package com.szhengzhu.controller;
 import com.szhengzhu.bean.member.IntegralExchange;
 import com.szhengzhu.bean.member.IntegralExpire;
 import com.szhengzhu.bean.member.TicketExchange;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.FoodsInfo;
 import com.szhengzhu.bean.goods.FoodsItem;
 import com.szhengzhu.bean.vo.Combobox;

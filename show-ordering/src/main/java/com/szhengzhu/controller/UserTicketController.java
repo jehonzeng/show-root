@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Administrator
@@ -50,5 +51,10 @@ public class UserTicketController {
     @DeleteMapping(value = "/del/{markId}")
     public void deleteMemberTicket(@PathVariable("markId") @NotBlank String markId) {
         userTicketService.deleteMemberTicket(markId);
+    }
+
+    @GetMapping(value = "/info")
+    public Integer queryTicketQuantity(@RequestParam("userId") String userId, @RequestParam("templateId") String templateId) {
+        return userTicketService.queryTicketQuantity(userId, templateId);
     }
 }

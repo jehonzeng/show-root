@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.IntegralDetail;
 import com.szhengzhu.bean.ordering.*;
 import com.szhengzhu.bean.xwechat.param.CartParam;

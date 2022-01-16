@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.PartnerInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;

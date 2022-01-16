@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.member.MemberAccount;
 import com.szhengzhu.bean.member.MemberTicket;
 import com.szhengzhu.bean.ordering.param.GiveParam;

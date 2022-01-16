@@ -89,6 +89,45 @@ public class WechatUtils {
         String INTEGRAL_EXPIRE = "94fiaZ0o5bIgyaTCamLlocMyOYAapje0TrezgXUtk78";
         /* 抽奖结果通知 */
         String LOTTERY_RESULT_NOTIFY = "UVkfBLXJYbT73EcjBMF_zHq3vgBLZ-U86gat6FfSG8w";
+        /* 购买成功通知 */
+        String COMBO_BUY = "_psumNhSCCaG0e5tKN-P1B07oDKap2RawpS57cWvPnQ";
+        /* 预约提醒 */
+        String RESERVATION_NOTIFY = "coNyIm4p4c2vz_BSRs9WN9PpCH7S8Keym11no7yZhVY";
+    }
+
+
+    /**
+     * 预约提醒
+     */
+    public static TemplateMessage reservation(String name, Date startTime, Date endTime, BigDecimal discount) {
+        TemplateMessage msg = new TemplateMessage();
+        msg.setTemplate_id(Template.RESERVATION_NOTIFY);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LinkedHashMap<String, TemplateMessageItem> data = new LinkedHashMap<>();
+        data.put("first", create(name + "超值" + discount.setScale(1) + "，即刻抢购！！", "#173177"));
+        data.put("keyword1", create(sdf.format(startTime), "#173177"));
+        data.put("keyword2", create(sdf.format(endTime), "#173177"));
+        data.put("remark", create("点击详情，立即购买~", "#173177"));
+        msg.setData(data);
+        return msg;
+    }
+
+
+    /**
+     * 购买成功通知
+     */
+    public static TemplateMessage comboBuy(String name, String quantity, Date expDate, Integer effectiveDays) {
+        TemplateMessage msg = new TemplateMessage();
+        msg.setTemplate_id(Template.COMBO_BUY);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LinkedHashMap<String, TemplateMessageItem> data = new LinkedHashMap<>();
+        data.put("productType", create("商品名", "#173177"));
+        data.put("name", create(name, "#173177"));
+        data.put("number", create(quantity, "#173177"));
+        data.put("expDate", create(expDate == null ? effectiveDays.toString() : sdf.format(expDate), "#173177"));
+        data.put("remark", create("感谢您的支持，有任何问题欢迎联系客服小鹿lujishouyeziji", "#173177"));
+        msg.setData(data);
+        return msg;
     }
 
     /**
@@ -120,7 +159,7 @@ public class WechatUtils {
         data.put("keyword2", create("0", "#173177"));
         data.put("keyword3", create("过期", "#173177"));
         data.put("keyword4", create(integralTotal, "#173177"));
-        data.put("remark", create("如有疑问，请拨打4008-920-557咨询,微信客服：LJSSTYZJ", "#173177"));
+        data.put("remark", create("如有疑问，请拨打4008-920-557咨询,微信客服：lujishouyeziji", "#173177"));
         msg.setData(data);
         return msg;
     }
@@ -204,7 +243,7 @@ public class WechatUtils {
         data.put("keyword1", create("露几手·生态椰子鸡", "#173177"));
         data.put("keyword2", create(sdf.format(time), "#173177"));
         data.put("keyword3", create("买单时使用", "#173177"));
-        data.put("remark", create("如有疑问，请拨打4008-920-557咨询,微信客服：LJSSTYZJ", "#173177"));
+        data.put("remark", create("如有疑问，请拨打4008-920-557咨询,微信客服：lujishouyeziji", "#173177"));
         msg.setData(data);
         return msg;
     }
@@ -227,7 +266,7 @@ public class WechatUtils {
         if (StrUtil.isNotEmpty(user.getReason())) {
             data.put("keyword4", create(user.getReason(), "#173177"));
         }
-        data.put("remark", create("请您及时联系客服进行处理！微信号：szlujishou 电话号码：4008-920-557", "#173177"));
+        data.put("remark", create("请您及时联系客服进行处理！微信号：lujishouyeziji 电话号码：4008-920-557", "#173177"));
         msg.setData(data);
         return msg;
     }

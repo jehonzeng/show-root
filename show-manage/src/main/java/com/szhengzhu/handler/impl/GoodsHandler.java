@@ -1,8 +1,8 @@
 package com.szhengzhu.handler.impl;
 
 import com.szhengzhu.annotation.ProductType;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.base.ImageInfo;
 import com.szhengzhu.bean.vo.ProductInfo;
 import com.szhengzhu.core.Contacts;

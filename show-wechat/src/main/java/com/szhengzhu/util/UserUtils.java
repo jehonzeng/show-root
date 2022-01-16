@@ -1,6 +1,6 @@
 package com.szhengzhu.util;
 
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.core.Result;

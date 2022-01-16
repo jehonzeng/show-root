@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.IndentRemark;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

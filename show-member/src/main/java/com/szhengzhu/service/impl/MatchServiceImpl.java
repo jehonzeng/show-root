@@ -31,9 +31,6 @@ public class MatchServiceImpl implements MatchService {
     @Resource
     private Redis redis;
 
-//    @Resource
-//    private MatchChanceMapper matchChanceMapper;
-
     @Resource
     private MatchInfoMapper matchInfoMapper;
 
@@ -131,5 +128,10 @@ public class MatchServiceImpl implements MatchService {
         matchExchangeMapper.updateByPrimaryKeySelective(matchExchange);
         exchangeDetailMapper.insertSelective(ExchangeDetail.builder().markId(snowflake.nextIdStr()).createTime(DateUtil.date()).
                 exchangeId(matchExchange.getMarkId()).quantity(-exchangeParam.getQuantity()).employeeId(exchangeParam.getEmployeeId()).build());
+    }
+
+    @Override
+    public List<MatchInfo> selectByGiveChance(Integer type) {
+        return matchInfoMapper.selectByGiveChance(type);
     }
 }

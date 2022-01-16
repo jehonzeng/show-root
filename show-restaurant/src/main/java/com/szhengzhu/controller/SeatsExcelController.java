@@ -2,7 +2,7 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.excel.SeatsInfoVo;
 import com.szhengzhu.bean.excel.SeatsVo;
 import com.szhengzhu.core.Result;

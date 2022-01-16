@@ -1,9 +1,12 @@
 package com.szhengzhu.rabbitmq;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.szhengzhu.bean.member.MatchInfo;
 import com.szhengzhu.bean.member.MemberAccount;
 import com.szhengzhu.bean.ordering.TicketExpire;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.code.MatchTypeCode;
 import com.szhengzhu.core.Result;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -123,7 +126,14 @@ public class Sender {
      * @param total
      */
     public void sendMatchChance(String userId, String memberId, BigDecimal total) {
-        int limit = 299;
+        int limit = 0;
+        List<MatchInfo> matchInfoList = showMemberClient.selectByGiveChance(MatchTypeCode.CONSUME_CHANCE.code).getData();
+        if (ObjectUtil.isEmpty(matchInfoList)) {
+            return;
+        }
+        for (MatchInfo matchInfo : matchInfoList) {
+            limit = matchInfo.getConsumeAmount();
+        }
         if (total.compareTo(BigDecimal.valueOf(limit)) >= 0) {
             Map<String, Object> map = new HashMap<>();
             if (StrUtil.isEmpty(userId)) {
@@ -132,12 +142,6 @@ public class Sender {
             }
             if (StrUtil.isEmpty(userId)) {
                 return;
-            }
-            List<Map<String, Object>> mapList = showMemberClient.listMatch().getData();
-            for (Map<String, Object> StringMap : mapList) {
-                if (StringMap.get("giveChance").equals("1")) {
-                    return;
-                }
             }
             map.put("userId", userId);
             map.put("quantity", 1);

@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.activity.SceneGoods;
 import com.szhengzhu.bean.activity.SceneItem;
 import com.szhengzhu.bean.user.UserToken;

@@ -1,7 +1,7 @@
 package com.szhengzhu.rabbitmq;
 
 import com.rabbitmq.client.Channel;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.Indent;
 import com.szhengzhu.bean.ordering.IndentPay;
 import com.szhengzhu.bean.ordering.PayRefund;

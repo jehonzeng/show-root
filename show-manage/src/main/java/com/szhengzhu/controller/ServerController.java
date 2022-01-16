@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.ServerSupport;
 import com.szhengzhu.bean.vo.BatchVo;
 import com.szhengzhu.core.PageGrid;

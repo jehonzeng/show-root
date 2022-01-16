@@ -8,13 +8,16 @@ import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.ordering.TicketTemplate;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
+import com.szhengzhu.mapper.CommodityMapper;
 import com.szhengzhu.mapper.TemplateCommodityMapper;
 import com.szhengzhu.mapper.TicketTemplateMapper;
+import com.szhengzhu.mapper.UserTicketMapper;
 import com.szhengzhu.service.TemplateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +30,12 @@ public class TemplateServiceImpl implements TemplateService {
     @Resource
     private TemplateCommodityMapper templateCommodityMapper;
 
+    @Resource
+    private CommodityMapper commodityMapper;
+
+    @Resource
+    private UserTicketMapper userTicketMapper;
+
     @Override
     @Transactional
     public void add(TicketTemplate base) {
@@ -35,7 +44,7 @@ public class TemplateServiceImpl implements TemplateService {
         base.setCreateTime(DateUtil.date());
         base.switchRankIdsString(base.getVipIds());
         ticketTemplateMapper.insertSelective(base);
-        if (base.getCommodityIds()!= null && base.getCommodityIds().length > 0) {
+        if (base.getCommodityIds() != null && base.getCommodityIds().length > 0) {
             templateCommodityMapper.insertBatchCommodity(base.getMarkId(), base.getCommodityIds());
         }
     }

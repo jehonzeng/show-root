@@ -1,8 +1,8 @@
 package com.szhengzhu.rabbitmq;
 
 import com.rabbitmq.client.Channel;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.base.CouponTemplate;
 import com.szhengzhu.bean.goods.GoodsVoucher;
 import com.szhengzhu.bean.order.UserCoupon;

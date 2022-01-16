@@ -276,6 +276,16 @@ public class RabbitConfig implements RabbitListenerConfigurer {
         return new Queue(RabbitQueue.LOTTERY_RESULT);
     }
 
+    @Bean
+    public Queue memberCombo() {
+        return new Queue(RabbitQueue.MEMBER_COMBO);
+    }
+
+    @Bean
+    public Queue reservation() {
+        return new Queue(RabbitQueue.RESERVATION_NOTIFY);
+    }
+
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
         registrar.setMessageHandlerMethodFactory(myHandlerMethodFactory());

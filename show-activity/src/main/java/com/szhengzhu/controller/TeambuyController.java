@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.activity.TeambuyInfo;
 import com.szhengzhu.bean.wechat.vo.GoodsDetail;
 import com.szhengzhu.bean.wechat.vo.StockBase;

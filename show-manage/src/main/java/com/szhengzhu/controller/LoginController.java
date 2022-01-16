@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.szhengzhu.annotation.SystemLog;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.config.WechatConfig;

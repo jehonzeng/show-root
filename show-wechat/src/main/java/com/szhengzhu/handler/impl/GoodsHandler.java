@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import com.szhengzhu.annotation.ProductType;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.GoodsJudge;
 import com.szhengzhu.bean.wechat.vo.*;
 import com.szhengzhu.core.Contacts;

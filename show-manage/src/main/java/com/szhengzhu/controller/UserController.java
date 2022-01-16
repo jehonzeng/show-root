@@ -1,9 +1,9 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.goods.CookCertified;
 import com.szhengzhu.bean.member.IntegralDetail;
 import com.szhengzhu.bean.order.ContactUser;

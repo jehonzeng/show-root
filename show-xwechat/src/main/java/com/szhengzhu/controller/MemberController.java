@@ -7,9 +7,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.szhengzhu.annotation.NoRepeatSubmit;
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderingClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderingClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.EncryUser;
 import com.szhengzhu.bean.WxaDPhone;
 import com.szhengzhu.bean.member.*;
@@ -171,10 +171,10 @@ public class MemberController {
     public Result wechatAppletPay(HttpServletRequest request, @RequestParam("ruleId") @NotBlank String ruleId,
                                   @RequestParam(value = "indentId", required = false) String indentId) {
         UserInfo userInfo = UserUtils.getUserInfoByToken(request, showUserClient);
-        // 小程序用户未授权或登录失效
-        ShowAssert.checkTrue(StrUtil.isEmpty(userInfo.getXopenId()), StatusCode._4012);
         String userId = userInfo.getMarkId();
         String xopenId = userInfo.getXopenId();
+        // 小程序用户未授权或登录失效
+        ShowAssert.checkTrue(StrUtil.isEmpty(xopenId), StatusCode._4012);
         BigDecimal indentTotal = BigDecimal.ZERO;
         if (StrUtil.isNotEmpty(indentId)) {
             Result<BigDecimal> result = showOrderingClient.getIndentCostTotal(indentId);
@@ -249,5 +249,63 @@ public class MemberController {
     public Result<List<MemberGrade>> queryMemberGrade(@RequestBody MemberGrade memberGrade) {
         memberGrade.setStatus(1);
         return showMemberClient.queryMemberGrade(memberGrade);
+    }
+
+    @ApiOperation(value = "展示会员购买的套餐")
+    @GetMapping(value = "/combo")
+    public Result<List<ComboReceive>> queryMemberCombo(HttpServletRequest request,
+                                                       @RequestParam(value = "status", required = false) Integer status) {
+        UserInfo userInfo = UserUtils.getUserInfoByToken(request, showUserClient);
+        return showMemberClient.queryMemberCombo(userInfo.getMarkId(), status);
+    }
+
+    @ApiOperation(value = "展示会员套餐购买信息")
+    @GetMapping(value = "/combo/list")
+    public Result<List<ComboBuy>> queryComboList(HttpServletRequest request) {
+        UserInfo userInfo = UserUtils.getUserInfoByToken(request, showUserClient);
+        String userId = userInfo.getMarkId();
+        List<ComboBuy> comboList = showMemberClient.queryComboInfo().getData();
+        for (ComboBuy combo : comboList) {
+            Integer quantity = showMemberClient.queryComboQuantity(userId, combo.getMarkId()).getData();
+            if (quantity.compareTo(combo.getBuyQuantity()) == -1) {
+                combo.setBuyChance(combo.getBuyQuantity() - quantity);
+            } else {
+                combo.setBuyChance(0);
+            }
+        }
+        return new Result<>(comboList);
+    }
+
+
+    @ApiOperation(value = "会员购买套餐")
+    @GetMapping(value = "/combo/pay/unifiedorder")
+    public Result comboPay(HttpServletRequest request, @RequestParam("markId") String markId, @RequestParam("number") Integer number) {
+        UserInfo userInfo = UserUtils.getUserInfoByToken(request, showUserClient);
+        ShowAssert.checkTrue(StrUtil.isEmpty(userInfo.getXopenId()), StatusCode._4012);
+        Result<ComboPay> result = showMemberClient.memberBuyCombo(markId, number, userInfo.getMarkId(), userInfo.getXopenId());
+        ShowAssert.checkResult(result);
+        ComboPay comboPay = result.getData();
+        PayBack payBack = new PayBack();
+        payBack.setType(3);
+        payBack.setPayId(comboPay.getMarkId());
+        payBack.setUserId(userInfo.getMarkId());
+        payBack.setCode(userInfo.getXopenId());
+        showMemberClient.comboPayBack(payBack);
+        return WechatUtils.comboPay(config, comboPay.getMarkId(), request.getRemoteAddr(), userInfo.getXopenId(), comboPay.getAmount());
+    }
+
+
+    @ApiOperation(value = "根据id查询活动")
+    @GetMapping(value = "/combo/{markId}")
+    public Result<ComboBuy> queryByComboId(HttpServletRequest request, @PathVariable("markId") @NotBlank String markId) {
+        UserInfo userInfo = UserUtils.getUserInfoByToken(request, showUserClient);
+        Result<ComboBuy> combo = showMemberClient.queryByComboId(markId);
+        Integer quantity = showMemberClient.queryComboQuantity(userInfo.getMarkId(), markId).getData();
+        if (quantity.compareTo(combo.getData().getBuyQuantity()) == -1) {
+            combo.getData().setBuyChance(combo.getData().getBuyQuantity() - quantity);
+        } else {
+            combo.getData().setBuyChance(0);
+        }
+        return combo;
     }
 }

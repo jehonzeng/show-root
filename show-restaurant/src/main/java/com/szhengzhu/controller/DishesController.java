@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.DishesImage;
 import com.szhengzhu.bean.member.DishesInfo;
 import com.szhengzhu.bean.member.DishesStage;

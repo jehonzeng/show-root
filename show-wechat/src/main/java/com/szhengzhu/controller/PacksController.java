@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.util.UserUtils;

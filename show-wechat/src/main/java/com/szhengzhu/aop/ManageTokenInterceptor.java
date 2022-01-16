@@ -1,7 +1,7 @@
 package com.szhengzhu.aop;
 
 import com.google.gson.Gson;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;

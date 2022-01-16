@@ -9,7 +9,7 @@ import com.szhengzhu.bean.ordering.param.PrintLogParam;
 import com.szhengzhu.bean.ordering.vo.PrintLogVo;
 import com.szhengzhu.bean.ordering.vo.PrinterCommodityVo;
 import com.szhengzhu.bean.ordering.vo.PrinterVo;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.*;
 import com.szhengzhu.exception.ShowAssert;
 import io.swagger.annotations.Api;

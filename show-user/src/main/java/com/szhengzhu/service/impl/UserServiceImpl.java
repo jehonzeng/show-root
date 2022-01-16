@@ -9,7 +9,7 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.vo.*;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.core.*;
 import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.UserInfoMapper;
@@ -222,5 +222,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<String> listWopenIdByUserId(List<String> userIds) {
         return userInfoMapper.selectWopenIdsByUserId(userIds);
+    }
+
+    @Override
+    public List<UserInfo> selectFocusUser() {
+        return userInfoMapper.selectFocusUser();
     }
 }

@@ -76,4 +76,9 @@ public class Sender {
         map.put("memberId", memberId);
         rabbitTemplate.convertAndSend(RabbitQueue.MEMBER_DISCOUNT, map);
     }
+
+    public void reservation(String comboId) {
+        log.info("send:reservation-notify:{}", comboId);
+        rabbitTemplate.convertAndSend(RabbitQueue.RESERVATION_NOTIFY, comboId);
+    }
 }

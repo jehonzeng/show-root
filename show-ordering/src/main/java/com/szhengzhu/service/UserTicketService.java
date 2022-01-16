@@ -5,6 +5,7 @@ import com.szhengzhu.bean.ordering.param.GiveParam;
 import com.szhengzhu.bean.ordering.vo.UserTicketVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserTicketService {
 
@@ -53,8 +54,11 @@ public interface UserTicketService {
 
     /**
      * 根据优惠券的id回收会员的优惠券
+     *
      * @param markId
      * @return
      */
     void deleteMemberTicket(String markId);
+
+    Integer queryTicketQuantity(String userId, String templateId);
 }

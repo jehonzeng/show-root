@@ -2,8 +2,8 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.szhengzhu.client.ShowOrderingClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowOrderingClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.CartServerData;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.xwechat.param.CartParam;

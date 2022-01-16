@@ -11,7 +11,7 @@ import com.szhengzhu.bean.member.*;
 import com.szhengzhu.bean.member.param.SignInfoParam;
 import com.szhengzhu.bean.ordering.IndentInfo;
 import com.szhengzhu.bean.ordering.param.GiveParam;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.code.*;
 import com.szhengzhu.core.*;
 import com.szhengzhu.mapper.*;

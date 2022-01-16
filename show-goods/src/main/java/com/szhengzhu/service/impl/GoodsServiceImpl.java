@@ -25,6 +25,7 @@ import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.mapper.*;
 import com.szhengzhu.redis.Redis;
 import com.szhengzhu.service.GoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -67,11 +71,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Resource
     private MealInfoMapper mealInfoMapper;
 
-    @Resource
-    private Redis redis;
+    @Autowired
+    private ExecutorService executor;
 
     @Resource
-    private ThreadPoolExecutor executor;
+    private Redis redis;
 
     private final ConcurrentHashMap<String, Boolean> lockIdMap = new ConcurrentHashMap<>();
 

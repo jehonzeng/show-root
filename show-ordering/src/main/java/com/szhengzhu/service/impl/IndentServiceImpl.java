@@ -9,7 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.member.MemberAccount;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.IntegralDetail;
 import com.szhengzhu.bean.ordering.*;
 import com.szhengzhu.bean.ordering.param.*;

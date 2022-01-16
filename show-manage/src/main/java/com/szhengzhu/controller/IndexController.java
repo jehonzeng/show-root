@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.core.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

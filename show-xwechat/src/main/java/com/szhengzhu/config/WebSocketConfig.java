@@ -1,7 +1,7 @@
 package com.szhengzhu.config;
 
-import com.szhengzhu.client.ShowOrderingClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowOrderingClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.server.CartWsServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,7 +1,7 @@
 package com.szhengzhu.schedule;
 
 import cn.hutool.core.util.StrUtil;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.IntegralDetail;
 import com.szhengzhu.bean.ordering.Cart;
 import com.szhengzhu.code.IntegralCode;

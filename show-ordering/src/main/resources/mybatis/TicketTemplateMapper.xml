@@ -278,7 +278,8 @@
         status = #{status,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
-    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.TicketTemplate" resultMap="BaseResultMap">
+    <select id="selectByExampleSelective" parameterType="com.szhengzhu.bean.ordering.TicketTemplate"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_ticket_template

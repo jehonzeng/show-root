@@ -25,5 +25,5 @@ public interface MatchChanceMapper {
     @Update("update t_match_chance set used_count=used_count + #{quantity}, modify_time=NOW() where user_id=#{userId}")
     void updateUseCount(@Param("userId") String userId, @Param("quantity") Integer quantity);
 
-//    MatchChance selectMatchChance(@Param("userId") String userId, @Param("matchId") String matchId);
+    int updateExpiredUserChance();
 }

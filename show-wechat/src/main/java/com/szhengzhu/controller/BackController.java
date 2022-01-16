@@ -2,10 +2,10 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowOrderingClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowOrderingClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.base.ActionItem;
 import com.szhengzhu.bean.base.ImageInfo;
 import com.szhengzhu.bean.base.ReplyInfo;

@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.excel.LogisticsModel;
 import com.szhengzhu.bean.excel.OrderSendModel;
 import com.szhengzhu.bean.excel.ProductModel;

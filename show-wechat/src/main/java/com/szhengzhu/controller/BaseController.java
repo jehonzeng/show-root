@@ -1,9 +1,9 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowOrderClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowOrderClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.bean.vo.DeliveryDate;
 import com.szhengzhu.config.WechatConfig;

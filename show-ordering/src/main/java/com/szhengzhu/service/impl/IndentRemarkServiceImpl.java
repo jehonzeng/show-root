@@ -11,7 +11,7 @@ import com.github.pagehelper.page.PageMethod;
 import com.szhengzhu.bean.member.MemberAccount;
 import com.szhengzhu.bean.ordering.IndentInfo;
 import com.szhengzhu.bean.ordering.IndentRemark;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.code.IndentStatus;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

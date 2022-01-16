@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.rpt.SaleParam;
 import com.szhengzhu.bean.rpt.SaleStatistics;
 import com.szhengzhu.core.Result;

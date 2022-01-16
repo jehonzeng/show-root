@@ -304,9 +304,14 @@
         AND end_time > NOW()
         AND mark_id = #{markId,jdbcType=VARCHAR}
     </select>
-    <select id="selectMatchTime" resultType="com.szhengzhu.bean.member.MatchInfo">
+    <select id="selectByGiveChance" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_match_info
+        FROM t_match_info WHERE status = 1
+        AND start_time <![CDATA[ < ]]> NOW()
+        AND end_time > NOW()
+        <if test="type != null">
+            AND give_chance = #{type,jdbcType=INTEGER}
+        </if>
     </select>
 </mapper>

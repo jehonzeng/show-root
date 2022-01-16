@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.base.PacksInfo;
 import com.szhengzhu.bean.base.PacksItem;
 import com.szhengzhu.bean.order.UserCoupon;

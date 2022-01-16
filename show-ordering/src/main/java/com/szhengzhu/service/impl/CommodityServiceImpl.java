@@ -180,4 +180,9 @@ public class CommodityServiceImpl implements CommodityService {
             tagCommodityMapper.insertCommodityBatch(commodityId, tagIds);
         }
     }
+
+    @Override
+    public List<Commodity> queryComboCommodity(String markId) {
+        return commodityMapper.queryComboCommodity(markId);
+    }
 }

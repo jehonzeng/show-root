@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.DiscountInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.Contacts;

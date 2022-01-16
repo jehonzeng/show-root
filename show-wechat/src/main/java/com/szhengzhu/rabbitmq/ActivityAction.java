@@ -1,7 +1,7 @@
 package com.szhengzhu.rabbitmq;
 
 import com.rabbitmq.client.Channel;
-import com.szhengzhu.client.ShowActivityClient;
+import com.szhengzhu.feign.ShowActivityClient;
 import com.szhengzhu.bean.activity.ParticipantRelation;
 import com.szhengzhu.core.Result;
 import lombok.extern.slf4j.Slf4j;

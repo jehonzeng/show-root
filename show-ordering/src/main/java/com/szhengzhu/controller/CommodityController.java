@@ -61,7 +61,7 @@ public class CommodityController {
 
     @GetMapping(value = "/modify/quantity")
     public void modifyQuantity(@RequestParam("commodityId") @NotBlank String commodityId, @RequestParam("employeeId") @NotBlank String employeeId,
-                                         @RequestParam("quantity") @NotNull Integer quantity) {
+                               @RequestParam("quantity") @NotNull Integer quantity) {
         commodityService.modifyQuantity(commodityId, employeeId, quantity);
     }
 
@@ -75,29 +75,34 @@ public class CommodityController {
         return commodityService.listCommodity(name);
     }
 
-    @RequestMapping(value = "/specs/opt", method = RequestMethod.POST)
+    @PostMapping(value = "/specs/opt")
     public void optSpecs(@RequestBody @Validated CommoditySpecs commoditySpecs) {
         commodityService.optSpecs(commoditySpecs);
     }
 
-    @RequestMapping(value = "/specs/item/opt", method = RequestMethod.POST)
+    @PostMapping(value = "/specs/item/opt")
     public void optItem(@RequestBody @Validated CommodityItem commodityItem) {
         commodityService.optSpecsItem(commodityItem);
     }
 
-    @RequestMapping(value = "/specs/item/delete", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/specs/item/delete")
     public void deleteItem(@RequestParam("commodityId") @NotBlank String commodityId, @RequestParam("specsId") @NotBlank String specsId,
-                                     @RequestParam("itemId") @NotBlank String itemId) {
+                           @RequestParam("itemId") @NotBlank String itemId) {
         commodityService.deleteSpecsItem(commodityId, specsId, itemId);
     }
 
-    @RequestMapping(value = "/cate/opt/{commodityId}", method = RequestMethod.POST)
+    @PostMapping(value = "/cate/opt/{commodityId}")
     public void optCommodityCate(@RequestBody String[] cateIds, @PathVariable("commodityId") @NotBlank String commodityId) {
         commodityService.optCommodityCate(commodityId, cateIds);
     }
 
-    @RequestMapping(value = "/tag/opt/{commodityId}", method = RequestMethod.POST)
+    @PostMapping(value = "/tag/opt/{commodityId}")
     public void optCommodityTag(@RequestBody String[] tagIds, @PathVariable("commodityId") @NotBlank String commodityId) {
         commodityService.optCommodityTag(commodityId, tagIds);
+    }
+
+    @GetMapping(value = "/combo")
+    public List<Commodity> queryComboCommodity(@RequestParam("markId") String markId) {
+        return commodityService.queryComboCommodity(markId);
     }
 }

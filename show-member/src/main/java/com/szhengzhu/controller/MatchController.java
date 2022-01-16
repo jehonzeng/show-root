@@ -63,4 +63,9 @@ public class MatchController {
     public void exchange(@RequestBody @Validated ExchangeParam exchangeParam) {
         matchService.exchange(exchangeParam);
     }
+
+    @GetMapping(value = "/type")
+    public List<MatchInfo> selectByGiveChance(@RequestParam(value = "type", required = false) Integer type) {
+        return matchService.selectByGiveChance(type);
+    }
 }

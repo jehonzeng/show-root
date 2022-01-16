@@ -73,4 +73,11 @@ public interface MatchService {
      * @param exchangeParam
      */
     void exchange(ExchangeParam exchangeParam);
+
+    /**
+     * 根据赠送机会类型查询竞赛活动信息
+     * @param type
+     * @return
+     */
+    List<MatchInfo> selectByGiveChance(Integer type);
 }

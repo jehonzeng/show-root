@@ -2,8 +2,8 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.PayBack;
 import com.szhengzhu.config.WechatConfig;
 import com.szhengzhu.redis.Redis;

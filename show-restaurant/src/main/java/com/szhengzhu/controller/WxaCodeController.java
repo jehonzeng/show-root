@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import com.szhengzhu.bean.base.ImageInfo;
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.config.FtpServer;
 import com.szhengzhu.config.WechatConfig;
 import com.szhengzhu.core.Result;

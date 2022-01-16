@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.goods.BrandInfo;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.user.UserToken;

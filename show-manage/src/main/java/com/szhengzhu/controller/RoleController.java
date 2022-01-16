@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowOrderClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.RoleInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;

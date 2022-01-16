@@ -2,7 +2,7 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.bean.ordering.MarketInfo;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

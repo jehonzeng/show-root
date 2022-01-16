@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.activity.SeckillInfo;
 import com.szhengzhu.bean.order.SeckillOrder;
 import com.szhengzhu.code.OrderStatus;

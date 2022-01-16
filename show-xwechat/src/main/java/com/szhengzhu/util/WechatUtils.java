@@ -148,6 +148,30 @@ public class WechatUtils extends WxaUtil {
     }
 
     /**
+     * 购买会员套餐支付
+     *
+     * @param wechatConfig
+     * @param templateId
+     * @param ip
+     * @param xopenId
+     * @param payPrice
+     * @return
+     */
+    public static Result<SortedMap<String, String>> comboPay(WechatConfig wechatConfig, String templateId, String ip, String xopenId, BigDecimal payPrice) {
+        UnifiedorderResult un = createPayOrder(wechatConfig, templateId, ip, xopenId, NumberUtil.toStr(NumberUtil.mul(payPrice, 100)), "露几手会员套餐支付订单", wechatConfig.getMemberPayBack());
+        // 构建验证签名信息
+        SortedMap<String, String> validationInfo = WechatUtils.buildValidationInfo(wechatConfig, un.getPrepay_id());
+        Result<SortedMap<String, String>> result = new Result<>();
+        validationInfo.put("errCode", un.getErr_code());
+        validationInfo.put("errDes", un.getErr_code_des());
+        if (StrUtil.isEmpty(un.getResult_code()) || !"SUCCESS".equals(un.getResult_code())) {
+            result = new Result<>(StatusCode._5030);
+        }
+        result.setData(validationInfo);
+        return result;
+    }
+
+    /**
      * 上传微信用户头像到本系统
      *
      * @param url
@@ -183,7 +207,7 @@ public class WechatUtils extends WxaUtil {
      * 微信小程序统一下单
      *
      * @param wechatConfig
-     * @param indentId
+     * @param payId
      * @param ip
      * @param xopenId
      * @param payPrice

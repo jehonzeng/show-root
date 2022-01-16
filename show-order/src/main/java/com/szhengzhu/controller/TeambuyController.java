@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.activity.TeambuyInfo;
 import com.szhengzhu.bean.goods.DeliveryArea;
 import com.szhengzhu.bean.order.TeambuyGroup;

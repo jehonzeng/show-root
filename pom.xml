@@ -22,23 +22,6 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.2.RELEASE</version>
 	</parent>
-	<modules>
-		<module>show-config</module>
-		<module>show-website</module>
-		<module>show-goods</module>
-		<module>show-manage</module>
-		<module>show-wechat</module>
-		<module>show-user</module>
-		<module>show-order</module>
-		<module>show-common</module>
-		<module>show-activity</module>
-		<module>show-base</module>
-		<module>show-member</module>
-		<module>show-restaurant</module>
-		<module>show-xwechat</module>
-		<module>show-ordering</module>
-		<module>show-auth</module>
-	</modules>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -61,13 +44,50 @@
 				<scope>import</scope>
 			</dependency>
 			<!--            springbootalibaba版本统一-->
-			<dependency>
+			<!--<dependency>
 				<groupId>com.alibaba.cloud</groupId>
 				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
 				<version>${spring-cloud-alibaba.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
+			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<modules>
+		<module>show-server</module>
+		<module>show-config</module>
+		<module>show-website</module>
+		<module>show-goods</module>
+		<module>show-manage</module>
+		<module>show-wechat</module>
+		<module>show-user</module>
+		<module>show-order</module>
+		<module>show-common</module>
+		<module>show-activity</module>
+		<module>show-base</module>
+		<module>show-member</module>
+		<module>show-restaurant</module>
+		<module>show-xwechat</module>
+		<module>show-ordering</module>
+	</modules>
 </project>

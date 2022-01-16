@@ -1,9 +1,9 @@
 package com.szhengzhu.handler.impl;
 
 import com.szhengzhu.annotation.OrderType;
-import com.szhengzhu.client.ShowActivityClient;
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowActivityClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.order.SeckillOrder;
 import com.szhengzhu.bean.vo.ExportTemplateVo;
 import com.szhengzhu.bean.vo.ProductInfo;

@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.bean.base.ImageInfo;
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.config.FtpServer;
 import com.szhengzhu.core.Result;
 import com.szhengzhu.core.StatusCode;

@@ -1,10 +1,10 @@
 package com.szhengzhu.handler.impl;
 
 import com.szhengzhu.annotation.ProductType;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowOrderClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowOrderClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.base.ImageInfo;
 import com.szhengzhu.bean.user.UserInfo;
 import com.szhengzhu.bean.vo.ProductInfo;

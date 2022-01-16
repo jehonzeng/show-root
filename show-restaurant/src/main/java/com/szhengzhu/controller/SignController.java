@@ -7,7 +7,7 @@ import com.szhengzhu.bean.member.SignDetail;
 import com.szhengzhu.bean.member.SignMember;
 import com.szhengzhu.bean.member.SignRule;
 import com.szhengzhu.bean.member.param.SignInfoParam;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.core.*;
 import com.szhengzhu.exception.ShowAssert;
 import com.szhengzhu.rabbitmq.Sender;

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CommodityMapper {
-    
+
     int deleteByPrimaryKey(String markId);
 
     int insert(Commodity record);
@@ -24,24 +24,26 @@ public interface CommodityMapper {
     int updateByPrimaryKeySelective(Commodity record);
 
     int updateByPrimaryKey(Commodity record);
-    
+
     List<CommodityPageVo> selectByExampleSelective(CommodityParam commodity);
 
     List<CommodityPageVo> selectByCate(CommodityParam commodity);
 
     void updateBatchStatus(@Param("commodityIds") String[] commodityIds, @Param("status") int status);
-    
+
     CommodityVo selectVoById(@Param("commodityId") String commodityId);
-    
+
     List<Map<String, String>> selectByName(@Param("name") String name);
-    
+
     @Update("update t_commodity_info set quantity=null, modify_time=NOW()")
     int cancelCommQuantity();
 
     @Update("update t_commodity_info set quantity=#{quantity}, modifier=#{modifier}, modify_time=NOW() where mark_id=#{commodityId}")
     int updateQuantity(@Param("commodityId") String commodityId, @Param("modifier") String modifier, @Param("quantity") Integer quantity);
-    
+
     List<CommodityModel> selectResCommodity(@Param("storeId") String storeId, @Param("cateId") String cateId);
-    
+
     List<CommodityModel> selectLjsCommodity(@Param("storeId") String storeId, @Param("cateId") String cateId);
+
+    List<Commodity> queryComboCommodity(String markId);
 }

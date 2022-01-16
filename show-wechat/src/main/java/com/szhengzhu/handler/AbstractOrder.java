@@ -1,7 +1,7 @@
 package com.szhengzhu.handler;
 
-import com.szhengzhu.client.ShowOrderClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowOrderClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.order.OrderDelivery;
 import com.szhengzhu.bean.wechat.vo.Judge;
 import com.szhengzhu.bean.wechat.vo.OrderBase;

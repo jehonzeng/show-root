@@ -24,6 +24,11 @@ public class BackController {
 
     @PostMapping(value = "add")
     public void matchPayBack(@RequestBody PayBack payBack) {
-        payBackService.matchPayBack(payBack);
+        payBackService.payBack(payBack);
+    }
+
+    @PostMapping(value = "/combo/add")
+    public void comboPayBack(@RequestBody PayBack payBack) {
+        payBackService.payBack(payBack);
     }
 }

@@ -1,8 +1,9 @@
 package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.bean.user.UserInfo;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.member.*;
 import com.szhengzhu.bean.member.param.MemberDetailParam;
 import com.szhengzhu.bean.member.param.MemberPaymentParam;

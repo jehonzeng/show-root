@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.excel.MealGoodsModel;
 import com.szhengzhu.bean.goods.PurchaseHistory;
 import com.szhengzhu.bean.goods.PurchaseInfo;

@@ -133,4 +133,13 @@ public class Sender {
         map.put("userId", userId);
         rabbitTemplate.convertAndSend(RabbitQueue.LOTTERY_RESULT, map);
     }
+
+    public void memberCombo(String markId, String userId, Integer quantity) {
+        log.info("send:member-combo:{},{},{}", markId, userId, quantity);
+        Map<String, String> map = new HashMap<>(4);
+        map.put("markId", markId);
+        map.put("userId", userId);
+        map.put("quantity", quantity.toString());
+        rabbitTemplate.convertAndSend(RabbitQueue.MEMBER_COMBO, map);
+    }
 }

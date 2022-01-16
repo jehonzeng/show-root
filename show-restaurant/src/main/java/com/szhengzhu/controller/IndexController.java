@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.GoodsSales;
 import com.szhengzhu.bean.ordering.param.GoodSaleParam;
 import com.szhengzhu.bean.ordering.param.GoodSaleRankParam;

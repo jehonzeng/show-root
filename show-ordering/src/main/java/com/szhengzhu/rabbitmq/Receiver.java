@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.szhengzhu.bean.ordering.*;
 import com.szhengzhu.bean.ordering.vo.IndentPayVo;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.bean.member.vo.TicketTemplateVo;
 import com.szhengzhu.code.PrintStatus;
 import com.szhengzhu.core.Result;
@@ -203,7 +203,7 @@ public class Receiver {
         int num = Integer.parseInt(map.get("quantity"));
         try {
             for (int i = 0; i < num; i++) {
-                List<String> userTicketList = userTicketMapper.selectUserGradeTicket(map.get("userId"), map.get("templateId"));
+                List<String> userTicketList = userTicketMapper.queryUserTicket(map.get("userId"), map.get("templateId"));
                 if (userTicketList.isEmpty()) {
                     continue;
                 }

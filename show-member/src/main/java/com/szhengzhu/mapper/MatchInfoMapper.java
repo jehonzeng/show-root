@@ -1,6 +1,7 @@
 package com.szhengzhu.mapper;
 
 import com.szhengzhu.bean.member.MatchInfo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -29,5 +30,5 @@ public interface MatchInfoMapper {
 
     MatchInfo selectMatchInfo(String markId);
 
-    List<MatchInfo> selectMatchTime();
+    List<MatchInfo> selectByGiveChance(@Param("type") Integer type);
 }

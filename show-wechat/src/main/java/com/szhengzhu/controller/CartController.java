@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.goods.ShoppingCart;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.bean.wechat.vo.CalcData;

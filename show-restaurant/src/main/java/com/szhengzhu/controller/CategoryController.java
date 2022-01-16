@@ -1,7 +1,7 @@
 package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.Category;
 import com.szhengzhu.bean.ordering.CategoryCommodity;
 import com.szhengzhu.bean.ordering.CategorySpecs;

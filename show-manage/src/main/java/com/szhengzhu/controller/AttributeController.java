@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.bean.base.AttributeInfo;
 import com.szhengzhu.bean.vo.Combobox;
 import com.szhengzhu.core.PageGrid;

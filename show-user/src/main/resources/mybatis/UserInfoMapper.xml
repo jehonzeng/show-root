@@ -2,25 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.szhengzhu.mapper.UserInfoMapper">
     <resultMap id="BaseResultMap" type="com.szhengzhu.bean.user.UserInfo">
-        <id column="mark_id" property="markId" jdbcType="VARCHAR" />
-        <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
-        <result column="real_name" property="realName" jdbcType="VARCHAR" />
-        <result column="phone" property="phone" jdbcType="VARCHAR" />
-        <result column="header_img" property="headerImg" jdbcType="VARCHAR" />
-        <result column="gender" property="gender" jdbcType="INTEGER" />
-        <result column="city" property="city" jdbcType="VARCHAR" />
-        <result column="province" property="province" jdbcType="VARCHAR" />
-        <result column="country" property="country" jdbcType="VARCHAR" />
-        <result column="language" property="language" jdbcType="VARCHAR" />
-        <result column="user_level" property="userLevel" jdbcType="VARCHAR" />
-        <result column="wopen_id" property="wopenId" jdbcType="VARCHAR" />
-        <result column="xopen_id" property="xopenId" jdbcType="VARCHAR" />
-        <result column="union_id" property="unionId" jdbcType="VARCHAR" />
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        <result column="wechat_status" property="wechatStatus" jdbcType="INTEGER" />
+        <id column="mark_id" property="markId" jdbcType="VARCHAR"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="header_img" property="headerImg" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="INTEGER"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="country" property="country" jdbcType="VARCHAR"/>
+        <result column="language" property="language" jdbcType="VARCHAR"/>
+        <result column="user_level" property="userLevel" jdbcType="VARCHAR"/>
+        <result column="wopen_id" property="wopenId" jdbcType="VARCHAR"/>
+        <result column="xopen_id" property="xopenId" jdbcType="VARCHAR"/>
+        <result column="union_id" property="unionId" jdbcType="VARCHAR"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="wechat_status" property="wechatStatus" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap type="com.szhengzhu.bean.vo.UserVo" id="BaseResultMapVo" extends="BaseResultMap">
-        <result column="userLevelname" property="userLevelname" jdbcType="VARCHAR" />
+        <result column="userLevelname" property="userLevelname" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         mark_id, nick_name, real_name, phone, header_img, gender, city,
@@ -29,26 +29,27 @@
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where mark_id = #{markId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_user_info
+        delete
+        from t_user_info
         where mark_id = #{markId,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.user.UserInfo">
         insert into t_user_info (mark_id, nick_name, real_name,
-        phone, header_img, gender, city, province, country, language,
-        user_level,wopen_id, xopen_id, union_id, create_time, wechat_status)
+                                 phone, header_img, gender, city, province, country, language,
+                                 user_level, wopen_id, xopen_id, union_id, create_time, wechat_status)
         values (#{markId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
-            #{realName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
-            #{headerImg,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
-            #{city,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
-            #{country,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR},
-            #{userLevel,jdbcType=VARCHAR}, #{wopenId,jdbcType=VARCHAR},
-            #{xopenId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
-            #{createTime,jdbcType=TIMESTAMP}, #{wechatStatus,jdbcType=INTEGER})
+                #{realName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+                #{headerImg,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
+                #{city,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+                #{country,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR},
+                #{userLevel,jdbcType=VARCHAR}, #{wopenId,jdbcType=VARCHAR},
+                #{xopenId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP}, #{wechatStatus,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.szhengzhu.bean.user.UserInfo">
         insert into t_user_info
@@ -206,49 +207,50 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.szhengzhu.bean.user.UserInfo">
         update t_user_info
-        set nick_name = #{nickName,jdbcType=VARCHAR},
-            real_name = #{realName,jdbcType=VARCHAR},
-            phone = #{phone,jdbcType=VARCHAR},
-            header_img = #{headerImg,jdbcType=VARCHAR},
-            gender = #{gender,jdbcType=INTEGER},
-            city = #{city,jdbcType=VARCHAR},
-            province = #{province,jdbcType=VARCHAR},
-            country = #{country,jdbcType=VARCHAR},
-            language = #{language,jdbcType=VARCHAR},
-            user_level = #{userLevel,jdbcType=VARCHAR},
-            wopen_id = #{wopenId,jdbcType=VARCHAR},
-            xopen_id = #{xopenId,jdbcType=VARCHAR},
-            union_id = #{unionId,jdbcType=VARCHAR},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
+        set nick_name     = #{nickName,jdbcType=VARCHAR},
+            real_name     = #{realName,jdbcType=VARCHAR},
+            phone         = #{phone,jdbcType=VARCHAR},
+            header_img    = #{headerImg,jdbcType=VARCHAR},
+            gender        = #{gender,jdbcType=INTEGER},
+            city          = #{city,jdbcType=VARCHAR},
+            province      = #{province,jdbcType=VARCHAR},
+            country       = #{country,jdbcType=VARCHAR},
+            language      = #{language,jdbcType=VARCHAR},
+            user_level    = #{userLevel,jdbcType=VARCHAR},
+            wopen_id      = #{wopenId,jdbcType=VARCHAR},
+            xopen_id      = #{xopenId,jdbcType=VARCHAR},
+            union_id      = #{unionId,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
             wechat_status = #{wechatStatus,jdbcType=INTEGER}
         where mark_id = #{markId,jdbcType=VARCHAR}
     </update>
     <select id="selectManageByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
-        where phone = #{phone,jdbcType=VARCHAR} AND mark_id IN 
-              (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id 
-               WHERE r.role_code='MANAGE')
+        where phone = #{phone,jdbcType=VARCHAR} AND mark_id IN
+        (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id
+        WHERE r.role_code='MANAGE')
     </select>
     <select id="selectRestaurantManageByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
-        WHERE phone = #{phone,jdbcType=VARCHAR} AND mark_id IN 
-              (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id 
-               WHERE r.role_code='RESTAURANT_MANAGE')
+        WHERE phone = #{phone,jdbcType=VARCHAR} AND mark_id IN
+        (SELECT ur.user_id FROM t_user_role ur left join t_role_info r on ur.role_id = r.mark_id
+        WHERE r.role_code='RESTAURANT_MANAGE')
     </select>
     <select id="selectByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where phone = #{phone,jdbcType=VARCHAR}
     </select>
     <select id="selectByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
         select
-            <include refid="Base_Column_List" /> ,
-            (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
+        <include refid="Base_Column_List"/>
+        ,
+        (SELECT `name` FROM db_base.t_attribute_info WHERE `code`=user_level) AS userLevelname
         from t_user_info u
         <where>
             <if test="nickName != null">
@@ -278,10 +280,12 @@
             </if>
         </where>
     </select>
-    <select id="selectOutRoleByExampleSelective" resultMap="BaseResultMapVo" parameterType="com.szhengzhu.bean.user.UserInfo">
+    <select id="selectOutRoleByExampleSelective" resultMap="BaseResultMapVo"
+            parameterType="com.szhengzhu.bean.user.UserInfo">
         select
-            <include refid="Base_Column_List" /> ,
-            (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=user_level) AS userLevelname
+        <include refid="Base_Column_List"/>
+        ,
+        (SELECT a.`name` FROM db_base.t_attribute_info a WHERE a.`code`=user_level) AS userLevelname
         from t_user_info u
         <where>
             <if test="nickName != null">
@@ -311,9 +315,10 @@
             </if>
         </where>
     </select>
-     <select id="selectInStoreByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
+    <select id="selectInStoreByExampleSelective" resultMap="BaseResultMap"
+            parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         <where>
             <if test="nickName != null">
@@ -344,31 +349,32 @@
     </select>
     <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where wopen_id=#{openId,jdbcType=VARCHAR}
     </select>
     <select id="selectByXopenId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where xopen_id=#{xopenId,jdbcType=VARCHAR}
     </select>
     <select id="selectByUnionId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where union_id=#{unionId,jdbcType=VARCHAR}
     </select>
     <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         where mark_id IN (SELECT user_id FROM t_user_token WHERE token=#{token,jdbcType=VARCHAR})
     </select>
-     <select id="selectOutStoreByExampleSelective" resultMap="BaseResultMap" parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
+    <select id="selectOutStoreByExampleSelective" resultMap="BaseResultMap"
+            parameterType="com.szhengzhu.bean.vo.StoreStaffVo">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info
         <where>
             <if test="nickName != null">
@@ -399,17 +405,21 @@
     </select>
     <select id="selectOutMember" resultMap="BaseResultMap">
         select
-            <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from t_user_info u
-        where NOT EXISTS (select user_id from db_member.t_member_account WHERE u.mark_id=user_id OR phone=u.phone) 
+        where NOT EXISTS (select user_id from db_member.t_member_account WHERE u.mark_id=user_id OR phone=u.phone)
     </select>
     <select id="selectWopenIdsByUserId" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT  wopen_id
+        SELECT wopen_id
         FROM t_user_info u
         WHERE mark_id IN
         <foreach collection="list" item="userId" index="index" open="(" separator="," close=")">
             #{userId,jdbcType=VARCHAR}
         </foreach>
-
+    </select>
+    <select id="selectFocusUser" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_info WHERE wechat_status = 1 and wopen_id is not null
     </select>
 </mapper>

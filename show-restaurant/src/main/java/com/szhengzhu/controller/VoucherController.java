@@ -2,8 +2,10 @@ package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.szhengzhu.bean.excel.VoucherCodeExcel;
+import com.szhengzhu.bean.member.ComboReceive;
 import com.szhengzhu.bean.ordering.Voucher;
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
@@ -24,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class VoucherController {
 
     @Resource
     private ShowOrderingClient showOrderingClient;
+
+    @Resource
+    private ShowMemberClient showMemberClient;
 
     @ApiOperation(value = "获取代金券分页列表")
     @PostMapping(value = "/page")
@@ -98,13 +104,37 @@ public class VoucherController {
 
     @ApiOperation(value = "扫码获取券信息")
     @GetMapping(value = "/code/{code}")
-    public Result<Voucher> getCodeInfo(@PathVariable("code") @NotBlank String code) {
-        return showOrderingClient.getVoucherCodeInfo(code);
+    public Result<Object> getCodeInfo(@PathVariable("code") @NotBlank String code) {
+        Voucher voucher = showOrderingClient.getVoucherCodeInfo(code).getData();
+        ComboReceive combo = showMemberClient.queryComboCode(code).getData();
+        if (ObjectUtil.isNotEmpty(combo)) {
+            return new Result<>(combo);
+        }
+        return new Result<>(voucher);
+//        Voucher voucher = showOrderingClient.getVoucherCodeInfo(code).getData();
+//        ComboReceive combo = showMemberClient.queryComboCode(code).getData();
+//        if (ObjectUtil.isEmpty(voucher) && ObjectUtil.isNotEmpty(combo)) {
+//            voucher = Voucher.builder().code(combo.getCode()).name(combo.getName()).
+//                    amount(combo.getAmount().intValue()).build();
+//        }
+//        return new Result<>(voucher);
     }
+
+//    @ApiOperation(value = "确认使用代金券")
+//    @GetMapping(value = "/code/use")
+//    public Result useCode(@RequestParam @NotBlank String code, @RequestParam @NotNull Integer amount) {
+//        return showOrderingClient.useVoucherCode(code, amount);
+//    }
 
     @ApiOperation(value = "确认使用代金券")
     @GetMapping(value = "/code/use")
     public Result useCode(@RequestParam @NotBlank String code, @RequestParam @NotNull Integer amount) {
-        return showOrderingClient.useVoucherCode(code, amount);
+        Voucher voucher = showOrderingClient.getVoucherCodeInfo(code).getData();
+        if (ObjectUtil.isNotEmpty(voucher)) {
+            showOrderingClient.useVoucherCode(code, amount);
+        } else {
+            showMemberClient.useCombo(code);
+        }
+        return new Result<>();
     }
 }

@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowBaseClient;
+import com.szhengzhu.feign.ShowBaseClient;
 import com.szhengzhu.bean.base.PacksInfo;
 import com.szhengzhu.bean.base.PacksItem;
 import com.szhengzhu.bean.vo.BatchVo;

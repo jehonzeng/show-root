@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.ColumnGoods;
 import com.szhengzhu.bean.goods.ColumnInfo;
 import com.szhengzhu.bean.goods.GoodsInfo;

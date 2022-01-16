@@ -3,7 +3,7 @@ package com.szhengzhu.controller;
 import com.szhengzhu.bean.member.*;
 import com.szhengzhu.bean.member.param.ExchangeParam;
 import com.szhengzhu.bean.member.vo.MatchTeamVo;
-import com.szhengzhu.client.ShowMemberClient;
+import com.szhengzhu.feign.ShowMemberClient;
 import com.szhengzhu.core.Contacts;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

@@ -194,4 +194,6 @@ public interface UserService {
      * @return
      */
     List<String> listWopenIdByUserId(List<String> userIds);
+
+    List<UserInfo> selectFocusUser();
 }

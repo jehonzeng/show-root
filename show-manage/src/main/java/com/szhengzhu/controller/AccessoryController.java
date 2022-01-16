@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.goods.AccessoryInfo;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;

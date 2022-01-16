@@ -13,7 +13,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * 自定义字符串工具类
- * 
+ *
  * @author Administrator
  * @date 2019年2月20日
  */
@@ -62,10 +62,10 @@ public class StringUtils {
     public static String getRandomId() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
-    
+
     /**
      * StringUtils工具类方法 获取一定长度的随机字符串，范围0-9，a-z
-     * 
+     *
      * @param length：指定字符串长度
      * @return 一定长度的随机字符串
      */
@@ -79,21 +79,22 @@ public class StringUtils {
         }
         return sb.toString();
     }
-    
-    public static boolean isNumeric(String str){ 
+
+    public static boolean isNumeric(String str) {
         if (isEmpty(str))
             return false;
-        Pattern pattern = Pattern.compile("[0-9]*"); 
+        Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
-        if( !isNum.matches() ){
-            return false; 
-        } 
-        return true; 
-     }
-    
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 缩略字符串（不区分中英文字符）
-     * @param str 目标字符串
+     *
+     * @param str    目标字符串
      * @param length 截取长度
      * @return
      */
@@ -119,12 +120,12 @@ public class StringUtils {
         }
         return "";
     }
-    
+
     /**
      * 替换掉HTML标签方法
      */
     public static String replaceHtml(String html) {
-        if (isEmpty(html)){
+        if (isEmpty(html)) {
             return "";
         }
         String regEx = "<.+?>";
@@ -133,11 +134,24 @@ public class StringUtils {
         String s = m.replaceAll("");
         return s;
     }
-    
-    
+
+    public static String getNumber(int length) {
+        StringBuilder buf = new StringBuilder();
+        Random random = new Random();
+        /*开头不为0,建议数据量较少时只放开部分，比如1至3开头的数，等业务达到一定数量时，再逐步放开剩余的号码段，由于是固定位数，总数量一定，生成的数越多，重复的几率越大**/
+        int firstNumber = random.nextInt(9) + 1;
+        buf.append(firstNumber);
+
+        for (int i = 0; i < length - 1; ++i) {
+            buf.append(random.nextInt(10));
+        }
+
+        return buf.toString();
+    }
+
     public static void main(String[] args) {
 //        System.out.println(getRandomStringByLength(5));
-        
+
 //        System.out.println(isNumeric(""));
 //        String str = StringEscapeUtils.unescapeHtml4("&lt;p&gt;【产品名称】艾酷维多种维生素锌软糖&lt;/p&gt;");
 //        System.out.println(str);

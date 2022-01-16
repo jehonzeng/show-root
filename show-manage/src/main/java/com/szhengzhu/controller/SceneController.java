@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
+import com.szhengzhu.feign.ShowActivityClient;
 import com.szhengzhu.bean.activity.SceneGoods;
 import com.szhengzhu.bean.activity.SceneInfo;
 import com.szhengzhu.bean.activity.SceneOrder;

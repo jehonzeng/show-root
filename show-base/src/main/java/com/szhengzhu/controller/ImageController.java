@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.bean.base.ImageInfo;
 import com.szhengzhu.bean.goods.GoodsVoucher;
 import com.szhengzhu.core.Contacts;

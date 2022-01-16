@@ -102,17 +102,14 @@
             modify_time = #{modifyTime,jdbcType=TIMESTAMP}
         where user_id = #{userId,jdbcType=VARCHAR}
     </update>
-<!--    <select id="selectMatchChance" resultMap="BaseResultMap">-->
-<!--        select-->
-<!--        <include refid="Base_Column_List"/>-->
-<!--        from t_match_chance-->
-<!--        <where>-->
-<!--            <if test="userId != null and userId != ''">-->
-<!--                user_id = #{userId,jdbcType=VARCHAR}-->
-<!--            </if>-->
-<!--            <if test="matchId != null and matchId != ''">-->
-<!--                match_id = #{matchId,jdbcType=VARCHAR}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--    </select>-->
+    <update id="updateExpiredUserChance">
+        UPDATE t_match_chance
+        SET used_count = total_count , modify_time = NOW()
+        WHERE user_id IN (SELECT a.user_id FROM(
+                SELECT user_id
+                FROM t_match_chance
+                WHERE (SELECT MAX(end_time) FROM t_match_info i WHERE NOW() > end_time AND NOW() > start_time) >
+                      IF(modify_time IS NULL, create_time, modify_time)
+                  AND used_count != total_count) a )
+    </update>
 </mapper>

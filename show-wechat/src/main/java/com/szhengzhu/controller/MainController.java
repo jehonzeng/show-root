@@ -1,9 +1,9 @@
 package com.szhengzhu.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.szhengzhu.client.ShowBaseClient;
-import com.szhengzhu.client.ShowGoodsClient;
-import com.szhengzhu.client.ShowUserClient;
+import com.szhengzhu.feign.ShowBaseClient;
+import com.szhengzhu.feign.ShowGoodsClient;
+import com.szhengzhu.feign.ShowUserClient;
 import com.szhengzhu.bean.user.UserToken;
 import com.szhengzhu.bean.wechat.vo.Cooker;
 import com.szhengzhu.bean.wechat.vo.GoodsBase;

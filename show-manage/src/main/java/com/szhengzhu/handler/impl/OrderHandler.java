@@ -1,7 +1,7 @@
 package com.szhengzhu.handler.impl;
 
 import com.szhengzhu.annotation.OrderType;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.order.OrderInfo;
 import com.szhengzhu.bean.order.OrderItem;
 import com.szhengzhu.bean.vo.OrderExportVo;

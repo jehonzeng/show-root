@@ -1,6 +1,6 @@
 package com.szhengzhu.schedule;
 
-import com.szhengzhu.client.ShowGoodsClient;
+import com.szhengzhu.feign.ShowGoodsClient;
 import com.szhengzhu.core.Result;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

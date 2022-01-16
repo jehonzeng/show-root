@@ -13,10 +13,6 @@
             <artifactId>show-common</artifactId>
             <version>${show-common.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka</artifactId>
@@ -66,10 +62,10 @@
             <artifactId>feign-httpclient</artifactId>
             <version>8.18.0</version>
         </dependency> -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.openfeign</groupId>-->
-<!--            <artifactId>feign-okhttp</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+        </dependency>
     </dependencies>
     <!--    <dependencyManagement>
             <dependencies>

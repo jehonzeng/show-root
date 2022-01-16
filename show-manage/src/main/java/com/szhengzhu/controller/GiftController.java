@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowActivityClient;
+import com.szhengzhu.feign.ShowActivityClient;
 import com.szhengzhu.bean.activity.GiftInfo;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;

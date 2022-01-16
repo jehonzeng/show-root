@@ -15,9 +15,9 @@ public interface PayBackService {
     void modifyPayBack(String payId);
 
     /**
-     * 记录竞赛支付
+     * 记录支付
      *
      * @param payBack
      */
-    void matchPayBack(PayBack payBack);
+    void payBack(PayBack payBack);
 }

@@ -1,6 +1,6 @@
 package com.szhengzhu.controller;
 
-import com.szhengzhu.client.ShowOrderingClient;
+import com.szhengzhu.feign.ShowOrderingClient;
 import com.szhengzhu.bean.ordering.Store;
 import com.szhengzhu.bean.ordering.param.StoreParam;
 import com.szhengzhu.core.PageGrid;

@@ -2,8 +2,8 @@ package com.szhengzhu.handler.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.szhengzhu.annotation.OrderType;
-import com.szhengzhu.client.ShowMemberClient;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowMemberClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.bean.member.IntegralDetail;
 import com.szhengzhu.bean.order.BackHistory;
 import com.szhengzhu.bean.order.OrderInfo;

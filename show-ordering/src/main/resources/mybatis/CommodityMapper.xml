@@ -37,7 +37,7 @@
             <result column="unit" jdbcType="VARCHAR" property="unit"/>
             <result column="minPoint" jdbcType="INTEGER" property="minPoint"/>
             <result column="maxPoint" jdbcType="INTEGER" property="maxPoint"/>
-            <result column="priceType" jdbcType="INTEGER" property="priceType" />
+            <result column="priceType" jdbcType="INTEGER" property="priceType"/>
             <result column="salePrice" jdbcType="DECIMAL" property="salePrice"/>
             <result column="integralPrice" jdbcType="DECIMAL" property="integralPrice"/>
             <result column="defaults" jdbcType="BIT" property="defaults"/>
@@ -46,11 +46,11 @@
             <result column="specsName" jdbcType="VARCHAR" property="specsName"/>
             <result column="min_value" jdbcType="INTEGER" property="minValue"/>
             <result column="max_value" jdbcType="INTEGER" property="maxValue"/>
-            <collection property="itemList" ofType="com.szhengzhu.bean.xwechat.vo.ItemModel">
-                <id column="itemId" jdbcType="VARCHAR" property="itemId"/>
-                <result column="itemName" jdbcType="VARCHAR" property="itemName"/>
-                <result column="markupPrice" jdbcType="DECIMAL" property="markupPrice"/>
-            </collection>
+<!--            <collection property="itemList" ofType="com.szhengzhu.bean.xwechat.vo.ItemModel">-->
+<!--                <id column="itemId" jdbcType="VARCHAR" property="itemId"/>-->
+<!--                <result column="itemName" jdbcType="VARCHAR" property="itemName"/>-->
+<!--                <result column="markupPrice" jdbcType="DECIMAL" property="markupPrice"/>-->
+<!--            </collection>-->
         </collection>
     </resultMap>
 
@@ -72,11 +72,12 @@
     </delete>
     <insert id="insert" parameterType="com.szhengzhu.bean.ordering.Commodity">
         insert into t_commodity_info (mark_id, code, name, store_id,
-                                      type, introduction, quantity,in_discount, creator, create_time, modifier,
+                                      type, introduction, quantity, in_discount, creator, create_time, modifier,
                                       modify_time, status)
         values (#{markId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
                 #{storeId,jdbcType=VARCHAR},
-                #{type,jdbcType=INTEGER}, #{introduction,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},#{inDiscount,jdbcType=BIT},
+                #{type,jdbcType=INTEGER}, #{introduction,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER},
+                #{inDiscount,jdbcType=BIT},
                 #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
                 #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
     </insert>
@@ -304,33 +305,33 @@
         </if>
     </select>
     <select id="selectResCommodity" parameterType="java.lang.String" resultMap="ModelResultMap">
-        SELECT i.mark_id                 AS commId,
-               i.`code`                  AS commCode,
-               i.`name`                  AS commName,
+        SELECT i.mark_id               AS commId,
+               i.`code`                AS commCode,
+               i.`name`                AS commName,
                i.introduction,
                i.quantity,
-               p.mark_id                 AS priceId,
+               p.mark_id               AS priceId,
                p.unit,
-               IFNULL(p.min_point, 0)    AS minPoint,
-               IFNULL(p.max_point, 0)    AS maxPoint,
-               IFNULL(p.sale_price, 0)   as salePrice,
+               IFNULL(p.min_point, 0)  AS minPoint,
+               IFNULL(p.max_point, 0)  AS maxPoint,
+               IFNULL(p.sale_price, 0) as salePrice,
                p.defaults,
-               s.`name`                  AS specsName,
-               cs.min_value              AS min_value,
-               cs.max_value              AS max_value,
-               ci.item_id                AS itemId,
-               si.`name`                 AS itemName,
-               ci.markup_price           AS markupPrice
+               s.`name`                AS specsName,
+               cs.min_value            AS min_value,
+               cs.max_value            AS max_value,
+               ci.item_id              AS itemId,
+               si.`name`               AS itemName,
+               ci.markup_price         AS markupPrice
         FROM t_category_commodity cc
-                 LEFT JOIN
-             t_commodity_info i ON cc.commodity_id = i.mark_id
-                 LEFT JOIN t_commodity_price p ON i.mark_id = p.commodity_id
-                 LEFT JOIN
-             t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
-                 LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
-                 LEFT JOIN
-             t_specs_info s ON ci.specs_id = s.mark_id
-                 LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
+                     LEFT JOIN
+                     t_commodity_info i ON cc.commodity_id = i.mark_id
+                     LEFT JOIN t_commodity_price p ON i.mark_id = p.commodity_id
+                     LEFT JOIN
+                     t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
+                     LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
+                     LEFT JOIN
+                     t_specs_info s ON ci.specs_id = s.mark_id
+                     LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
         WHERE i.`status`<![CDATA[ <>]]> -1
           AND p.mark_id IS NOT NULL
           AND cc.category_id = #{cateId,jdbcType=VARCHAR}
@@ -345,12 +346,12 @@
                i.quantity,
                (select GROUP_CONCAT(ii.image_path)
                 from t_commodity_img ci
-                         LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ci.img_id
+                             LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ci.img_id
                 where ci.commodity_id = i.mark_id) AS imgs,
                (SELECT GROUP_CONCAT(ii.image_path)
                 FROM t_tag_commodity tc
-                         LEFT JOIN t_tag_info ti ON tc.tag_id = ti.mark_id
-                         LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ti.img_id
+                             LEFT JOIN t_tag_info ti ON tc.tag_id = ti.mark_id
+                             LEFT JOIN db_base.t_image_info ii ON ii.mark_id = ti.img_id
                 WHERE ti.`status` = 1
                   AND tc.commodity_id = i.mark_id) AS tagImgs,
                p.mark_id                           AS priceId,
@@ -368,45 +369,53 @@
                si.`name`                           AS itemName,
                ci.markup_price                     AS markupPrice
         FROM t_category_commodity cc
-                 LEFT JOIN
-             t_commodity_info i ON cc.commodity_id = i.mark_id
-                 LEFT JOIN (select mark_id,
-                                   commodity_id,
-                                   unit,
-                                   min_point,
-                                   max_point,
-                                   price_type,
-                                   sale_price,
-                                   integral_price,
-                                   defaults,
-                                   create_time
-                            from t_commodity_price
-                            where price_type = 1
-                            UNION
-                            select mark_id,
-                                   commodity_id,
-                                   unit,
-                                   min_point,
-                                   max_point,
-                                   price_type,
-                                   sale_price,
-                                   integral_price,
-                                   defaults,
-                                   create_time
-                            from t_commodity_price
-                            where commodity_id not in
-                                  (select commodity_id from t_commodity_price where price_type = 1)) p
-                           ON i.mark_id = p.commodity_id
-                 LEFT JOIN
-             t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
-                 LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
-                 LEFT JOIN
-             t_specs_info s ON ci.specs_id = s.mark_id
-                 LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
+                     LEFT JOIN
+                     t_commodity_info i ON cc.commodity_id = i.mark_id
+                     LEFT JOIN (select mark_id,
+                                       commodity_id,
+                                       unit,
+                                       min_point,
+                                       max_point,
+                                       price_type,
+                                       sale_price,
+                                       integral_price,
+                                       defaults,
+                                       create_time
+                                from t_commodity_price
+                                where price_type = 1
+                                UNION
+                                select mark_id,
+                                       commodity_id,
+                                       unit,
+                                       min_point,
+                                       max_point,
+                                       price_type,
+                                       sale_price,
+                                       integral_price,
+                                       defaults,
+                                       create_time
+                                from t_commodity_price
+                                where commodity_id not in
+                                      (select commodity_id from t_commodity_price where price_type = 1)) p
+                ON i.mark_id = p.commodity_id
+                     LEFT JOIN
+                     t_commodity_item ci ON i.mark_id = ci.commodity_id AND ci.checked = 1
+                     LEFT JOIN t_commodity_specs cs ON ci.commodity_id = cs.commodity_id AND cs.specs_id = ci.specs_id
+                     LEFT JOIN
+                     t_specs_info s ON ci.specs_id = s.mark_id
+                     LEFT JOIN t_specs_item si ON ci.item_id = si.mark_id AND ci.item_id = si.mark_id
         WHERE i.`status` = 1
           AND p.mark_id IS NOT NULL
           AND cc.category_id = #{cateId,jdbcType=VARCHAR}
           AND i.store_id = #{storeId,jdbcType=VARCHAR}
         ORDER BY cc.sort, convert(i.name using gbk), p.defaults DESC, p.create_time
+    </select>
+    <select id="queryComboCommodity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_template_commodity tc
+        inner join t_ticket_template t on tc.template_id = t.mark_id
+        inner join t_commodity_info c on tc.commodity_id = c.mark_id
+        where t.mark_id=#{markId,jdbcType=VARCHAR}
     </select>
 </mapper>

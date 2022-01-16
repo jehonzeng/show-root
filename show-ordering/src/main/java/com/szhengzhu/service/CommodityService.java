@@ -124,4 +124,6 @@ public interface CommodityService {
      * @return
      */
     void optCommodityTag(String commodityId, String[] tagIds);
+
+    List<Commodity> queryComboCommodity(String markId);
 }

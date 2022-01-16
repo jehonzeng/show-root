@@ -4,7 +4,7 @@ import com.szhengzhu.bean.order.PushInfo;
 import com.szhengzhu.bean.order.PushInfoVo;
 import com.szhengzhu.bean.order.PushTemplate;
 import com.szhengzhu.bean.order.PushType;
-import com.szhengzhu.client.ShowOrderClient;
+import com.szhengzhu.feign.ShowOrderClient;
 import com.szhengzhu.core.PageGrid;
 import com.szhengzhu.core.PageParam;
 import com.szhengzhu.core.Result;
